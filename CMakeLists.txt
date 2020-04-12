@@ -34,14 +34,14 @@ message(STATUS "Boost version: ${Boost_VERSION}")
 
 include_directories(include)
 
-# TODO(walterli): Update server executable name, srcs, and deps
-# add_library(example_lib src/example_lib.cc)
-# add_executable(example_server src/example_server_main.cc)
-# target_link_libraries(example_server example_lib Boost::system)
+# update session as one library
+add_library(session_lib src/session.cc)
+# update server as one library
+add_library(server_lib src/session.cc src/server.cc)
+# update main executable and link it with boost, session_lib and server_lib
+add_executable(server_executable src/server_main.cc)
+target_link_libraries(server_executable Boost::system session_lib server_lib)
 
-# update executable for skeleton
-add_executable(server src/server_main.cc)
-target_link_libraries(server Boost::system)
 
 # TODO(walterli): Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
