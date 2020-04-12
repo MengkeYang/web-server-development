@@ -281,6 +281,32 @@ request_parser::result_type request_parser::consume(request& req, char input)
       return bad;
     }
   case expecting_newline_3:
+    if (input == '\n')
+    {
+      state_ = body_value;
+      return indeterminate;
+    }
+    else
+    {
+      return bad;
+    }
+    // return (input == '\n') ? good : bad;
+  case body_value:
+    if (input == '\r')
+    {
+      state_ = expecting_newline_4;
+      return indeterminate;
+    }
+    else if (is_ctl(input))
+    {
+      return bad;
+    }
+    else
+    {
+      req.body.push_back(input);
+      return indeterminate;
+    }
+  case expecting_newline_4:
     return (input == '\n') ? good : bad;
   default:
     return bad;

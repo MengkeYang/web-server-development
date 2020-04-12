@@ -23,7 +23,7 @@ void session::handle_read(const boost::system::error_code& error, size_t bytes_t
         std::tie(result, std::ignore) = request_parser_.parse(
               request_, data_.data(), data_.data() + bytes_transferred);
 
-	std::cout<<result<<std::endl;
+	// std::cout<<result<<std::endl;
 
 	if (result == request_parser::good)
         {

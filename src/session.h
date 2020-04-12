@@ -25,8 +25,8 @@ private:
     void handle_write(const boost::system::error_code& error);
 
     tcp::socket socket_;
-    enum { max_length = 1024 };
-    std::array<char, 8192> data_;
+    enum { max_length = 8192};
+    std::array<char, max_length> data_;
     // char data_[max_length];
 
     request request_;
