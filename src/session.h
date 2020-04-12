@@ -3,6 +3,8 @@
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include "request.h"
+#include "request_parser.h"
 
 using boost::asio::ip::tcp;
 
@@ -24,5 +26,9 @@ private:
 
     tcp::socket socket_;
     enum { max_length = 1024 };
-    char data_[max_length];
+    std::array<char, 8192> data_;
+    // char data_[max_length];
+
+    request request_;
+    request_parser request_parser_;
 };

@@ -1,5 +1,10 @@
 // This server class create and delete session
-#include "session.h"
+#include <cstdlib>
+#include <iostream>
+#include <boost/bind.hpp>
+#include <boost/asio.hpp>
+
+class session;
 
 using boost::asio::ip::tcp;
 
