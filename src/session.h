@@ -1,4 +1,7 @@
 // This session class handle read/write of tcp socket
+#ifndef WNZA_SESSION_H_
+#define WNZA_SESSION_H_
+
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
@@ -32,3 +35,4 @@ private:
     request request_;
     request_parser request_parser_;
 };
+#endif  // WNZA_SESSION_H_

@@ -1,4 +1,6 @@
 // An nginx config file parser.
+#ifndef WNZA_CONFIG_PARSER_H_
+#define WNZA_CONFIG_PARSER_H_
 
 #include <iostream>
 #include <memory>
@@ -58,3 +60,4 @@ class NginxConfigParser {
 
   TokenType ParseToken(std::istream* input, std::string* value);
 };
+#endif  // WNZA_CONFIG_PARSER_H_

@@ -1,5 +1,6 @@
 // This file is revised from boost HTTP example request_parser.hpp
-//
+#ifndef WNZA_REQUEST_PARSER_H_
+#define WNZA_REQUEST_PARSER_H_
 
 #include <tuple>
 
@@ -75,3 +76,4 @@ private:
     expecting_newline_4
   } state_;
 };	
+#endif  // WNZA_REQUEST_PARSER_H_

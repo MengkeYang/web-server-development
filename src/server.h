@@ -1,4 +1,6 @@
 // This server class create and delete session
+#ifndef WNZA_SERVER_H_
+#define WNZA_SERVER_H_
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
@@ -23,3 +25,4 @@ private:
     boost::asio::io_service& io_service_;
     tcp::acceptor acceptor_;
 };
+#endif  // WNZA_SERVER_H_

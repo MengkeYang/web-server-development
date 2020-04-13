@@ -1,5 +1,6 @@
 // This is revised from boost HTTP example request.hpp
-//
+#ifndef WNZA_REQUEST_H_
+#define WNZA_REQUEST_H_
 
 #include <string>
 #include <vector>
@@ -23,3 +24,4 @@ struct request
   std::vector<header> headers;
   std::string body;
 };
+#endif  // WNZA_REQUEST_H_
