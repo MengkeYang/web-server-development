@@ -34,6 +34,8 @@ message(STATUS "Boost version: ${Boost_VERSION}")
 
 include_directories(include)
 
+# update config_parser as one library
+add_library(config_parser_lib src/config_parser.cc)
 # update request_parser as one library
 add_library(request_parser_lib src/request_parser.cc)
 # update session as one library
@@ -43,7 +45,7 @@ add_library(server_lib src/server.cc)
 target_link_libraries(server_lib session_lib request_parser_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
-target_link_libraries(server_executable Boost::system server_lib)
+target_link_libraries(server_executable Boost::system server_lib config_parser_lib)
 
 
 # TODO(walterli): Update test executable name, srcs, and deps

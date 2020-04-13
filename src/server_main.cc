@@ -24,19 +24,43 @@ int main(int argc, char* argv[])
       std::cerr << "Usage: async_tcp_echo_server <port>\n";
       return 1;
     }
+      
+    //parse config
+    NginxConfigParser config_parser;
+    NginxConfig config;
+    if(!config_parser.Parse(argv[1], &config))
+    {
+      std::cerr << "Parsing config failed!\n";
+      return 1;
+    }
+    //parse port number from config
+    int port;
+    if ((port = config.parse_port()) == -1)
+    {
+      std::cerr << "The port numbers range from 0 to 65535.\n";
+      return 1;
+    }
 
     // use boost::asio to control TCP flow
     boost::asio::io_service io_service;
 
     using namespace std; // For atoi.
-    server s(io_service, atoi(argv[1]));
+    server s(io_service, (short)port, config);
+    //server s(io_service, atoi(argv[1]));
 
     // run server
     io_service.run();
   }
   catch (std::exception& e)
   {
-    std::cerr << "Exception: " << e.what() << "\n";
+    if(std::strcmp(e.what(), "bind: Permission denied") == 0)
+    {
+      std::cerr << "You may need root permissions to open a port below 1024 on Linux.\n";
+    }
+    else
+    {
+      std::cerr << "Exception: " << e.what() << "\n";
+    }
   }
 
   return 0;

@@ -1,0 +1,6 @@
+http {
+  server {
+    listen -1;
+    listen 8080;
+  }
+}
