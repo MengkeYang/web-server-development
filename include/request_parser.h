@@ -72,8 +72,6 @@ private:
     header_value,
     expecting_newline_2,
     expecting_newline_3,
-    body_value,
-    expecting_newline_4
   } state_;
 };	
 #endif  // WNZA_REQUEST_PARSER_H_
