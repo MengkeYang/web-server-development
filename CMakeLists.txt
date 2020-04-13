@@ -42,10 +42,12 @@ add_library(request_parser_lib src/request_parser.cc)
 add_library(session_lib src/session.cc)
 # update server as one library
 add_library(server_lib src/server.cc)
-target_link_libraries(server_lib session_lib request_parser_lib)
+add_library(response_lib src/response.cc)
+target_link_libraries(session_lib request_parser_lib response_lib)
+target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
-target_link_libraries(server_executable Boost::system server_lib config_parser_lib)
+target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib)
 
 
 # update request parser test executable name, srcs, and deps
@@ -54,10 +56,14 @@ target_link_libraries(request_parser_lib_test request_parser_lib gtest_main)
 # update config parser test executable name, srcs, and deps
 add_executable(config_parser_lib_test tests/config_parser_test.cc)
 target_link_libraries(config_parser_lib_test config_parser_lib gtest_main)
+# update response test executable name, srcs, and deps
+add_executable(response_lib_test tests/response_lib_test.cc)
+target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
 
 # Update with test binary
 gtest_discover_tests(request_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+gtest_discover_tests(response_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # TODO(walterli): Update with target/test targets
 # include(cmake/CodeCoverageReportConfig.cmake)
