@@ -4,23 +4,24 @@ steps:
   args:
   - '-c'
   - |
-    docker pull gcr.io/$PROJECT_ID/WNZA:base || exit 0
+    docker pull gcr.io/$PROJECT_ID/wnza:base || exit 0
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
     '-f', 'docker/base.Dockerfile',
-    '-t', 'WNZA:base',
-    '-t', 'gcr.io/$PROJECT_ID/WNZA:base',
-    '--cache-from', 'gcr.io/$PROJECT_ID/WNZA:base',
+    '-t', 'wnza:base',
+    '-t', 'gcr.io/$PROJECT_ID/wnza:base',
+    '--cache-from', 'gcr.io/$PROJECT_ID/wnza:base',
     '.'
   ]
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/WNZA:base']
+  args: ['push', 'gcr.io/$PROJECT_ID/wnza:base']
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
     '-f', 'docker/Dockerfile',
-    '-t', 'gcr.io/$PROJECT_ID/WNZA:latest',
+    '-t', 'gcr.io/$PROJECT_ID/wnza:latest',
     '.'
   ]
-images: ['gcr.io/$PROJECT_ID/WNZA:base', 'gcr.io/$PROJECT_ID/WNZA:latest']
+images: ['gcr.io/$PROJECT_ID/wnza:base', 'gcr.io/$PROJECT_ID/wnza:latest']
+
