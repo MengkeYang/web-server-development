@@ -1,10 +1,10 @@
 ### Build/test container ###
 # Define builder stage
-FROM WNZA:base as builder
+FROM wnza:base as builder
 
 # Share work directory
-COPY . /usr/src/project
-WORKDIR /usr/src/project/build
+COPY . /usr/src/projects/WNZA
+WORKDIR /usr/src/projects/WNZA/build
 
 # Build and test
 RUN cmake ..
@@ -17,15 +17,16 @@ RUN ctest --output-on_failure
 FROM ubuntu:latest as deploy
 
 # TODO(!): Copy server output binary to "."
-# COPY --from=builder /usr/src/project/build/bin/example_server .
+COPY --from=builder /usr/src/projects/WNZA/build/bin/server_executable .
+COPY --from=builder /usr/src/projects/WNZA/tests/example_config .
 
 # TODO(!): Expose some port(s)
-# EXPOSE 80
+EXPOSE 8080
 
 # Use ENTRYPOINT to specify the binary name
 # TODO(!): Update with real server name
-# ENTRYPOINT ["./example_server"]
+ENTRYPOINT ["./server_executable"]
 
 # Use CMD to specify arguments to ENTRYPOINT
 # TODO(!): Update with real server args
-# CMD [""]
+CMD ["example_config"]
