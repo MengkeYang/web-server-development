@@ -18,10 +18,10 @@ FROM ubuntu:latest as deploy
 
 # TODO(!): Copy server output binary to "."
 COPY --from=builder /usr/src/projects/WNZA/build/bin/server_executable .
-COPY --from=builder /usr/src/projects/WNZA/tests/example_config .
+COPY --from=builder /usr/src/projects/WNZA/tests/example_server_config .
 
 # TODO(!): Expose some port(s)
-EXPOSE 8080
+EXPOSE 80
 
 # Use ENTRYPOINT to specify the binary name
 # TODO(!): Update with real server name
@@ -29,4 +29,4 @@ ENTRYPOINT ["./server_executable"]
 
 # Use CMD to specify arguments to ENTRYPOINT
 # TODO(!): Update with real server args
-CMD ["example_config"]
+CMD ["example_server_config"]
