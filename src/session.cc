@@ -21,12 +21,13 @@ void session::handle_read(const boost::system::error_code& error,
         request_parser::result_type result;
         std::tie(result, std::ignore) = request_parser_.parse(
             request_, data_.data(), data_.data() + bytes_transferred);
+        request_parser_.reset();
 
         response response_;
-        std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
+        std::string request_str(data_.begin(),
+                                data_.begin() + bytes_transferred);
         response_.addResponse(result, request_str);
         responses_.push_back(response_);
-//        boost::asio::const_buffer response_buf = response_.getResponse();
 
         boost::asio::async_write(socket_, responses_.back().getResponse(),
                                  boost::bind(&session::handle_write, this,
