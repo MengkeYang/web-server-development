@@ -10,6 +10,7 @@ request_parser::request_parser()
 {
 }
 
+
 void request_parser::reset()
 {
   state_ = method_start;
