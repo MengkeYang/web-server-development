@@ -65,6 +65,7 @@ gtest_discover_tests(request_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_S
 gtest_discover_tests(config_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(response_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
-# TODO(walterli): Update with target/test targets
-# include(cmake/CodeCoverageReportConfig.cmake)
-# generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
+# Update with target/test targets
+include(cmake/CodeCoverageReportConfig.cmake)
+generate_coverage_report(TARGETS server_executable server_lib session_lib response_lib config_parser_lib request_parser_lib TESTS request_parser_lib_test config_parser_lib_test response_lib_test)
+
