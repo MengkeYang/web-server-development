@@ -31,6 +31,8 @@ void response::addResponse(request_parser::result_type r,
         }
         case request_parser::indeterminate: {
             std::cerr << "Error: Not able to parse to HTTP request\n";
+            reply = "HTTP/1.1 400 Bad Request\r\n\r\n";
+            header = reply;
             break;
         }
     }

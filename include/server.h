@@ -23,6 +23,7 @@ private:
     void handle_accept(session* new_session, const boost::system::error_code& error);
 
     boost::asio::io_service& io_service_;
+    std::shared_ptr<tcp::socket> socket_;
     tcp::acceptor acceptor_;
 };
 #endif  // WNZA_SERVER_H_

@@ -43,11 +43,12 @@ add_library(session_lib src/session.cc)
 # update server as one library
 add_library(server_lib src/server.cc)
 add_library(response_lib src/response.cc)
-target_link_libraries(session_lib request_parser_lib response_lib)
+add_library(connection_lib src/connection.cc)
+target_link_libraries(session_lib request_parser_lib response_lib connection_lib)
 target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
-target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib)
+target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib connection_lib)
 
 
 # update request parser test executable name, srcs, and deps
@@ -59,13 +60,16 @@ target_link_libraries(config_parser_lib_test config_parser_lib gtest_main)
 # update response test executable name, srcs, and deps
 add_executable(response_lib_test tests/response_lib_test.cc)
 target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
+add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
+target_link_libraries(session_lib_test Boost::system session_lib gtest_main)
 
 # Update with test binary
 gtest_discover_tests(request_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(response_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+gtest_discover_tests(session_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # Update with target/test targets
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server_executable server_lib session_lib response_lib config_parser_lib request_parser_lib TESTS request_parser_lib_test config_parser_lib_test response_lib_test)
+generate_coverage_report(TARGETS server_executable server_lib session_lib response_lib config_parser_lib request_parser_lib connection_lib TESTS request_parser_lib_test config_parser_lib_test response_lib_test session_lib_test)
 

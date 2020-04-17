@@ -12,8 +12,10 @@ server::server(boost::asio::io_service& io_service, short port, const NginxConfi
 
 void server::start_accept()
 {
-    session* new_session = new session(io_service_);
-    acceptor_.async_accept(new_session->socket(),
+    socket_ = std::make_shared<tcp::socket>(tcp::socket(io_service_));
+    tcp_connection conn(socket_);
+    session* new_session = new session(std::make_shared<tcp_connection>(conn));
+    acceptor_.async_accept(*(new_session->socket()),
         boost::bind(&server::handle_accept, this, new_session,
             boost::asio::placeholders::error));
 }
