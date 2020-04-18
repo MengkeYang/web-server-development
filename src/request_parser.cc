@@ -5,6 +5,17 @@
 #include "request.h"
 #include "request_parser.h"
 
+std::tuple<request_parser::result_type, char*> request_parser::parse(request& req, char* begin, char* end)
+{
+  while (begin != end)
+  {
+    result_type result = consume(req, *begin++);
+    if (result == good || result == bad)
+      return std::make_tuple(result, begin);
+  }
+  return std::make_tuple(indeterminate, begin);
+}
+
 request_parser::request_parser()
   : state_(method_start)
 {

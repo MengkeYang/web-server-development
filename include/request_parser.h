@@ -14,6 +14,14 @@ public:
   // Reset to initial parser state.
   void reset();
 
+  static bool is_tspecial(int c);
+
+  static bool is_digit(int c);
+
+  static bool is_char(int c);
+
+  static bool is_ctl(int c);
+  
   // Result of parse.
   enum result_type { good, bad, indeterminate };
 
@@ -21,35 +29,10 @@ public:
   // been parsed, bad if the data is invalid, indeterminate when more data is
   // required. The InputIterator return value indicates how much of the input
   // has been consumed.
-  template <typename InputIterator>
-  std::tuple<result_type, InputIterator> parse(request& req, InputIterator begin, InputIterator end)
-  {
-    while (begin != end)
-    {
-      result_type result = consume(req, *begin++);
-      if (result == good || result == bad)
-        return std::make_tuple(result, begin);
-    }
-    return std::make_tuple(indeterminate, begin);
-  }    
+  std::tuple<result_type, char*> parse(request& req, char* begin, char* end);
 
-private:
-  // Handle the next character of input.
   result_type consume(request& req, char input);
 
-  // Check if a byte is an HTTP character.
-  static bool is_char(int c);
-
-  // Check if a byte is an HTTP control character.
-  static bool is_ctl(int c);
-
-  // Check if a byte is defined as an HTTP tspecial character.
-  static bool is_tspecial(int c);
-
-  // Check if a byte is a digit.
-  static bool is_digit(int c);
-
-  // The current state of the parser.
   enum state
   {
     method_start,
