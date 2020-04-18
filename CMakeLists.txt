@@ -62,6 +62,7 @@ add_executable(response_lib_test tests/response_lib_test.cc)
 target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
 add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
 target_link_libraries(session_lib_test Boost::system session_lib gtest_main)
+add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # Update with test binary
 gtest_discover_tests(request_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
