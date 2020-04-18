@@ -1,0 +1,6 @@
+foo "bar";
+
+server {
+  listen   8085;
+  server_name wnza.com;
+  root /usr/src/projects/WNZA;

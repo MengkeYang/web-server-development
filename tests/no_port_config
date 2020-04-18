@@ -1,0 +1,7 @@
+foo "bar";
+
+server {
+  port   ;
+  server_name wnza.com;
+  root /usr/src/projects/WNZA/;
+}

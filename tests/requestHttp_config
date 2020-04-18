@@ -1,0 +1,15 @@
+foo "bar";
+
+http {
+    server {
+        listen 8080;
+        server_name lol.com;
+        location / {
+            root /data/loll;
+        }
+
+        location /lolll/ {
+            root /data;
+        }
+    }
+}

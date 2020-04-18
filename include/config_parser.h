@@ -8,23 +8,9 @@
 #include <vector>
 
 class NginxConfig;
+class NginxConfigStatement;
+class NginxConfigParser;
 
-// The parsed representation of a single config statement.
-class NginxConfigStatement {
- public:
-  std::string ToString(int depth);
-  std::vector<std::string> tokens_;
-  std::unique_ptr<NginxConfig> child_block_;
-};
-
-// The parsed representation of the entire config.
-class NginxConfig {
- public:
-  std::string ToString(int depth = 0);
-  std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
-  //parse port number
-  int parse_port();
-};
 
 // The driver that parses a config file and generates an NginxConfig.
 class NginxConfigParser {
@@ -60,4 +46,24 @@ class NginxConfigParser {
 
   TokenType ParseToken(std::istream* input, std::string* value);
 };
+
+// The parsed representation of the entire config.
+class NginxConfig {
+ public:
+  std::string ToString(int depth = 0);
+  std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
+  //parse port number
+  int parse_port();
+};
+
+// The parsed representation of a single config statement.
+class NginxConfigStatement {
+ public:
+  std::string ToString(int depth);
+  std::vector<std::string> tokens_;
+  std::unique_ptr<NginxConfig> child_block_;
+};
+
+
+
 #endif  // WNZA_CONFIG_PARSER_H_
