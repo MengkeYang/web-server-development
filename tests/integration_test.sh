@@ -1,6 +1,6 @@
 #!/bin/bash
 
-../build_coverage/bin/server_executable ../tests/example_config &
+../build/bin/server_executable ../tests/example_config &
 SERVER_ID=$!
 sleep 1s
 
