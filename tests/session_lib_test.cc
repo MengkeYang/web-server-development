@@ -10,7 +10,6 @@
 
 using boost::asio::ip::tcp;
 
-
 class session_test : public ::testing::Test
 {
 protected:
@@ -48,4 +47,12 @@ TEST_F(session_test, responses_are_cleared_once_sent)
     session session_(conn);
     session_.start();
     EXPECT_EQ(session_.num_responses(), 0);
+}
+
+TEST_F(session_test, session_delete_no_segfault)
+{
+    std::shared_ptr<fake_connection> conn =
+        std::make_shared<fake_connection>(error, s);
+    session* session_ = new session(conn);
+    EXPECT_NO_THROW(session_->start());
 }
