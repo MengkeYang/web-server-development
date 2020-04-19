@@ -21,9 +21,12 @@ private:
     void start_accept();
     // call session::start to run, delete and build another session when encounter errors
     void handle_accept(session* new_session, const boost::system::error_code& error);
+    void signal_handler(session* new_session,
+                        const boost::system::error_code& ec, int signal_number);
 
     boost::asio::io_service& io_service_;
     std::shared_ptr<tcp::socket> socket_;
     tcp::acceptor acceptor_;
+    boost::asio::signal_set signals_;
 };
 #endif  // WNZA_SERVER_H_

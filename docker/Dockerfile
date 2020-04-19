@@ -5,6 +5,7 @@ FROM wnza:base as builder
 # Share work directory
 COPY . /usr/src/projects/WNZA
 WORKDIR /usr/src/projects/WNZA/build
+ENV PATH_TO_BIN=/usr/src/projects/WNZA/build/bin/server_executable
 
 # Build and test
 RUN cmake ..

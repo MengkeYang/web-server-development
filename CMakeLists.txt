@@ -48,7 +48,7 @@ target_link_libraries(session_lib request_parser_lib response_lib connection_lib
 target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
-target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib connection_lib)
+target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib connection_lib pthread)
 
 
 # update request parser test executable name, srcs, and deps

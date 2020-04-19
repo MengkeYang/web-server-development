@@ -1,25 +1,50 @@
 #!/bin/bash
 
-../build/bin/server_executable ../tests/example_config &
+output=$("$PATH_TO_BIN" 2>&1)
+if [[ "$output" =~ Usage:.* ]]
+then
+    echo "Passed Test 1"
+else
+    echo "Failed Test 1"
+    exit 1
+fi
+
+output=$("$PATH_TO_BIN" no_port_config 2>&1)
+if [[ "$output" =~ .*[Pp]ort.* ]]
+then
+    echo "Passed Test 2"
+else
+    echo "Failed Test 2"
+    exit 1
+fi
+
+$PATH_TO_BIN example_config &
 SERVER_ID=$!
 sleep 1s
 
 ## Matching the output of server response to a regex expression
 output=$(curl -s localhost:8080)
-if [[ "$output" =~ GET[[:space:]]/[[:space:]]HTTP/1\.1.* ]]
+expected=$(cat integration_response1)
+diff -q <(echo "$output") <(echo "$expected")
+if [ $? -eq 0 ]
 then
-    echo "Passed Test 1"
+    echo "Passed Test 3"
 else
-    echo "Failed Test 1"
+    echo "Failed Test 3"
+    kill -TERM $SERVER_ID
+    exit 1
 fi
 
 ## Testing that some of the content of the message is correct
 output=$(curl -s -d "Hello,World!" localhost:8080)
 if [[ "$output" =~ .*Content-Length:[[:space:]]12.* ]]
 then
-    echo "Passed Test 2"
+    echo "Passed Test 4"
 else
-    echo "Failed Test 2"
+    echo "Failed Test 4"
+    kill -TERM $SERVER_ID
+    exit 1
 fi
 
-kill -9 $SERVER_ID
+kill -TERM $SERVER_ID
+exit 0
