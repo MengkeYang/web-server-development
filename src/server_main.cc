@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   {
     if(std::strcmp(e.what(), "bind: Permission denied") == 0)
     {
-      std::cerr << "You may need root permissions to open a port below 1024 on Linux.\n";
+      std::cerr << "port forbidden please choose another port.\n";
     }
     else
     {

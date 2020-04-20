@@ -30,7 +30,7 @@ fi
 
 # test forbidden port config file
 output=$("$PATH_TO_BIN" forbidden_port_config 2>&1)
-if [[ "$output" =~ .*root.* ]]
+if [[ "$output" =~ .*forbidden.* ]]
 then
     echo "Passed Test 4"
 else
