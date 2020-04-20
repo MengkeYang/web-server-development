@@ -50,7 +50,6 @@ target_link_libraries(server_lib session_lib)
 add_executable(server_executable src/server_main.cc)
 target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib connection_lib pthread)
 
-
 # update request parser test executable name, srcs, and deps
 add_executable(request_parser_lib_test tests/request_parser_test.cc)
 target_link_libraries(request_parser_lib_test request_parser_lib gtest_main)
