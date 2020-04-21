@@ -28,16 +28,6 @@ else
     exit 1
 fi
 
-# test forbidden port config file
-output=$("$PATH_TO_BIN" forbidden_port_config 2>&1)
-if [[ "$output" =~ .*forbidden.* ]]
-then
-    echo "Passed Test 4"
-else
-    echo "Failed Test 4"
-    exit 1
-fi
-
 $PATH_TO_BIN example_config &
 SERVER_ID=$!
 sleep 1s
@@ -48,9 +38,9 @@ expected=$(cat integration_response1)
 diff -q <(echo "$output") <(echo "$expected")
 if [ $? -eq 0 ]
 then
-    echo "Passed Test 5"
+    echo "Passed Test 4"
 else
-    echo "Failed Test 5"
+    echo "Failed Test 4"
     kill -TERM $SERVER_ID
     exit 1
 fi
@@ -59,9 +49,9 @@ fi
 output=$(curl -s -d "Hello,World!" localhost:8080)
 if [[ "$output" =~ .*Content-Length:[[:space:]]12.* ]]
 then
-    echo "Passed Test 6"
+    echo "Passed Test 5"
 else
-    echo "Failed Test 6"
+    echo "Failed Test 5"
     kill -TERM $SERVER_ID
     exit 1
 fi
