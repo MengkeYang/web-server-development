@@ -29,11 +29,13 @@ add_subdirectory(/usr/src/googletest googletest)
 # Enable Boost
 # Use static libraries so binaries can be deployed without a full boost install
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.50 REQUIRED COMPONENTS system)
+find_package(Boost 1.50 REQUIRED COMPONENTS system regex log)
 message(STATUS "Boost version: ${Boost_VERSION}")
 
 include_directories(include)
 
+# update log_helper as one library
+add_library(log_helper_lib src/log_helper.cc)
 # update config_parser as one library
 add_library(config_parser_lib src/config_parser.cc)
 # update request_parser as one library
@@ -48,7 +50,7 @@ target_link_libraries(session_lib request_parser_lib response_lib connection_lib
 target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
-target_link_libraries(server_executable Boost::system server_lib response_lib config_parser_lib connection_lib pthread)
+target_link_libraries(server_executable server_lib response_lib config_parser_lib connection_lib pthread log_helper_lib Boost::system Boost::regex Boost::log_setup Boost::log)
 
 # update request parser test executable name, srcs, and deps
 add_executable(request_parser_lib_test tests/request_parser_test.cc)
