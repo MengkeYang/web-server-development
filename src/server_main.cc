@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
         boost::asio::io_service io_service;
 
         using namespace std;  // For atoi.
-        server s(io_service, (short)port, config, log);
+        server s(io_service, (short)port, log);
         log->log_trace_file("server startup successed");
 
         // run server
@@ -58,8 +58,9 @@ int main(int argc, char* argv[])
             // std::cerr << "port forbidden please choose another port.\n";
             log->log_error_file("port forbidden please choose another port");
         } else {
-            // std::cerr << "Exception: " << e.what() << "\n";
             log->log_error_file(e.what());
+            delete log;
+            return 1;
         }
     }
 

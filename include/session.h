@@ -13,12 +13,12 @@
 
 using boost::asio::ip::tcp;
 
-class session
+class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(std::shared_ptr<connection> connection);
+    session(std::unique_ptr<connection> connection);
     // get tcp socket
-    std::shared_ptr<tcp::socket> socket();
+    tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
     void start();
     void process_req(request_parser::result_type r,
@@ -38,7 +38,7 @@ private:
     std::array<char, max_len> data_;
     // char data_[max_length];
 
-    std::shared_ptr<connection> connection_;
+    std::unique_ptr<connection> connection_;
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;

@@ -4,25 +4,35 @@
 
 using boost::asio::ip::tcp;
 
-session::session(std::shared_ptr<connection> connection)
+session::session(std::unique_ptr<connection> connection)
+    : connection_(std::move(connection))
 {
-    connection_ = connection;
 }
 
-std::shared_ptr<tcp::socket> session::socket() { return connection_->socket(); }
+tcp::socket* session::socket() { return connection_->socket(); }
 
 void session::start()
 {
+    std::shared_ptr<session> shared_this(shared_from_this());
     connection_->read(boost::asio::buffer(data_, max_len),
-                      static_cast<int>(max_len), &session::received_req, this);
+                      static_cast<int>(max_len), &session::received_req,
+                      shared_this);
 }
 
 void session::process_req(request_parser::result_type r,
                           size_t bytes_transferred)
 {
     response response_;
-    std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
-    response_.addResponse(r, request_str);
+    if (r == request_parser::good) {
+        std::string request_str(data_.begin(),
+                                data_.begin() + bytes_transferred);
+        response_.set_status("200 OK");
+        response_.add_header("Content-Length",
+                             std::to_string(bytes_transferred));
+        response_.add_header("Content-Type", "text/plain");
+        response_.add_data(request_str);
+    } else
+        response_.set_status("400 Bad Request");
     responses_.push_back(response_);
 }
 
@@ -32,6 +42,8 @@ void session::received_req(const boost::system::error_code& error,
                            size_t bytes_transferred)
 {
     if (!error) {
+        std::shared_ptr<session> shared_this(shared_from_this());
+
         request_parser::result_type result;
         std::tie(result, std::ignore) = request_parser_.parse(
             request_, data_.data(), data_.data() + bytes_transferred);
@@ -39,10 +51,8 @@ void session::received_req(const boost::system::error_code& error,
 
         process_req(result, bytes_transferred);
 
-        connection_->write(responses_.back().getResponse(),
-                           &session::wait_for_req, this);
-    } else {
-        delete this;
+        connection_->write(responses_.back().build_response(),
+                           &session::wait_for_req, shared_this);
     }
 }
 
@@ -52,10 +62,9 @@ void session::wait_for_req(const boost::system::error_code& error)
         responses_.pop_back();
     }
     if (!error) {
+        std::shared_ptr<session> shared_this(shared_from_this());
         connection_->read(boost::asio::buffer(data_, max_len),
                           static_cast<int>(max_len), &session::received_req,
-                          this);
-    } else {
-        delete this;
+                          shared_this);
     }
 }

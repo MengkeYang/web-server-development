@@ -22,21 +22,25 @@ class session;
  */
 class connection
 {
-    std::shared_ptr<tcp::socket> socket_;
+    tcp::socket socket_;
+
 public:
-    connection(std::shared_ptr<tcp::socket> socket) { socket_ = socket; }
-    std::shared_ptr<tcp::socket> socket();
+    connection(tcp::socket socket) : socket_(std::move(socket)) {}
+    tcp::socket *socket();
     virtual void read(
         boost::asio::mutable_buffer buf, size_t maxlen,
-        boost::function<void(session *s, const boost::system::error_code &error,
+        boost::function<void(std::shared_ptr<session> s,
+                             const boost::system::error_code &error,
                              size_t bytes_transferred)>
             cb,
-        session *s) = 0;
-    virtual void write(std::vector<boost::asio::const_buffer> bufs,
-                       boost::function<void(
-                           session *s, const boost::system::error_code &error)>
-                           cb,
-                       session *s) = 0;
+        std::shared_ptr<session> s) = 0;
+    virtual void write(
+        std::vector<boost::asio::const_buffer> bufs,
+        boost::function<void(std::shared_ptr<session> s,
+                             const boost::system::error_code &error)>
+            cb,
+        std::shared_ptr<session> s) = 0;
+    virtual ~connection() { socket_.close(); }
 };
 
 /**
@@ -48,17 +52,17 @@ public:
 class tcp_connection : public connection
 {
 public:
-    tcp_connection(std::shared_ptr<tcp::socket> s) : connection(s) {}
-    void read(
-        boost::asio::mutable_buffer buf, size_t maxlen,
-        boost::function<void(session *s, const boost::system::error_code &error,
-                             size_t bytes_transferred)>
-            cb,
-        session *s);
+    tcp_connection(tcp::socket s) : connection(std::move(s)) {}
+    void read(boost::asio::mutable_buffer buf, size_t maxlen,
+              boost::function<void(std::shared_ptr<session> s,
+                                   const boost::system::error_code &error,
+                                   size_t bytes_transferred)>
+                  cb,
+              std::shared_ptr<session> s);
     void write(std::vector<boost::asio::const_buffer> bufs,
-                       boost::function<void(
-                           session *s, const boost::system::error_code &error)>
-                           cb,
-                       session *s);
+               boost::function<void(std::shared_ptr<session> s,
+                                    const boost::system::error_code &error)>
+                   cb,
+               std::shared_ptr<session> s);
 };
 #endif  // WNZA_CONNECTION_H_
