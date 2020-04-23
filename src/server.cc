@@ -4,10 +4,11 @@
 using boost::asio::ip::tcp;
 
 
-server::server(boost::asio::io_service& io_service, short port, const NginxConfig &config)
+server::server(boost::asio::io_service& io_service, short port, const NginxConfig &config, log_helper *log)
 : io_service_(io_service),
   acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
-  signals_(io_service)
+  signals_(io_service),
+  log_(log)
 {
     signals_.add(SIGINT);
     signals_.add(SIGTERM);
@@ -15,6 +16,7 @@ server::server(boost::asio::io_service& io_service, short port, const NginxConfi
 }
 
 void server::signal_handler(session* new_session, const boost::system::error_code& ec, int signal_number) {
+    log_->log_warning_file("server is shutting down");
     socket_->close();
     acceptor_.close();
     delete new_session;

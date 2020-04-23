@@ -6,7 +6,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include "config_parser.h"
-
+#include "log_helper.h"
 class session;
 
 using boost::asio::ip::tcp;
@@ -14,7 +14,7 @@ using boost::asio::ip::tcp;
 class server
 {
 public:
-    server(boost::asio::io_service& io_service, short port, const NginxConfig &config);
+    server(boost::asio::io_service& io_service, short port, const NginxConfig &config, log_helper *log);
 
 private:
     // create a session object and socket, call handle_accept to process
@@ -28,5 +28,6 @@ private:
     std::shared_ptr<tcp::socket> socket_;
     tcp::acceptor acceptor_;
     boost::asio::signal_set signals_;
+    log_helper* log_;
 };
 #endif  // WNZA_SERVER_H_
