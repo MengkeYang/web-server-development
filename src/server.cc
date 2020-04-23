@@ -3,19 +3,22 @@
 
 using boost::asio::ip::tcp;
 
-
-server::server(boost::asio::io_service& io_service, short port, const NginxConfig &config, log_helper *log)
-: io_service_(io_service),
-  acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
-  signals_(io_service),
-  log_(log)
+server::server(boost::asio::io_service& io_service, short port,
+               const NginxConfig& config, log_helper* log)
+    : io_service_(io_service),
+      acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
+      signals_(io_service),
+      log_(log)
 {
     signals_.add(SIGINT);
     signals_.add(SIGTERM);
     start_accept();
 }
 
-void server::signal_handler(session* new_session, const boost::system::error_code& ec, int signal_number) {
+void server::signal_handler(session* new_session,
+                            const boost::system::error_code& ec,
+                            int signal_number)
+{
     log_->log_warning_file("server is shutting down");
     socket_->close();
     acceptor_.close();
@@ -29,21 +32,20 @@ void server::start_accept()
     tcp_connection conn(socket_);
     session* new_session = new session(std::make_shared<tcp_connection>(conn));
     signals_.async_wait(boost::bind(&server::signal_handler, this, new_session,
-                                  boost::asio::placeholders::error,
-                                  boost::asio::placeholders::signal_number));
-    acceptor_.async_accept(*(new_session->socket()),
+                                    boost::asio::placeholders::error,
+                                    boost::asio::placeholders::signal_number));
+    acceptor_.async_accept(
+        *(new_session->socket()),
         boost::bind(&server::handle_accept, this, new_session,
-            boost::asio::placeholders::error));
+                    boost::asio::placeholders::error));
 }
 
-void server::handle_accept(session* new_session, const boost::system::error_code& error) 
+void server::handle_accept(session* new_session,
+                           const boost::system::error_code& error)
 {
-    if (!error)
-    {
+    if (!error) {
         new_session->start();
-    } 
-    else 
-    {
+    } else {
         delete new_session;
     }
     start_accept();

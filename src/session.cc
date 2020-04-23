@@ -18,7 +18,7 @@ void session::start()
 }
 
 void session::process_req(request_parser::result_type r,
-                      size_t bytes_transferred)
+                          size_t bytes_transferred)
 {
     response response_;
     std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
@@ -26,12 +26,10 @@ void session::process_req(request_parser::result_type r,
     responses_.push_back(response_);
 }
 
-int session::num_responses() {
-    return responses_.size();
-}
+int session::num_responses() { return responses_.size(); }
 
 void session::received_req(const boost::system::error_code& error,
-                          size_t bytes_transferred)
+                           size_t bytes_transferred)
 {
     if (!error) {
         request_parser::result_type result;
