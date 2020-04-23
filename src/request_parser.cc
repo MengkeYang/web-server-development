@@ -9,7 +9,8 @@ std::tuple<request_parser::result_type, char*> request_parser::parse(
     request& req, char* begin, char* end)
 {
     while (begin != end) {
-        result_type result = consume(req, *begin++);
+        request_parser::result_type result = consume(req, *begin++);
+        req.parse_result = result;
         if (result == good || result == bad)
             return std::make_tuple(result, begin);
     }

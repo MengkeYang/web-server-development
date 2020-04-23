@@ -26,7 +26,7 @@ TEST_F(session_test, bad_parse_generates_response)
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s));
     session session_(std::move(conn));
-    session_.process_req(request_parser::result_type::bad, 0);
+    session_.process_req(0);
     EXPECT_EQ(session_.num_responses(), 1);
 }
 

@@ -21,7 +21,7 @@ public:
   static bool is_char(int c);
 
   static bool is_ctl(int c);
-  
+
   // Result of parse.
   enum result_type { good, bad, indeterminate };
 

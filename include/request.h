@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include "request_parser.h"
 
 // One header line
 struct header {
@@ -16,6 +17,7 @@ struct header {
  * necessary in forming a response.
  */
 struct request {
+    request_parser::result_type parse_result;
     std::string method;
     std::string uri;
     int http_version_major;

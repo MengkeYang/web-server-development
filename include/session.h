@@ -10,6 +10,7 @@
 #include "request.h"
 #include "request_parser.h"
 #include "response.h"
+#include "echo_request_handler.h"
 
 using boost::asio::ip::tcp;
 
@@ -21,15 +22,14 @@ public:
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
     void start();
-    void process_req(request_parser::result_type r,
-                          size_t bytes_transferred);
+    void process_req(size_t bytes_transferred);
     int num_responses();
 
 private:
     // receive data from tcp read buffer
     // and call handle_write to process
     void received_req(const boost::system::error_code& error,
-                     size_t bytes_transferred);
+                      size_t bytes_transferred);
     // send data to socket write buffer and call handle_read to continue read
     // data
     void wait_for_req(const boost::system::error_code& error);
@@ -39,6 +39,7 @@ private:
     // char data_[max_length];
 
     std::unique_ptr<connection> connection_;
+    echo_request_handler echo_handler_;
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;

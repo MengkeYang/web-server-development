@@ -19,20 +19,11 @@ void session::start()
                       shared_this);
 }
 
-void session::process_req(request_parser::result_type r,
-                          size_t bytes_transferred)
+void session::process_req(size_t bytes_transferred)
 {
     response response_;
-    if (r == request_parser::good) {
-        std::string request_str(data_.begin(),
-                                data_.begin() + bytes_transferred);
-        response_.set_status("200 OK");
-        response_.add_header("Content-Length",
-                             std::to_string(bytes_transferred));
-        response_.add_header("Content-Type", "text/plain");
-        response_.add_data(request_str);
-    } else
-        response_.set_status("400 Bad Request");
+    std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
+    echo_handler_.create_response(request_, request_str, response_);
     responses_.push_back(response_);
 }
 
@@ -44,12 +35,11 @@ void session::received_req(const boost::system::error_code& error,
     if (!error) {
         std::shared_ptr<session> shared_this(shared_from_this());
 
-        request_parser::result_type result;
-        std::tie(result, std::ignore) = request_parser_.parse(
-            request_, data_.data(), data_.data() + bytes_transferred);
+        request_parser_.parse(request_, data_.data(),
+                              data_.data() + bytes_transferred);
         request_parser_.reset();
 
-        process_req(result, bytes_transferred);
+        process_req(bytes_transferred);
 
         connection_->write(responses_.back().build_response(),
                            &session::wait_for_req, shared_this);

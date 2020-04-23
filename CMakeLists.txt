@@ -45,8 +45,10 @@ add_library(session_lib src/session.cc)
 # update server as one library
 add_library(server_lib src/server.cc)
 add_library(response_lib src/response.cc)
+add_library(echo_request_handler_lib src/echo_request_handler.cc)
+target_link_libraries(echo_request_handler_lib response_lib)
 add_library(connection_lib src/connection.cc)
-target_link_libraries(session_lib request_parser_lib response_lib connection_lib)
+target_link_libraries(session_lib request_parser_lib response_lib connection_lib echo_request_handler_lib)
 target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)

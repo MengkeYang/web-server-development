@@ -21,6 +21,7 @@ TEST_F(request_parser_test, request_structure) {
   header example_header = {.name="content", .value="content value"};
   std::vector<header> example_headers{example_header};
   request example_request = {
+      .parse_result=request_parser::good,
 	  .method="GET", 
 	  .uri="/index.html", 
 	  .http_version_major=1, 
