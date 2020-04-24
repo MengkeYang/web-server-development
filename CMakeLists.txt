@@ -48,7 +48,7 @@ add_library(response_lib src/response.cc)
 add_library(echo_request_handler_lib src/echo_request_handler.cc)
 target_link_libraries(echo_request_handler_lib response_lib)
 add_library(connection_lib src/connection.cc)
-target_link_libraries(session_lib request_parser_lib response_lib connection_lib echo_request_handler_lib)
+target_link_libraries(session_lib request_parser_lib response_lib connection_lib echo_request_handler_lib log_helper_lib)
 target_link_libraries(server_lib session_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
@@ -64,7 +64,7 @@ target_link_libraries(config_parser_lib_test config_parser_lib gtest_main)
 add_executable(response_lib_test tests/response_lib_test.cc)
 target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
 add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
-target_link_libraries(session_lib_test Boost::system session_lib gtest_main)
+target_link_libraries(session_lib_test session_lib log_helper_lib gtest_main gmock_main Boost::system Boost::regex Boost::log_setup Boost::log)
 add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # Update with test binary

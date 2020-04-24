@@ -7,17 +7,19 @@
 #include <cstdlib>
 #include <iostream>
 #include "connection.h"
+#include "log_helper.h"
 #include "request.h"
 #include "request_parser.h"
 #include "response.h"
 #include "echo_request_handler.h"
+class log_helper;
 
 using boost::asio::ip::tcp;
 
 class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(std::unique_ptr<connection> connection);
+    session(std::unique_ptr<connection> connection, log_helper* log);
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -43,5 +45,6 @@ private:
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;
+    log_helper* log_;
 };
 #endif  // WNZA_SESSION_H_

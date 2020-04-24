@@ -4,8 +4,8 @@
 
 using boost::asio::ip::tcp;
 
-session::session(std::unique_ptr<connection> connection)
-    : connection_(std::move(connection))
+session::session(std::unique_ptr<connection> connection, log_helper* log)
+    : connection_(std::move(connection)), log_(log)
 {
 }
 
@@ -37,6 +37,9 @@ void session::received_req(const boost::system::error_code& error,
 
         request_parser_.parse(request_, data_.data(),
                               data_.data() + bytes_transferred);
+
+        log_->log_request_info(request_, connection_->socket());
+
         request_parser_.reset();
 
         process_req(bytes_transferred);

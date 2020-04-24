@@ -33,7 +33,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_));
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn));
+        std::make_shared<session>(std::move(conn), log_);
 
     acceptor_.async_accept(
         *(new_session->socket()),
