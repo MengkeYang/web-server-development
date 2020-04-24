@@ -15,7 +15,7 @@ RUN ctest --output-on_failure
 
 ### Deploy container ###
 # Define deploy stage
-FROM ubuntu:latest as deploy
+FROM ubuntu:bionic as deploy
 
 # TODO(!): Copy server output binary to "."
 COPY --from=builder /usr/src/projects/WNZA/build/bin/server_executable .
