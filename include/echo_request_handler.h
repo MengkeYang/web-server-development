@@ -1,8 +1,9 @@
 #ifndef WNZA_ECHO_REQUEST_HANDLER_H_
 #define WNZA_ECHO_REQUEST_HANDLER_H_
 #include "request_handler.h"
-#include "request.h"
-#include "response.h"
+
+class request;
+class response;
 
 class echo_request_handler : public request_handler
 {

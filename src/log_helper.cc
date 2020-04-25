@@ -1,4 +1,6 @@
 #include "log_helper.h"
+#include "request.h"
+
 namespace logging = boost::log;
 namespace src = boost::log::sources;
 namespace sinks = boost::log::sinks;

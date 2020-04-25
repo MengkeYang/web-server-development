@@ -2,7 +2,6 @@
 #ifndef WNZA_CONFIG_PARSER_H_
 #define WNZA_CONFIG_PARSER_H_
 
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>

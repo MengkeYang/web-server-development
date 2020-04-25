@@ -1,6 +1,7 @@
 #include "session.h"
-#include <iostream>
+#include "response.h"
 #include "connection.h"
+#include "log_helper.h"
 
 using boost::asio::ip::tcp;
 

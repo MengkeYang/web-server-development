@@ -1,6 +1,10 @@
 #include "server.h"
-#include <stdexcept>
 #include "session.h"
+#include "log_helper.h"
+#include "connection.h"
+#include "response.h"
+#include <stdexcept>
+#include <boost/bind.hpp>
 
 using boost::asio::ip::tcp;
 

@@ -13,12 +13,13 @@
 #include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/utility/setup/console.hpp>
-#include "request.h"
-#include "session.h"
+
+class request;
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
 using namespace logging::trivial;
+using boost::asio::ip::tcp;
 
 class log_helper
 {
@@ -30,6 +31,7 @@ public:
     void log_trace_file(std::string trace_message);
     void log_error_file(std::string error_message);
     void log_warning_file(std::string warning_message);
-    void log_request_info(request req, tcp::socket* socket);
+    virtual void log_request_info(request req, tcp::socket* socket);
+    virtual ~log_helper() {}
 };
 #endif

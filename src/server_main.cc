@@ -12,6 +12,7 @@
 
 #include "log_helper.h"
 #include "server.h"
+#include "config_parser.h"
 
 int main(int argc, char* argv[])
 {

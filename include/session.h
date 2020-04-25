@@ -3,16 +3,13 @@
 #define WNZA_SESSION_H_
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <cstdlib>
-#include <iostream>
-#include "connection.h"
-#include "log_helper.h"
 #include "request.h"
 #include "request_parser.h"
-#include "response.h"
 #include "echo_request_handler.h"
+
+class connection;
 class log_helper;
+class response;
 
 using boost::asio::ip::tcp;
 

@@ -2,7 +2,6 @@
 #define WNZA_CONNECTION_H_
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/function.hpp>
 
 using boost::asio::ip::tcp;

@@ -7,6 +7,7 @@
 #include "log_helper.h"
 #include "request_parser.h"
 #include "session.h"
+#include "response.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -15,8 +16,8 @@ using boost::asio::ip::tcp;
 class MockLogHelper : public log_helper
 {
 public:
-    MockLogHelper() : log_helper() {}
-    MOCK_METHOD2(log_request_info, void(request req, tcp::socket* socket));
+    MockLogHelper() {}
+    void log_request_info(request req, tcp::socket* socket) {}
 };
 
 class session_test : public ::testing::Test

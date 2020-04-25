@@ -2,11 +2,8 @@
 #ifndef WNZA_SERVER_H_
 #define WNZA_SERVER_H_
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <cstdlib>
-#include <iostream>
-#include "config_parser.h"
-#include "log_helper.h"
+
+class log_helper;
 class session;
 
 using boost::asio::ip::tcp;

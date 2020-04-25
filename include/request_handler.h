@@ -1,7 +1,9 @@
 #ifndef WNZA_REQUEST_HANDLER_H_
 #define WNZA_REQUEST_HANDLER_H_
-#include "request.h"
-#include "response.h"
+#include <string>
+
+class request;
+class response;
 
 class request_handler
 {

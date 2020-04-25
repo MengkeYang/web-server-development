@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "response.h"
+#include "request.h"
 #include <fstream>
 #include <string>
 #include <streambuf>

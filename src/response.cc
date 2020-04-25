@@ -1,4 +1,5 @@
 #include "response.h"
+#include "request.h"
 #include <iostream>
 #include <string>
 

@@ -1,6 +1,7 @@
-#include <memory>
-#include <boost/asio.hpp>
 #include "connection.h"
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <memory>
 
 using boost::asio::ip::tcp;
 

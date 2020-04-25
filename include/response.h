@@ -3,8 +3,9 @@
 
 #include <boost/asio.hpp>
 #include <vector>
-#include "request.h"
-#include "request_parser.h"
+#include <string>
+
+struct header;
 
 class response
 {
