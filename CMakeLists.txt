@@ -62,7 +62,6 @@ add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.
 target_link_libraries(config_parser_lib_test config_parser_lib gtest_main)
 target_link_libraries(request_parser_lib_test request_parser_lib gtest_main)
 target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
-add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
 target_link_libraries(session_lib_test session_lib log_helper_lib gtest_main gmock_main Boost::system Boost::regex Boost::log_setup Boost::log config_parser_lib)
 add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_executable(static_request_handler_lib_test tests/static_request_handler_lib_test.cc)
