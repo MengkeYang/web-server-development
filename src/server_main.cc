@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         boost::asio::io_service io_service;
 
         using namespace std;  // For atoi.
-        server s(io_service, (short)port, log);
+        server s(io_service, (short)port, log, config);
         log->log_trace_file("server startup successed");
 
         // run server

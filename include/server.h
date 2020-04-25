@@ -2,8 +2,12 @@
 #ifndef WNZA_SERVER_H_
 #define WNZA_SERVER_H_
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <cstdlib>
+#include <iostream>
+#include "config_parser.h"
+#include "log_helper.h"
 
-class log_helper;
 class session;
 
 using boost::asio::ip::tcp;
@@ -11,7 +15,7 @@ using boost::asio::ip::tcp;
 class server
 {
 public:
-    server(boost::asio::io_service& io_service, short port, log_helper *log);
+    server(boost::asio::io_service& io_service, short port, log_helper *log, const NginxConfig &config);
 
 private:
     // create a session object and socket, call handle_accept to process
@@ -27,5 +31,7 @@ private:
     tcp::acceptor acceptor_;
     boost::asio::signal_set signals_;
     log_helper* log_;
+    NginxConfig config_;
+
 };
 #endif  // WNZA_SERVER_H_

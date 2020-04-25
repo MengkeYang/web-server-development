@@ -1,0 +1,7 @@
+foo "bar";
+
+server {
+  listen   8081;
+  server_name foo.com;
+  root /usr/src/projects/WNZA/tests/;
+}

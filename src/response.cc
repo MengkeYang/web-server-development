@@ -16,6 +16,11 @@ std::vector<boost::asio::const_buffer> response::build_response()
     for (auto& h : headers) entire_header += h.name + ": " + h.value + "\r\n";
     entire_header += "\r\n";
     resp.push_back(boost::asio::buffer(entire_header));
+
+    // size_t body_len = body.size();
+    // vector<char> body_(body_len);
+    // for (int i = 0; i < body_len; i++)
+    //     body_[i] = body[i];
     resp.push_back(boost::asio::buffer(body));
     return resp;
 }

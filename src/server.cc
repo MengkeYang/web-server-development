@@ -8,12 +8,13 @@
 
 using boost::asio::ip::tcp;
 
-server::server(boost::asio::io_service& io_service, short port, log_helper* log)
+server::server(boost::asio::io_service& io_service, short port, log_helper* log, const NginxConfig &config)
     : acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
       signals_(io_service),
       socket_(tcp::socket(io_service)),
       io_(io_service),
-      log_(log)
+      log_(log),
+      config_(config)
 {
     signals_.add(SIGINT);
     signals_.add(SIGTERM);
@@ -37,7 +38,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_));
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn), log_);
+        std::make_shared<session>(std::move(conn), log_, config_);
 
     acceptor_.async_accept(
         *(new_session->socket()),

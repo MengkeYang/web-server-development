@@ -6,8 +6,7 @@
 #include "request.h"
 #include "request_parser.h"
 #include "echo_request_handler.h"
-
-class connection;
+#include "static_request_handler.h"
 class log_helper;
 class response;
 
@@ -16,7 +15,7 @@ using boost::asio::ip::tcp;
 class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(std::unique_ptr<connection> connection, log_helper* log);
+    session(std::unique_ptr<connection> connection, log_helper* log, const NginxConfig &config);
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -39,6 +38,7 @@ private:
 
     std::unique_ptr<connection> connection_;
     echo_request_handler echo_handler_;
+    StaticRequestHandler static_handler_;
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;
