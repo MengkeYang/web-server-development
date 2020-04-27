@@ -5,11 +5,10 @@
 
 using boost::asio::ip::tcp;
 
-session::session(std::unique_ptr<connection> connection, log_helper* log, const NginxConfig &config)
-    : connection_(std::move(connection)), log_(log),
-      static_handler_(config)
+session::session(std::unique_ptr<connection> connection, log_helper* log,
+                 const NginxConfig& config)
+    : connection_(std::move(connection)), log_(log), static_handler_(config)
 {
-    
 }
 
 tcp::socket* session::socket() { return connection_->socket(); }
@@ -24,15 +23,21 @@ void session::start()
 
 void session::process_req(size_t bytes_transferred)
 {
-    response response_;
     std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
-    //look at request.url, and check 
-    std::string urlstr = request_.uri;
-    std::cerr << urlstr.substr(1, urlstr.find("/", 1)) << std::endl;
-    if (urlstr.substr(1, urlstr.find("/", 1)) == "echo")
+    response response_;
+    if (request_.parse_result == request_parser::good) {
+        // look at request.url, and check
+        std::string urlstr = request_.uri;
+        std::cerr << urlstr.substr(1, urlstr.find("/", 1)) << std::endl;
+        if (urlstr.substr(1, urlstr.find("/", 1)) == "echo")
+            echo_handler_.create_response(request_, request_str, response_);
+        else if (urlstr.substr(1, urlstr.find("/", 1)) == "static/")
+            static_handler_.create_response(request_, request_str, response_);
+    } else {
+        // The request was malformed, so echo it back
+        log_->log_warning_file("Received unparsable request.");
         echo_handler_.create_response(request_, request_str, response_);
-    if (urlstr.substr(1, urlstr.find("/", 1)) == "static")
-        static_handler_.create_response(request_, request_str, response_);
+    }
     responses_.push_back(response_);
 }
 

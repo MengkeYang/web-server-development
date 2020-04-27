@@ -26,11 +26,11 @@ class log_helper
 public:
     src::severity_logger<severity_level> lg;
     log_helper();
-    void init();
+    virtual void init();
 
-    void log_trace_file(std::string trace_message);
-    void log_error_file(std::string error_message);
-    void log_warning_file(std::string warning_message);
+    virtual void log_trace_file(std::string trace_message);
+    virtual void log_error_file(std::string error_message);
+    virtual void log_warning_file(std::string warning_message);
     virtual void log_request_info(request req, tcp::socket* socket);
     virtual ~log_helper() {}
 };

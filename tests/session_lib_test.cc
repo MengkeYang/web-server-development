@@ -19,7 +19,11 @@ class MockLogHelper : public log_helper
 {
 public:
     MockLogHelper() {}
+    void init() {}
     void log_request_info(request req, tcp::socket* socket) {}
+    void log_trace_file(std::string trace_message) {}
+    void log_error_file(std::string error_message) {}
+    void log_warning_file(std::string warning_message) {}
 };
 
 class session_test : public ::testing::Test
@@ -27,7 +31,7 @@ class session_test : public ::testing::Test
 protected:
     session_test()
     {
-        config_parser.Parse("./example_config", &config);
+        config_parser.Parse("example_config", &config);
     }
     boost::system::error_code no_error =
         boost::system::errc::make_error_code(boost::system::errc::success);

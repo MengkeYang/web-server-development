@@ -33,7 +33,7 @@ SERVER_ID=$!
 sleep 1s
 
 ## Matching the output of server response to a regex expression
-output=$(curl -s localhost:8080)
+output=$(curl -s localhost:8080/echo)
 expected=$(cat integration_response1)
 diff -q <(echo "$output") <(echo "$expected")
 if [ $? -eq 0 ]
@@ -46,7 +46,7 @@ else
 fi
 
 ## Testing that some of the content of the message is correct
-output=$(curl -s -d "Hello,World!" localhost:8080)
+output=$(curl -s -d "Hello,World!" localhost:8080/echo)
 if [[ "$output" =~ .*Content-Length:[[:space:]]12.* ]]
 then
     echo "Passed Test 5"

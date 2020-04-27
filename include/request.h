@@ -17,7 +17,7 @@ struct header {
  * necessary in forming a response.
  */
 struct request {
-    request_parser::result_type parse_result;
+    request_parser::result_type parse_result = request_parser::indeterminate;
     std::string method;
     std::string uri;
     int http_version_major;
