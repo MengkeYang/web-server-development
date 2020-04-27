@@ -57,15 +57,15 @@ add_executable(request_parser_lib_test tests/request_parser_test.cc)
 add_executable(response_lib_test tests/response_lib_test.cc)
 add_executable(config_parser_lib_test tests/config_parser_test.cc)
 add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
+add_executable(static_request_handler_lib_test tests/static_request_handler_lib_test.cc)
 
 # Link all tests
 target_link_libraries(config_parser_lib_test config_parser_lib gtest_main)
 target_link_libraries(request_parser_lib_test request_parser_lib gtest_main)
 target_link_libraries(response_lib_test Boost::system response_lib gtest_main)
 target_link_libraries(session_lib_test session_lib log_helper_lib gtest_main gmock_main Boost::system Boost::regex Boost::log_setup Boost::log config_parser_lib)
-add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-add_executable(static_request_handler_lib_test tests/static_request_handler_lib_test.cc)
 target_link_libraries(static_request_handler_lib_test Boost::system static_request_handler_lib gtest_main response_lib config_parser_lib)
+add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # Update with test binary
 gtest_discover_tests(request_parser_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -76,4 +76,4 @@ gtest_discover_tests(static_request_handler_lib_test WORKING_DIRECTORY ${CMAKE_C
 
 # Update with target/test targets
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server_executable server_lib session_lib response_lib config_parser_lib request_parser_lib connection_lib TESTS request_parser_lib_test config_parser_lib_test response_lib_test session_lib_test)
+generate_coverage_report(TARGETS server_executable server_lib session_lib response_lib config_parser_lib request_parser_lib connection_lib TESTS static_request_handler_lib_test request_parser_lib_test config_parser_lib_test response_lib_test session_lib_test)
