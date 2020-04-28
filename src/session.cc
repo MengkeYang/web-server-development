@@ -3,12 +3,30 @@
 #include "connection.h"
 #include "log_helper.h"
 
+#include <iostream>
 using boost::asio::ip::tcp;
 
 session::session(std::unique_ptr<connection> connection, log_helper* log,
                  const NginxConfig& config)
-    : connection_(std::move(connection)), log_(log), static_handler_(config)
+    : connection_(std::move(connection)), log_(log)
 {
+    std::map<std::string, std::string> uri_table_ = config.get_uri_table();
+    for (std::pair<std::string, std::string> mapping : uri_table_) {
+        if (mapping.second == "") {  // Location for echo
+            std::unique_ptr<echo_request_handler> er =
+                std::make_unique<echo_request_handler>();
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    mapping.first, std::move(er)));
+        } else {  // Location for serving static files
+            std::unique_ptr<StaticRequestHandler> sr =
+                std::make_unique<StaticRequestHandler>(mapping.second,
+                                                       mapping.first);
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    mapping.first, std::move(sr)));
+        }
+    }
 }
 
 tcp::socket* session::socket() { return connection_->socket(); }
@@ -25,18 +43,24 @@ void session::process_req(size_t bytes_transferred)
 {
     std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
     response response_;
+    response_.make_400_error(); // Default behaviour
     if (request_.parse_result == request_parser::good) {
-        // look at request.url, and check
-        std::string urlstr = request_.uri;
-        std::cerr << urlstr.substr(1, urlstr.find("/", 1)) << std::endl;
-        if (urlstr.substr(1, urlstr.find("/", 1)) == "echo")
-            echo_handler_.create_response(request_, request_str, response_);
-        else if (urlstr.substr(1, urlstr.find("/", 1)) == "static/")
-            static_handler_.create_response(request_, request_str, response_);
+        // We will use the first match. TODO: use longest prefix.
+        for (auto&& pair : location_handlers_) {
+            // We compare the prefix without the final "/". So /echo matches
+            // with /echo/.
+            if (request_.uri.compare(
+                    0, pair.first.length() - 1,
+                    pair.first.substr(0, pair.first.length() - 1)) == 0) {
+                response_ = {};
+                pair.second->create_response(request_, request_str, response_);
+                break;
+            }
+        }
     } else {
         // The request was malformed, so echo it back
         log_->log_warning_file("Received unparsable request.");
-        echo_handler_.create_response(request_, request_str, response_);
+        // echo_handler_.create_response(request_, request_str, response_);
     }
     responses_.push_back(response_);
 }
@@ -48,7 +72,7 @@ void session::received_req(const boost::system::error_code& error,
 {
     if (!error) {
         std::shared_ptr<session> shared_this(shared_from_this());
-
+        request_ = {};  // Reset the request
         request_parser_.parse(request_, data_.data(),
                               data_.data() + bytes_transferred);
 

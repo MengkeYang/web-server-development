@@ -23,6 +23,7 @@ public:
     void start();
     void process_req(size_t bytes_transferred);
     int num_responses();
+    void get_handler_for_uri(std::string uri);
 
 private:
     // receive data from tcp read buffer
@@ -38,8 +39,7 @@ private:
     // char data_[max_length];
 
     std::unique_ptr<connection> connection_;
-    echo_request_handler echo_handler_;
-    StaticRequestHandler static_handler_;
+    std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;

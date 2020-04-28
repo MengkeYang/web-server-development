@@ -19,6 +19,7 @@ public:
     void set_status(std::string status_code);
     void add_header(std::string key, std::string val);
     void add_data(std::string data);
+    void make_400_error();
 };
 
 #endif  // WNZA_RESPONSE_H_

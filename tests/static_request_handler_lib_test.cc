@@ -35,11 +35,11 @@ TEST_F(static_request_handler_test, file_read)
     expected_out << expected;
     expected_out.close();
 
-    config_parser.Parse("./example_config_static", &config);
+    config_parser.Parse("example_config_static", &config);
 
     //request
     request r;
-    StaticRequestHandler static_handle(config);
+    StaticRequestHandler static_handle(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/random_test.txt";
     std::string rd("");
@@ -73,11 +73,11 @@ TEST_F(static_request_handler_test, image_read)
     expected_out << expected;
     expected_out.close();
 
-    config_parser.Parse("./example_config_static", &config);
+    config_parser.Parse("example_config_static", &config);
 
     //request
     request r;
-    StaticRequestHandler static_handle(config);
+    StaticRequestHandler static_handle(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/cat.jpg";
     std::string rd("");
@@ -115,7 +115,7 @@ TEST_F(static_request_handler_test, diff_config_file)
 
     //request
     request r;
-    StaticRequestHandler static_handle(config);
+    StaticRequestHandler static_handle(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/cat.jpg";
     std::string rd("");

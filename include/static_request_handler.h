@@ -9,18 +9,19 @@
 #include "request.h"
 #include "response.h"
 
-
-class StaticRequestHandler: public request_handler
+class StaticRequestHandler : public request_handler
 {
-    public:
-        StaticRequestHandler(const NginxConfig &config);
-        void create_response(const request& req, const std::string& raw_data, response& result);
+public:
+    StaticRequestHandler(std::string root, std::string prefix);
+    void create_response(const request& req, const std::string& raw_data,
+                         response& result);
 
-    private:
-        //for map path
-        std::string root;
-        std::string get_file_name(std::string uri);
-        std::string extension_to_type(const std::string &extension);
+private:
+    // for map path
+    std::string root;
+    std::string prefix;
+    std::string get_file_name(std::string uri);
+    std::string extension_to_type(const std::string& extension);
 };
 
 #endif

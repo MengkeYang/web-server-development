@@ -28,7 +28,7 @@ else
     exit 1
 fi
 
-$PATH_TO_BIN example_config &
+$PATH_TO_BIN test_server_config &
 SERVER_ID=$!
 sleep 1s
 

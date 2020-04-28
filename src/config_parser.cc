@@ -14,6 +14,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "config_parser.h"
 
@@ -43,6 +44,37 @@ int NginxConfig::parse_port()
         }
     }
     return -1;
+}
+
+std::string NginxConfig::get_value_from_statement(std::string key) const
+{
+    for (const auto& statement : statements_) {
+        if (statement->tokens_[0] == key) return statement->tokens_[1];
+    }
+    return "";
+}
+
+std::map<std::string, std::string> NginxConfig::get_uri_table() const
+{
+    std::map<std::string, std::string> uri_table;
+    // Find the server block
+    int i = 0;
+    int l = statements_.size();
+    while (i < l && statements_[i]->tokens_[0] != "server") i++;
+    auto server = statements_[i]->child_block_.get();
+    for (const auto& statement : server->statements_) {
+        if (statement->tokens_.size() == 2 &&
+            statement->tokens_[0] == "location") {
+            std::string source(statement->tokens_[1]);
+            std::string dest;
+            if (statement->child_block_.get() != nullptr) {
+                dest = statement->child_block_.get()->get_value_from_statement(
+                    "root");
+            }
+            uri_table.insert(std::pair<std::string, std::string>(source, dest));
+        }
+    }
+    return uri_table;
 }
 
 std::string NginxConfig::ToString(int depth)

@@ -4,33 +4,33 @@
 #include <time.h>
 
 // constructor
-StaticRequestHandler::StaticRequestHandler(const NginxConfig &config)
+StaticRequestHandler::StaticRequestHandler(std::string root_uri, std::string prefix_uri)
 {
-    bool root_path_set = false;
-    for (const auto &i : config.statements_) {
-        if ((i->tokens_)[0] == "server")
-            for (const auto &j : (i->child_block_)->statements_)
-                if ((j->tokens_)[0] == "root" && (j->tokens_).size() == 2) {
-                    root_path_set = true;
-                    root = (j->tokens_)[1];
-                }
-    }
-    if (!root_path_set) root = "/";
+    int rlen;
+    int plen;
+    rlen = root_uri.length();
+    plen = prefix_uri.length();
+    if (root_uri.compare(rlen-1, 1, "/") != 0)
+        root = root_uri + "/";
+    else
+        root = root_uri;
+    if (prefix_uri.compare(plen-1, 1, "/") != 0)
+        prefix = prefix_uri + "/";
+    else
+        prefix = prefix_uri;
 }
 
 std::string StaticRequestHandler::get_file_name(std::string uri)
 {
-    int i = uri.rfind("static/");
-    std::cout << "This is the file name: " << uri.substr(i + 7) << std::endl;
-    return uri.substr(i + 7);
-
-    // int i = uri.length() - 1;
-    // while (i >= 0) {
-    //     if (uri.compare(i, 1, "/") == 0) break;
-    //     i--;
-    // }
-    // if (i < 0) return uri;
-    // return uri.substr(i, std::string::npos);
+    int i = uri.rfind(prefix);
+    if (i != std::string::npos) {
+        int len = prefix.length();
+        std::cout << "This is the file name: " << uri.substr(i + len) << std::endl;
+        return uri.substr(i + len);
+    } else {
+        // There was no match, this is bad so we should log an error.
+        return "404error.html";
+    }
 }
 
 std::string StaticRequestHandler::extension_to_type(
@@ -51,16 +51,13 @@ void StaticRequestHandler::create_response(const request &req,
                                            response &result)
 {
     if (req.parse_result == request_parser::good) {
-        std::cout << "MADE IT HERE\n";
         result.set_status("200 OK");
         // change path
         std::string filename = get_file_name(req.uri);
         std::string uri = root + filename;
+        std::cout << "Searching for file: " << uri << std::endl;
 
-        // TODO: not found file
         // check path valid
-        std::ofstream fout("/usr/src/projects/WNZA/tests/static_test/log.txt");
-        fout << uri << std::endl;
         std::ifstream file(uri, std::ios::binary);
         std::string body;
         if (file.is_open()) {

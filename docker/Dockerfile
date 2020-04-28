@@ -17,17 +17,17 @@ RUN ctest --output-on_failure
 # Define deploy stage
 FROM ubuntu:bionic as deploy
 
-# TODO(!): Copy server output binary to "."
+# Copy server output binary to "."
 COPY --from=builder /usr/src/projects/WNZA/build/bin/server_executable .
-COPY --from=builder /usr/src/projects/WNZA/tests/example_server_config .
+COPY --from=builder /usr/src/projects/WNZA/tests/example_server_static .
+COPY --from=builder /usr/src/projects/WNZA/tests/snake.html .
+COPY --from=builder /usr/src/projects/WNZA/tests/cat.jpg .
 
-# TODO(!): Expose some port(s)
+# Expose some port(s)
 EXPOSE 80
 
 # Use ENTRYPOINT to specify the binary name
-# TODO(!): Update with real server name
 ENTRYPOINT ["./server_executable"]
 
 # Use CMD to specify arguments to ENTRYPOINT
-# TODO(!): Update with real server args
-CMD ["example_server_config"]
+CMD ["example_server_static"]

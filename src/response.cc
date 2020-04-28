@@ -17,10 +17,6 @@ std::vector<boost::asio::const_buffer> response::build_response()
     entire_header += "\r\n";
     resp.push_back(boost::asio::buffer(entire_header));
 
-    // size_t body_len = body.size();
-    // vector<char> body_(body_len);
-    // for (int i = 0; i < body_len; i++)
-    //     body_[i] = body[i];
     resp.push_back(boost::asio::buffer(body));
     return resp;
 }
@@ -44,4 +40,10 @@ void response::add_data(std::string data) { body = data; }
 void response::set_status(std::string status_code)
 {
     return_code = status_code;
+}
+
+void response::make_400_error() {
+    set_status("400 Bad Request");
+    add_header("Content-Length", "0");
+    add_data("");
 }
