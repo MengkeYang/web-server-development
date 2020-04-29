@@ -48,6 +48,9 @@ void session::process_req(size_t bytes_transferred)
     for (auto&& pair : location_handlers_) {
         // We compare the prefix without the final "/". So /echo matches
         // with /echo/.
+        if (request_.uri.length() > pair.first.length() &&
+            request_.uri.compare(pair.first.length()-1, 1, "/") != 0)
+            continue;
         if (request_.uri.compare(
                 0, pair.first.length() - 1,
                 pair.first.substr(0, pair.first.length() - 1)) == 0) {
