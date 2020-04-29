@@ -22,6 +22,7 @@ private:
     std::string prefix;
     std::string get_file_name(std::string uri);
     std::string extension_to_type(const std::string& extension);
+    void file_to_body(std::string uri, response &result);
 };
 
 #endif

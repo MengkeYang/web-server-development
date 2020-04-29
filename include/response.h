@@ -20,6 +20,7 @@ public:
     void add_header(std::string key, std::string val);
     void add_data(std::string data);
     void make_400_error();
+    void make_404_error();
 };
 
 #endif  // WNZA_RESPONSE_H_

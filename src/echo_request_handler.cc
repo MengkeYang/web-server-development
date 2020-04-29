@@ -13,7 +13,7 @@ void echo_request_handler::create_response(const request& req,
         result.add_header("Content-Type", "text/plain");
         result.add_data(raw_data);
     } else
-        result.set_status("400 Bad Request");
+        result.make_400_error();
 
     char buf[1000];
     time_t now = time(0);

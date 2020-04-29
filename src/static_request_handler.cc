@@ -4,17 +4,18 @@
 #include <time.h>
 
 // constructor
-StaticRequestHandler::StaticRequestHandler(std::string root_uri, std::string prefix_uri)
+StaticRequestHandler::StaticRequestHandler(std::string root_uri,
+                                           std::string prefix_uri)
 {
     int rlen;
     int plen;
     rlen = root_uri.length();
     plen = prefix_uri.length();
-    if (root_uri.compare(rlen-1, 1, "/") != 0)
+    if (root_uri.compare(rlen - 1, 1, "/") != 0)
         root = root_uri + "/";
     else
         root = root_uri;
-    if (prefix_uri.compare(plen-1, 1, "/") != 0)
+    if (prefix_uri.compare(plen - 1, 1, "/") != 0)
         prefix = prefix_uri + "/";
     else
         prefix = prefix_uri;
@@ -25,7 +26,8 @@ std::string StaticRequestHandler::get_file_name(std::string uri)
     int i = uri.rfind(prefix);
     if (i != std::string::npos) {
         int len = prefix.length();
-        std::cout << "This is the file name: " << uri.substr(i + len) << std::endl;
+        std::cout << "This is the file name: " << uri.substr(i + len)
+                  << std::endl;
         return uri.substr(i + len);
     } else {
         // There was no match, this is bad so we should log an error.
@@ -46,6 +48,29 @@ std::string StaticRequestHandler::extension_to_type(
     return "application/octet-stream";  // Default for non-text file
 }
 
+void StaticRequestHandler::file_to_body(std::string file_path, response &result)
+{
+    // check path valid
+    std::ifstream file(file_path, std::ios::binary);
+    std::string body;
+    if (file.is_open()) {
+        char c;
+        while (file.get(c)) body += c;
+        file.close();
+
+        // set MIME
+        std::string extension;
+        size_t cursor = file_path.rfind(".");
+        if (cursor != std::string::npos) extension = file_path.substr(cursor);
+
+        result.add_data(body);
+        result.add_header("Content-Type", extension_to_type(extension));
+        result.add_header("Content-Length", std::to_string(body.length()));
+    } else {
+        result.make_404_error();
+    }
+}
+
 void StaticRequestHandler::create_response(const request &req,
                                            const std::string &raw_data,
                                            response &result)
@@ -55,37 +80,13 @@ void StaticRequestHandler::create_response(const request &req,
         // change path
         std::string filename = get_file_name(req.uri);
         std::string uri = root + filename;
-        std::cout << "Searching for file: " << uri << std::endl;
 
-        // check path valid
-        std::ifstream file(uri, std::ios::binary);
-        std::string body;
-        if (file.is_open()) {
-            char c;
-            while (file.get(c)) body += c;
-            file.close();
-        } else {
-            result.set_status("404 Not Found");
-            uri = "../tests/404page.html";
-            std::ifstream file(uri, std::ios::binary);
-            if (file.is_open()) {
-                char c;
-                while (file.get(c)) body += c;
-                file.close();
-            }
-            std::cerr << "file not found!\n";
-        }
-
-        // set MIME
-        std::string extension;
-        size_t cursor = uri.rfind(".");
-        if (cursor != std::string::npos) extension = uri.substr(cursor);
-        result.add_data(body);
-        result.add_header("Content-Type", extension_to_type(extension));
-        result.add_header("Content-Length", std::to_string(body.length()));
+        // Copy the requested file into the response body
+        file_to_body(uri, result);
     } else
-        result.set_status("400 Bad Request");
+        result.make_400_error();
 
+    // Setting Date and Server name headers
     char buf[1000];
     memset(buf, 0, sizeof(buf));
     time_t now = time(0);

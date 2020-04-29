@@ -2,6 +2,7 @@
 #include "request.h"
 #include <iostream>
 #include <string>
+#include <boost/filesystem/fstream.hpp>
 
 /**
  * Construct an HTTP response message according to HTTP 1.1 based on the values
@@ -42,8 +43,24 @@ void response::set_status(std::string status_code)
     return_code = status_code;
 }
 
-void response::make_400_error() {
+void response::make_400_error()
+{
     set_status("400 Bad Request");
     add_header("Content-Length", "0");
     add_data("");
+}
+
+void response::make_404_error()
+{
+    set_status("404 Not Found");
+    std::ifstream file("404page.html", std::ios::binary);
+    std::string body;
+    if (file.is_open()) {
+        char c;
+        while (file.get(c)) body += c;
+        file.close();
+    }
+    add_data(body);
+    add_header("Content-Type", ".html");
+    add_header("Content-Length", std::to_string(body.length()));
 }

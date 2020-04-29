@@ -43,25 +43,25 @@ void session::process_req(size_t bytes_transferred)
 {
     std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
     response response_;
-    response_.make_400_error(); // Default behaviour
-    if (request_.parse_result == request_parser::good) {
-        // We will use the first match. TODO: use longest prefix.
-        for (auto&& pair : location_handlers_) {
-            // We compare the prefix without the final "/". So /echo matches
-            // with /echo/.
-            if (request_.uri.compare(
-                    0, pair.first.length() - 1,
-                    pair.first.substr(0, pair.first.length() - 1)) == 0) {
-                response_ = {};
-                pair.second->create_response(request_, request_str, response_);
-                break;
-            }
+    // We will use the first match. TODO: use longest prefix.
+    bool matched = false;
+    for (auto&& pair : location_handlers_) {
+        // We compare the prefix without the final "/". So /echo matches
+        // with /echo/.
+        if (request_.uri.compare(
+                0, pair.first.length() - 1,
+                pair.first.substr(0, pair.first.length() - 1)) == 0) {
+            matched = true;
+            response_ = {};
+            pair.second->create_response(request_, request_str, response_);
+            break;
         }
-    } else {
-        // The request was malformed, so echo it back
-        log_->log_warning_file("Received unparsable request.");
-        // echo_handler_.create_response(request_, request_str, response_);
     }
+    if (request_.parse_result == request_parser::good && !matched)
+        response_.make_404_error();
+    else if (!matched)
+        response_.make_400_error();
+
     responses_.push_back(response_);
 }
 
