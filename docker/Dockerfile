@@ -23,6 +23,8 @@ COPY --from=builder /usr/src/projects/WNZA/tests/example_server_static .
 COPY --from=builder /usr/src/projects/WNZA/tests/snake.html .
 COPY --from=builder /usr/src/projects/WNZA/tests/cat.jpg .
 COPY --from=builder /usr/src/projects/WNZA/tests/404page.html .
+COPY --from=builder /usr/src/projects/WNZA/tests/mobydick.txt .
+COPY --from=builder /usr/src/projects/WNZA/tests/r.zip .
 
 # Expose some port(s)
 EXPOSE 80
