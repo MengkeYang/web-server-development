@@ -13,8 +13,7 @@ class StaticRequestHandler : public request_handler
 {
 public:
     StaticRequestHandler(std::string root, std::string prefix);
-    void create_response(const request& req, const std::string& raw_data,
-                         response& result);
+    void create_response(const request& req, response& result);
 
 private:
     // for map path

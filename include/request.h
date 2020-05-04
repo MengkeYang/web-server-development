@@ -24,5 +24,6 @@ struct request {
     int http_version_minor;
     std::vector<header> headers;
     std::string body;
+    std::string raw_data;
 };
 #endif  // WNZA_REQUEST_H_

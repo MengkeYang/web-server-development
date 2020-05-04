@@ -3,15 +3,13 @@
 #include "response.h"
 #include <time.h>
 
-void echo_request_handler::create_response(const request& req,
-                                           const std::string& raw_data,
-                                           response& result)
+void echo_request_handler::create_response(const request& req, response& result)
 {
     if (req.parse_result == request_parser::good) {
         result.set_status("200 OK");
-        result.add_header("Content-Length", std::to_string(raw_data.length()));
+        result.add_header("Content-Length", std::to_string(req.raw_data.length()));
         result.add_header("Content-Type", "text/plain");
-        result.add_data(raw_data);
+        result.add_data(req.raw_data);
     } else
         result.make_400_error();
 

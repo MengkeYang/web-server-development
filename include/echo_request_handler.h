@@ -8,6 +8,6 @@ class response;
 class echo_request_handler : public request_handler
 {
 public:
-    void create_response(const request& req, const std::string& raw_data, response& result);
+    void create_response(const request& req, response& result);
 };
 #endif  // WNZA_ECHO_REQUEST_HANDLER_H_

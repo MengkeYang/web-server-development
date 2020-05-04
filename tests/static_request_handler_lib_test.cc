@@ -44,7 +44,7 @@ TEST_F(static_request_handler_test, file_read)
     r.uri = "/static/random_test.txt";
     std::string rd("");
     response result;
-    static_handle.create_response(r, rd, result);
+    static_handle.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());
@@ -82,7 +82,7 @@ TEST_F(static_request_handler_test, image_read)
     r.uri = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handle.create_response(r, rd, result);
+    static_handle.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());
@@ -120,7 +120,7 @@ TEST_F(static_request_handler_test, diff_config_file)
     r.uri = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handle.create_response(r, rd, result);
+    static_handle.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());

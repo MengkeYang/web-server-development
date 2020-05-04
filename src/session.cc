@@ -41,7 +41,6 @@ void session::start()
 
 void session::process_req(size_t bytes_transferred)
 {
-    std::string request_str(data_.begin(), data_.begin() + bytes_transferred);
     response response_;
     // We will use the first match. TODO: use longest prefix.
     bool matched = false;
@@ -56,7 +55,7 @@ void session::process_req(size_t bytes_transferred)
                 pair.first.substr(0, pair.first.length() - 1)) == 0) {
             matched = true;
             response_ = {};
-            pair.second->create_response(request_, request_str, response_);
+            pair.second->create_response(request_, response_);
             break;
         }
     }
@@ -76,6 +75,7 @@ void session::received_req(const boost::system::error_code& error,
     if (!error) {
         std::shared_ptr<session> shared_this(shared_from_this());
         request_ = {};  // Reset the request
+        request_.raw_data = std::string(data_.data(), data_.data()+bytes_transferred);
         request_parser_.parse(request_, data_.data(),
                               data_.data() + bytes_transferred);
 

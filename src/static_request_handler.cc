@@ -71,9 +71,7 @@ void StaticRequestHandler::file_to_body(std::string file_path, response &result)
     }
 }
 
-void StaticRequestHandler::create_response(const request &req,
-                                           const std::string &raw_data,
-                                           response &result)
+void StaticRequestHandler::create_response(const request &req, response &result)
 {
     if (req.parse_result == request_parser::good) {
         result.set_status("200 OK");
