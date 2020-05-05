@@ -23,7 +23,7 @@ int NginxConfig::parse_port()
     for (const auto& statement : statements_) {
         // if it has no child block
         if (statement->child_block_.get() == nullptr) {
-            if (statement->tokens_[0] == "listen") {
+            if (statement->tokens_.size() == 2 && statement->tokens_[0] == "listen") {
                 int port_number = atoi(statement->tokens_[1].c_str());
                 // valid port number:[0,65535]
                 if (port_number >= 0 && port_number <= 0xffff) {

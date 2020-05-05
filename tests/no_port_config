@@ -1,7 +1,7 @@
 foo "bar";
 
 server {
-  port   ;
+  listen   ;
   server_name wnza.com;
   root /usr/src/projects/WNZA/;
 }

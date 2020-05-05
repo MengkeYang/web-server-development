@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
         int port;
         if ((port = config.parse_port()) == -1) {
             // std::cerr << "The port numbers range from 0 to 65535.\n";
-            log->log_error_file("the port numbers range from 0 to 65535");
+            log->log_error_file("invalid port number in cofig file,the port numbers range from 0 to 65535");
             return 1;
         }
 
