@@ -7,8 +7,9 @@
 using boost::asio::ip::tcp;
 
 session::session(std::unique_ptr<connection> connection, log_helper* log,
-                 const NginxConfig& config)
-    : connection_(std::move(connection)), log_(log)
+                 const NginxConfig& config, 
+                 std::map<std::string, std::unique_ptr<request_handler>> &location_handlers)
+    : connection_(std::move(connection)), log_(log), location_handlers_(location_handlers)
 {
     std::map<std::string, std::string> uri_table_ = config.get_uri_table();
     for (std::pair<std::string, std::string> mapping : uri_table_) {

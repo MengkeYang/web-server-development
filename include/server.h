@@ -7,6 +7,7 @@
 #include <iostream>
 #include "config_parser.h"
 #include "log_helper.h"
+#include "request_handler.h"
 
 class session;
 
@@ -32,6 +33,8 @@ private:
     boost::asio::signal_set signals_;
     log_helper* log_;
     NginxConfig config_;
+    std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
+
 
 };
 #endif  // WNZA_SERVER_H_

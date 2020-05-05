@@ -21,6 +21,24 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
     signals_.async_wait(boost::bind(&server::signal_handler, this,
                                     boost::asio::placeholders::error,
                                     boost::asio::placeholders::signal_number));
+    // initialize location_handler
+    std::map<std::string, std::string> uri_table_ = config.get_uri_table();
+    for (std::pair<std::string, std::string> mapping : uri_table_) {
+        if (mapping.second == "") {  // Location for echo
+            std::unique_ptr<echo_request_handler> er =
+                std::make_unique<echo_request_handler>();
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    mapping.first, std::move(er)));
+        } else {  // Location for serving static files
+            std::unique_ptr<static_request_handler> sr =
+                std::make_unique<static_request_handler>(mapping.second,
+                                                       mapping.first);
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    mapping.first, std::move(sr)));
+        }
+    }
     start_accept();
 }
 
@@ -38,7 +56,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_));
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn), log_, config_);
+        std::make_shared<session>(std::move(conn), log_, config_, location_handlers_);
 
     acceptor_.async_accept(
         *(new_session->socket()),

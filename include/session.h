@@ -16,7 +16,9 @@ using boost::asio::ip::tcp;
 class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(std::unique_ptr<connection> connection, log_helper* log, const NginxConfig &config);
+    session(std::unique_ptr<connection> connection, 
+    log_helper* log, const NginxConfig &config,
+    std::map<std::string, std::unique_ptr<request_handler>> &location_handlers);
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -39,10 +41,11 @@ private:
     // char data_[max_length];
 
     std::unique_ptr<connection> connection_;
-    std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
     request request_;
     request_parser request_parser_;
     std::vector<response> responses_;
     log_helper* log_;
+    std::map<std::string, std::unique_ptr<request_handler>> &location_handlers_;
+
 };
 #endif  // WNZA_SESSION_H_
