@@ -57,7 +57,7 @@ add_executable(request_parser_lib_test tests/request_parser_test.cc)
 add_executable(response_lib_test tests/response_lib_test.cc)
 add_executable(config_parser_lib_test tests/config_parser_test.cc)
 add_executable(session_lib_test tests/session_lib_test.cc tests/fake_connection.cc)
-add_executable(static_request_handler_lib_test tests/static_request_handler_lib_test.cc)
+add_executable(static_request_handler_lib_test tests/static_request_handler_test.cc)
 add_executable(echo_request_handler_lib_test tests/echo_request_handler_test.cc)
 
 # Link all tests

@@ -4,8 +4,7 @@
 #include <time.h>
 
 // constructor
-StaticRequestHandler::StaticRequestHandler(std::string root_uri,
-                                           std::string prefix_uri)
+static_request_handler::static_request_handler(std::string root_uri, std::string prefix_uri)
 {
     int rlen;
     int plen;
@@ -21,7 +20,7 @@ StaticRequestHandler::StaticRequestHandler(std::string root_uri,
         prefix = prefix_uri;
 }
 
-std::string StaticRequestHandler::get_file_name(std::string uri)
+std::string static_request_handler::get_file_name(std::string uri)
 {
     int i = uri.rfind(prefix);
     if (i != std::string::npos) {
@@ -35,7 +34,7 @@ std::string StaticRequestHandler::get_file_name(std::string uri)
     }
 }
 
-std::string StaticRequestHandler::extension_to_type(
+std::string static_request_handler::extension_to_type(
     const std::string &extension)
 {
     if (extension == ".zip") return "application/zip";
@@ -48,7 +47,7 @@ std::string StaticRequestHandler::extension_to_type(
     return "application/octet-stream";  // Default for non-text file
 }
 
-void StaticRequestHandler::file_to_body(std::string file_path, response &result)
+void static_request_handler::file_to_body(std::string file_path, response &result)
 {
     // check path valid
     std::ifstream file(file_path, std::ios::binary);
@@ -71,7 +70,7 @@ void StaticRequestHandler::file_to_body(std::string file_path, response &result)
     }
 }
 
-void StaticRequestHandler::create_response(const request &req, response &result)
+void static_request_handler::create_response(const request &req, response &result)
 {
     if (req.parse_result == request_parser::good) {
         result.set_status("200 OK");

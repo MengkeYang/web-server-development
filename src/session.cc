@@ -19,9 +19,8 @@ session::session(std::unique_ptr<connection> connection, log_helper* log,
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     mapping.first, std::move(er)));
         } else {  // Location for serving static files
-            std::unique_ptr<StaticRequestHandler> sr =
-                std::make_unique<StaticRequestHandler>(mapping.second,
-                                                       mapping.first);
+            std::unique_ptr<static_request_handler> sr =
+                std::make_unique<static_request_handler>(mapping.second, mapping.first);
             location_handlers_.insert(
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     mapping.first, std::move(sr)));

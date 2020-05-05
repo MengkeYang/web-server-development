@@ -9,10 +9,10 @@
 #include "request.h"
 #include "response.h"
 
-class StaticRequestHandler : public request_handler
+class static_request_handler : public request_handler
 {
 public:
-    StaticRequestHandler(std::string root, std::string prefix);
+    static_request_handler(std::string root, std::string prefix);
     void create_response(const request& req, response& result);
 
 private:

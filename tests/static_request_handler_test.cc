@@ -39,12 +39,12 @@ TEST_F(static_request_handler_test, file_read)
 
     //request
     request r;
-    StaticRequestHandler static_handle(".", "/static");
+    static_request_handler static_handler(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/random_test.txt";
     std::string rd("");
     response result;
-    static_handle.create_response(r, result);
+    static_handler.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());
@@ -77,12 +77,12 @@ TEST_F(static_request_handler_test, image_read)
 
     //request
     request r;
-    StaticRequestHandler static_handle(".", "/static");
+    static_request_handler static_handler(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handle.create_response(r, result);
+    static_handler.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());
@@ -115,12 +115,12 @@ TEST_F(static_request_handler_test, diff_config_file)
 
     //request
     request r;
-    StaticRequestHandler static_handle(".", "/static");
+    static_request_handler static_handler(".", "/static");
     r.parse_result = request_parser::good;
     r.uri = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handle.create_response(r, result);
+    static_handler.create_response(r, result);
     std::vector<boost::asio::const_buffer> b = result.build_response();
     std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
     expected.length());
@@ -132,29 +132,3 @@ TEST_F(static_request_handler_test, diff_config_file)
     EXPECT_EQ(expected, response_body);
 
 }
-
-
-
-
-// TEST_F(static_request_handler_test, empty_uri)
-// {
-//     request r;
-//     r.parse_result = request_parser::good;
-//     r.uri = "";
-//     std::string rd("");
-//     response result;
-
-//     static_handle->create_response(r, rd, result);
-//     std::vector<boost::asio::const_buffer> b = result.build_response();
-//     std::string response_body(reinterpret_cast<const char*>(
-//         boost::asio::buffer_cast<const unsigned char*>(b[1])));
-//     EXPECT_NE(expected, response_body);
-// }
-
-// TEST_F(static_request_handler_test, file_name_from_uri)
-// {
-//     std::string name =
-//         static_handle->get_file_name("this/is/a/long/path/file.html");
-//     std::string expected("/file.html");
-//     EXPECT_EQ(expected, name);
-// }
