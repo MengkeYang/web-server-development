@@ -63,5 +63,6 @@ void log_helper::log_request_info(request req, tcp::socket* socket)
         str_stream << " " << h.name << ":" << h.value;
     }
     str_stream << " IP: " << socket->remote_endpoint().address().to_string();
+    str_stream << " Port: " << socket->remote_endpoint().port();
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }

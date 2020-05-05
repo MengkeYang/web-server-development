@@ -26,7 +26,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
     switch (state_) {
         case method_start:
             if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                std::cout << input << "method_start" << std::endl;
+                //std::cout << input << "method_start" << std::endl;
                 return bad;
             } else {
                 state_ = method;
@@ -38,7 +38,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = uri;
                 return indeterminate;
             } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                std::cout << input << "method" << std::endl;
+                //std::cout << input << "method" << std::endl;
                 return bad;
             } else {
                 req.method.push_back(input);
@@ -49,7 +49,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_h;
                 return indeterminate;
             } else if (is_ctl(input)) {
-                std::cout << input << "uri" << std::endl;
+                //std::cout << input << "uri" << std::endl;
                 return bad;
             } else {
                 req.uri.push_back(input);
@@ -60,7 +60,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_t_1;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_h" << std::endl;
+                //std::cout << input << "http_version_h" << std::endl;
                 return bad;
             }
         case http_version_t_1:
@@ -68,7 +68,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_t_2;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_t1" << std::endl;
+                //std::cout << input << "http_version_t1" << std::endl;
                 return bad;
             }
         case http_version_t_2:
@@ -76,7 +76,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_p;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_t2" << std::endl;
+                //std::cout << input << "http_version_t2" << std::endl;
                 return bad;
             }
         case http_version_p:
@@ -84,7 +84,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_slash;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_p" << std::endl;
+                //std::cout << input << "http_version_p" << std::endl;
                 return bad;
             }
         case http_version_slash:
@@ -94,7 +94,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_major_start;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_slash" << std::endl;
+                //std::cout << input << "http_version_slash" << std::endl;
                 return bad;
             }
         case http_version_major_start:
@@ -104,7 +104,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_major;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_major_start" << std::endl;
+                //std::cout << input << "http_version_major_start" << std::endl;
                 return bad;
             }
         case http_version_major:
@@ -116,7 +116,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                     req.http_version_major * 10 + input - '0';
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_major" << std::endl;
+                //std::cout << input << "http_version_major" << std::endl;
                 return bad;
             }
         case http_version_minor_start:
@@ -126,7 +126,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = http_version_minor;
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_minor_start" << std::endl;
+                //std::cout << input << "http_version_minor_start" << std::endl;
                 return bad;
             }
         case http_version_minor:
@@ -138,7 +138,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                     req.http_version_minor * 10 + input - '0';
                 return indeterminate;
             } else {
-                std::cout << input << "http_version_minor" << std::endl;
+                //std::cout << input << "http_version_minor" << std::endl;
                 return bad;
             }
         case expecting_newline_1:
@@ -146,7 +146,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = header_line_start;
                 return indeterminate;
             } else {
-                std::cout << input << "new line 1" << std::endl;
+                //std::cout << input << "new line 1" << std::endl;
                 return bad;
             }
         case header_line_start:
@@ -158,7 +158,7 @@ request_parser::result_type request_parser::consume(request& req, char input)
                 state_ = header_lws;
                 return indeterminate;
             } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                std::cout << input << "header line start" << std::endl;
+                //std::cout << input << "header line start" << std::endl;
                 return bad;
             } else {
                 req.headers.push_back(header());
