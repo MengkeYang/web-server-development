@@ -11,20 +11,20 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
     rlen = root_uri.length();
     plen = prefix_uri.length();
     if (root_uri.compare(rlen - 1, 1, "/") != 0)
-        root = root_uri + "/";
+        root_ = root_uri + "/";
     else
-        root = root_uri;
+        root_ = root_uri;
     if (prefix_uri.compare(plen - 1, 1, "/") != 0)
-        prefix = prefix_uri + "/";
+        prefix_ = prefix_uri + "/";
     else
-        prefix = prefix_uri;
+        prefix_ = prefix_uri;
 }
 
 std::string static_request_handler::get_file_name(std::string uri)
 {
-    int i = uri.rfind(prefix);
+    int i = uri.rfind(prefix_);
     if (i != std::string::npos) {
-        int len = prefix.length();
+        int len = prefix_.length();
         std::cout << "This is the file name: " << uri.substr(i + len)
                   << std::endl;
         return uri.substr(i + len);
@@ -76,20 +76,12 @@ void static_request_handler::create_response(const request &req, response &resul
         result.set_status("200 OK");
         // change path
         std::string filename = get_file_name(req.uri);
-        std::string uri = root + filename;
+        std::string uri = root_ + filename;
 
         // Copy the requested file into the response body
         file_to_body(uri, result);
     } else
         result.make_400_error();
 
-    // Setting Date and Server name headers
-    char buf[1000];
-    memset(buf, 0, sizeof(buf));
-    time_t now = time(0);
-    struct tm tm = *gmtime(&now);
-    strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-    std::string time(buf);
-    result.add_header("Date", time);
-    result.add_header("Server", "WNZA");
+    result.make_date_servername_headers();
 }

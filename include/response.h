@@ -21,6 +21,7 @@ public:
     void add_data(std::string data);
     void make_400_error();
     void make_404_error();
+    void make_date_servername_headers();
 };
 
 #endif  // WNZA_RESPONSE_H_

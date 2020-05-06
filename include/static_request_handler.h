@@ -17,8 +17,8 @@ public:
 
 private:
     // for map path
-    std::string root;
-    std::string prefix;
+    std::string root_;
+    std::string prefix_;
     std::string get_file_name(std::string uri);
     std::string extension_to_type(const std::string& extension);
     void file_to_body(std::string uri, response &result);

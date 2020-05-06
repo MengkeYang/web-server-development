@@ -63,4 +63,18 @@ void response::make_404_error()
     add_data(body);
     add_header("Content-Type", ".html");
     add_header("Content-Length", std::to_string(body.length()));
+
+}
+
+void response::make_date_servername_headers()
+{
+   // Setting Date and Server name headers
+    char buf[1000];
+    memset(buf, 0, sizeof(buf));
+    time_t now = time(0);
+    struct tm tm = *gmtime(&now);
+    strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &tm);
+    std::string time(buf);
+    add_header("Date", time);
+    add_header("Server", "WNZA");
 }

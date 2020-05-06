@@ -13,11 +13,5 @@ void echo_request_handler::create_response(const request& req, response& result)
     } else
         result.make_400_error();
 
-    char buf[1000];
-    time_t now = time(0);
-    struct tm tm = *gmtime(&now);
-    strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-    std::string time(buf);
-    result.add_header("Date", time);
-    result.add_header("Server", "WNZA");
+    result.make_date_servername_headers();
 }
