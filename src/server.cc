@@ -21,6 +21,23 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
     signals_.async_wait(boost::bind(&server::signal_handler, this,
                                     boost::asio::placeholders::error,
                                     boost::asio::placeholders::signal_number));
+    std::vector<location_parse_result> location_results = config.get_location_result();
+    for (location_parse_result loc_res : location_results) {
+        if (loc_res.handler_name == "EchoHandler") {  // Location for echo
+            std::unique_ptr<echo_request_handler> er =
+                std::make_unique<echo_request_handler>();
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    loc_res.uri, std::move(er)));
+        } else if (loc_res.handler_name == "StaticHandler"){  // Location for serving static files
+            std::unique_ptr<static_request_handler> sr =
+                std::make_unique<static_request_handler>(loc_res.root_path, loc_res.uri);
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    loc_res.uri, std::move(sr)));
+        }
+    }
+/*
     // initialize location_handler
     std::map<std::string, std::string> uri_table_ = config.get_uri_table();
     for (std::pair<std::string, std::string> mapping : uri_table_) {
@@ -39,6 +56,7 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
                     mapping.first, std::move(sr)));
         }
     }
+*/
     start_accept();
 }
 

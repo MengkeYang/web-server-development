@@ -54,27 +54,32 @@ std::string NginxConfig::get_value_from_statement(std::string key) const
     return "";
 }
 
-std::map<std::string, std::string> NginxConfig::get_uri_table() const
+std::vector<location_parse_result> NginxConfig::get_location_result() const
 {
-    std::map<std::string, std::string> uri_table;
+    std::vector<location_parse_result> result;
     // Find the server block
     int i = 0;
     int l = statements_.size();
     while (i < l && statements_[i]->tokens_[0] != "server") i++;
     auto server = statements_[i]->child_block_.get();
     for (const auto& statement : server->statements_) {
-        if (statement->tokens_.size() == 2 &&
+        if (statement->tokens_.size() == 3 &&
             statement->tokens_[0] == "location") {
             std::string source(statement->tokens_[1]);
+            source = source.substr(1, source.length() - 2);
+            std::string handler_name(statement->tokens_[2]);
             std::string dest;
             if (statement->child_block_.get() != nullptr) {
                 dest = statement->child_block_.get()->get_value_from_statement(
                     "root");
+                dest = dest.substr(1, dest.length() - 2);
             }
-            uri_table.insert(std::pair<std::string, std::string>(source, dest));
+            location_parse_result lgr;
+            lgr = {source,handler_name,dest};
+            result.push_back(lgr);
         }
     }
-    return uri_table;
+    return result;
 }
 
 std::string NginxConfig::ToString(int depth)

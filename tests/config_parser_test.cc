@@ -10,7 +10,21 @@ protected:
     NginxConfigParser config_parser;
     NginxConfig config;
     int port;
+    std::vector<location_parse_result> loc_res;
 };
+/*
+// test common_api_config
+TEST_F(config_parser_test, common_api_config)
+{
+  if(!config_parser.Parse("./common_api_config", &config))
+  {
+    std::cerr << "Parsing config failed!\n";
+    return;
+  }
+  loc_res = config.get_location_result();
+  EXPECT_TRUE(loc_res.at(0).handler_name.compare("StaticHandler") == 0);
+}
+*/
 
 // test whether config_parser can parse HTTP request port 
 TEST_F(config_parser_test, example_config)

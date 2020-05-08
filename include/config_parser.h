@@ -11,6 +11,16 @@ class NginxConfig;
 class NginxConfigStatement;
 class NginxConfigParser;
 
+struct location_parse_result {
+    // "/static" 
+    std::string uri;
+    //StaticHandler 
+    std::string handler_name;
+    //"./files"
+    std::string root_path;
+
+};
+
 // The driver that parses a config file and generates an NginxConfig.
 class NginxConfigParser
 {
@@ -55,7 +65,7 @@ class NginxConfig
 public:
     std::string ToString(int depth = 0);
     std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
-    std::map<std::string, std::string> get_uri_table() const;
+    std::vector<location_parse_result> get_location_result() const;
     // parse port number
     int parse_port();
 };
