@@ -1,8 +1,8 @@
-server {
-  listen   8080;
-  location /static/ {
-      root .;
-  }
-  location /echo/ {
-  }
+port 8080;
+
+location "/static/" StaticHandler {
+    root ".";
+}
+
+location "/echo/" EchoHandler {
 }

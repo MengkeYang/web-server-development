@@ -23,7 +23,7 @@ int NginxConfig::parse_port()
     for (const auto& statement : statements_) {
         // if it has no child block
         if (statement->child_block_.get() == nullptr) {
-            if (statement->tokens_.size() == 2 && statement->tokens_[0] == "listen") {
+            if (statement->tokens_.size() == 2 && statement->tokens_[0] == "port") {
                 int port_number = atoi(statement->tokens_[1].c_str());
                 // valid port number:[0,65535]
                 if (port_number >= 0 && port_number <= 0xffff) {
@@ -60,9 +60,10 @@ std::vector<location_parse_result> NginxConfig::get_location_result() const
     // Find the server block
     int i = 0;
     int l = statements_.size();
-    while (i < l && statements_[i]->tokens_[0] != "server") i++;
-    auto server = statements_[i]->child_block_.get();
-    for (const auto& statement : server->statements_) {
+    // while (i < l && statements_[i]->tokens_[0] != "server") i++;
+    // auto server = statements_[i]->child_block_.get();
+    // for (const auto& statement : server->statements_) {
+    for (const auto& statement : statements_) {
         if (statement->tokens_.size() == 3 &&
             statement->tokens_[0] == "location") {
             std::string source(statement->tokens_[1]);
@@ -72,7 +73,8 @@ std::vector<location_parse_result> NginxConfig::get_location_result() const
             if (statement->child_block_.get() != nullptr) {
                 dest = statement->child_block_.get()->get_value_from_statement(
                     "root");
-                dest = dest.substr(1, dest.length() - 2);
+                if (dest.length() != 0)
+                    dest = dest.substr(1, dest.length() - 2);
             }
             location_parse_result lgr;
             lgr = {source,handler_name,dest};
