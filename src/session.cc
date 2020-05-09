@@ -62,8 +62,10 @@ void session::start()
 void session::process_req(size_t bytes_transferred)
 {
     response response_;
-    // We will use the first match. TODO: use longest prefix.
+    // use longest prefix.
     bool matched = false;
+    int max_matched_length = 0;
+    std::string max_matched_key;
     for (auto&& pair : location_handlers_) {
         // We compare the prefix without the final "/". So /echo matches
         // with /echo/.
@@ -73,12 +75,18 @@ void session::process_req(size_t bytes_transferred)
         if (request_.uri.compare(
                 0, pair.first.length() - 1,
                 pair.first.substr(0, pair.first.length() - 1)) == 0) {
+            if(max_matched_length < pair.first.length()) {
+                max_matched_length = pair.first.length();
+                max_matched_key = pair.first;
+            }
             matched = true;
-            response_ = {};
-            pair.second->create_response(request_, response_);
-            break;
-        }
+        } 
     }
+    if(matched) { 
+        response_ = {};
+        location_handlers_.at(max_matched_key) ->create_response(request_, response_);
+    }
+    
     if (request_.parse_result == request_parser::good && !matched)
         response_.make_404_error();
     else if (!matched)
