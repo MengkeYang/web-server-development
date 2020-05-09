@@ -3,10 +3,9 @@
 #include "response.h"
 #include <time.h>
 
-request_handler echo_request_handler::init(const NginxConfig& config)
+request_handler* echo_request_handler::init(const NginxConfig& config)
 {
-    // TODO: based on config, create a echo_request_handler object
-    echo_request_handler er;
+    echo_request_handler* er = new echo_request_handler();
     return er;
 }
 

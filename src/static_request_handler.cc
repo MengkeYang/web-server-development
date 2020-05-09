@@ -20,10 +20,18 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
         prefix_ = prefix_uri;
 }
 
-request_handler static_request_handler::init(const NginxConfig& config)
+request_handler* static_request_handler::init(const NginxConfig& config)
 {
     // TODO: based on config, create a static_request_handler object
-    static_request_handler sr(".", "/static/");
+    std::vector<location_parse_result> location_results = config.get_location_result();
+    for (location_parse_result loc_res : location_results) {
+        if (loc_res.handler_name == "StaticHandler") {  // Location for echo
+            static_request_handler* sr = new static_request_handler(loc_res.root_path, loc_res.uri);
+            return sr;
+        }
+    }
+    // default root_path and uri
+    static_request_handler* sr = new static_request_handler(".", "/static");
     return sr;
 }
 

@@ -9,7 +9,7 @@ class NginxConfig;
 class request_handler
 {
 public:
-    static request_handler init(const NginxConfig& config) {};
+    static request_handler* init(const NginxConfig& config) {};
     virtual void create_response(const request& req, response& result) {};
     virtual ~request_handler() {};
 };

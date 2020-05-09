@@ -11,6 +11,8 @@ session::session(std::unique_ptr<connection> connection, log_helper* log,
                  std::map<std::string, std::unique_ptr<request_handler>> &location_handlers)
     : connection_(std::move(connection)), log_(log), location_handlers_(location_handlers)
 {
+    /*
+    // initialize location_handler (new version)
     std::vector<location_parse_result> location_results = config.get_location_result();
     for (location_parse_result loc_res : location_results) {
         if (loc_res.handler_name == "EchoHandler") {  // Location for echo
@@ -27,8 +29,8 @@ session::session(std::unique_ptr<connection> connection, log_helper* log,
                     loc_res.uri, std::move(sr)));
         }
     }
-    /*
-     // initialize location_handler
+    
+     // initialize location_handler (old version)
     std::map<std::string, std::string> uri_table_ = config.get_uri_table();
     for (std::pair<std::string, std::string> mapping : uri_table_) {
         if (mapping.second == "") {  // Location for echo

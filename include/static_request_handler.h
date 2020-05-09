@@ -13,7 +13,7 @@ class static_request_handler : public request_handler
 {
 public:
     static_request_handler(std::string root, std::string prefix);
-    static request_handler init(const NginxConfig& config);
+    static request_handler* init(const NginxConfig& config);
     void create_response(const request& req, response& result);
 
 private:

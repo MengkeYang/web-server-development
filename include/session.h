@@ -25,7 +25,6 @@ public:
     void start();
     void process_req(size_t bytes_transferred);
     int num_responses();
-    void get_handler_for_uri(std::string uri);
 
 private:
     // receive data from tcp read buffer
