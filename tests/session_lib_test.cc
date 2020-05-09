@@ -31,6 +31,23 @@ protected:
     {
         config_parser.Parse("example_config", &config);
 
+        std::vector<location_parse_result> location_results = config.get_location_result();
+        for (location_parse_result loc_res : location_results) {
+            if (loc_res.handler_name == "EchoHandler") {  // Location for echo
+                std::unique_ptr<echo_request_handler> er =
+                    std::make_unique<echo_request_handler>();
+                location_handlers_.insert(
+                    std::pair<std::string, std::unique_ptr<request_handler>>(
+                        loc_res.uri, std::move(er)));
+            } else if (loc_res.handler_name == "StaticHandler"){  // Location for serving static files
+                std::unique_ptr<static_request_handler> sr =
+                    std::make_unique<static_request_handler>(loc_res.root_path, loc_res.uri);
+                location_handlers_.insert(
+                    std::pair<std::string, std::unique_ptr<request_handler>>(
+                        loc_res.uri, std::move(sr)));
+            }
+        }
+        /*
         std::map<std::string, std::string> uri_table_ = config.get_uri_table();
         for (std::pair<std::string, std::string> mapping : uri_table_) {
             if (mapping.second == "") {  // Location for echo
@@ -48,6 +65,7 @@ protected:
                         mapping.first, std::move(sr)));
             }
         }
+        */
     }
     boost::system::error_code no_error =
         boost::system::errc::make_error_code(boost::system::errc::success);
