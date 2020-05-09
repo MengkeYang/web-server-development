@@ -3,6 +3,13 @@
 #include "response.h"
 #include <time.h>
 
+request_handler echo_request_handler::init(const NginxConfig& config)
+{
+    // TODO: based on config, create a echo_request_handler object
+    echo_request_handler er;
+    return er;
+}
+
 void echo_request_handler::create_response(const request& req, response& result)
 {
     if (req.parse_result == request_parser::good) {

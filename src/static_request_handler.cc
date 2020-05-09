@@ -20,6 +20,13 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
         prefix_ = prefix_uri;
 }
 
+request_handler static_request_handler::init(const NginxConfig& config)
+{
+    // TODO: based on config, create a static_request_handler object
+    static_request_handler sr(".", "/static/");
+    return sr;
+}
+
 std::string static_request_handler::get_file_name(std::string uri)
 {
     int i = uri.rfind(prefix_);

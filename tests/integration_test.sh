@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PATH_TO_BIN=../build_coverage/bin/server_executable
 output=$("$PATH_TO_BIN" 2>&1)
 if [[ "$output" =~ Usage:.* ]]
 then
