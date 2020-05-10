@@ -3,9 +3,10 @@
 #include "response.h"
 #include <time.h>
 
-request_handler* echo_request_handler::init(const NginxConfig& config)
+std::unique_ptr<request_handler> echo_request_handler::init(const NginxConfig& config)
 {
-    echo_request_handler* er = new echo_request_handler();
+    std::unique_ptr<echo_request_handler> er =
+                std::make_unique<echo_request_handler>();
     return er;
 }
 

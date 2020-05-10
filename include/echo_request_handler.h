@@ -8,7 +8,7 @@ class response;
 class echo_request_handler : public request_handler
 {
 public:
-    static request_handler* init(const NginxConfig& config);
+    static std::unique_ptr<request_handler> init(const NginxConfig& config);
     void create_response(const request& req, response& result);
 };
 #endif  // WNZA_ECHO_REQUEST_HANDLER_H_
