@@ -42,7 +42,7 @@ private:
     std::unique_ptr<connection> connection_;
     request request_;
     request_parser request_parser_;
-    std::vector<response> responses_;
+    std::vector<buffer_response> responses_;
     log_helper* log_;
     std::map<std::string, std::unique_ptr<request_handler>> &location_handlers_;
 

@@ -35,7 +35,7 @@ sleep 1s
 ## Matching the output of server response to a regex expression
 output=$(curl -s localhost:8080/echo)
 expected=$(cat integration_response1)
-diff -q <(echo "$output") <(echo "$expected")
+diff -q <(sort <(echo "$output")) <(sort <(echo "$expected"))
 if [ $? -eq 0 ]
 then
     echo "Passed Test 4"
@@ -46,15 +46,19 @@ else
 fi
 
 ## Testing that some of the content of the message is correct
-output=$(curl -s -d "Hello,World!" localhost:8080/echo)
-if [[ "$output" =~ .*Content-Length:[[:space:]]12.* ]]
+tmpfile=$(mktemp)
+curl -s --output - localhost:8080/static/cat.jpg > "$tmpfile"
+diff -q <(cat cat.jpg) <(cat "$tmpfile")
+if [ $? -eq 0 ]
 then
     echo "Passed Test 5"
 else
     echo "Failed Test 5"
     kill -TERM $SERVER_ID
+    rm "$tmpfile"
     exit 1
 fi
 
 kill -TERM $SERVER_ID
+rm "$tmpfile"
 exit 0

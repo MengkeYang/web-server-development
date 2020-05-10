@@ -79,7 +79,7 @@ void static_request_handler::file_to_body(std::string file_path, response &resul
         size_t cursor = file_path.rfind(".");
         if (cursor != std::string::npos) extension = file_path.substr(cursor);
 
-        result.add_data(body);
+        result.add_body(body);
         result.add_header("Content-Type", extension_to_type(extension));
         result.add_header("Content-Length", std::to_string(body.length()));
     } else {
@@ -87,18 +87,20 @@ void static_request_handler::file_to_body(std::string file_path, response &resul
     }
 }
 
-void static_request_handler::create_response(const request &req, response &result)
+response static_request_handler::create_response(const request &req)
 {
-    if (req.parse_result == request_parser::good) {
-        result.set_status("200 OK");
+    response res;
+    if (req.method_ != request::INVALID) {
+        res.set_code(response::status_code::OK);
         // change path
-        std::string filename = get_file_name(req.uri);
+        std::string filename = get_file_name(req.uri_);
         std::string uri = root_ + filename;
 
         // Copy the requested file into the response body
-        file_to_body(uri, result);
+        file_to_body(uri, res);
     } else
-        result.make_400_error();
+        res.make_400_error();
 
-    result.make_date_servername_headers();
+    res.make_date_servername_headers();
+    return res;
 }

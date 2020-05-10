@@ -14,7 +14,7 @@ class static_request_handler : public request_handler
 public:
     static_request_handler(std::string root, std::string prefix);
     static std::unique_ptr<request_handler> init(const NginxConfig& config);
-    void create_response(const request& req, response& result);
+    response create_response(const request& req);
 
 private:
     // for map path

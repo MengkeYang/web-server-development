@@ -24,15 +24,19 @@ TEST_F(echo_request_handler_test, echo_read)
     config_parser.Parse("example_server_static", &config);
     //request
     request r;
-    echo_request_handler echo_handler;
-    r.parse_result = request_parser::good;
-    r.raw_data = "whole HTTP request";
-    response result;
-    echo_handler.create_response(r, result);
-    std::vector<boost::asio::const_buffer> b = result.build_response();
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
-    r.raw_data.length());
-    //output
-    EXPECT_EQ(r.raw_data, response_body);
+    r.method_ = request::GET;
+    r.uri_ = "/";
+    r.body_ = "whole HTTP request";
 
+    std::string expected = "GET / HTTP/1.1\r\n\r\nwhole HTTP request";
+
+    echo_request_handler echo_handler;
+    response result;
+    result = echo_handler.create_response(r);
+    buffer_response b = result.build_response();
+    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.bufs[1])),
+    expected.length());
+    std::cout << response_body << std::endl;
+    //output
+    EXPECT_EQ(expected, response_body);
 }

@@ -2,6 +2,7 @@
 #include "request.h"
 #include <iostream>
 #include <string>
+#include <memory>
 #include <boost/filesystem/fstream.hpp>
 
 /**
@@ -9,17 +10,30 @@
  * that were setup from the add_header and add_data methods. The return value
  * can be directly passed to async_write.
  */
-std::vector<boost::asio::const_buffer> response::build_response()
+buffer_response response::build_response()
 {
     std::vector<boost::asio::const_buffer> resp;
-    entire_header = "HTTP/1.1 ";
-    entire_header += return_code + "\r\n";
-    for (auto& h : headers) entire_header += h.name + ": " + h.value + "\r\n";
-    entire_header += "\r\n";
-    resp.push_back(boost::asio::buffer(entire_header));
+    std::shared_ptr<std::string> entire_header = std::make_shared<std::string>();
+    *entire_header += "HTTP/1.1 ";
+    switch (code_) {
+        case OK: *entire_header += "200 OK"; break;
+        case BAD_REQ: *entire_header += "400 Bad Request"; break;
+        case NOT_FOUND: *entire_header += "404 Not Found"; break;
+    }
+    *entire_header += "\r\n";
 
-    resp.push_back(boost::asio::buffer(body));
-    return resp;
+    for (auto&& h : headers_) *entire_header += h.first + ": " + h.second + "\r\n";
+    *entire_header += "\r\n";
+
+    buffer_response result;
+    result.head = entire_header;
+    result.body = std::make_shared<std::string>(body_);
+
+    resp.push_back(boost::asio::buffer(*result.head));
+    resp.push_back(boost::asio::buffer(*result.body));
+    result.bufs = resp;
+
+    return result;
 }
 
 /**
@@ -30,29 +44,26 @@ std::vector<boost::asio::const_buffer> response::build_response()
  */
 void response::add_header(std::string key, std::string val)
 {
-    std::string name(key);
-    std::string value(val);
-    header h = {name, value};
-    headers.push_back(h);
+    headers_[key] = val;
 }
 
-void response::add_data(std::string data) { body = data; }
+void response::add_body(std::string data) { body_ = data; }
 
-void response::set_status(std::string status_code)
+void response::set_code(status_code code)
 {
-    return_code = status_code;
+    code_ = code;
 }
 
 void response::make_400_error()
 {
-    set_status("400 Bad Request");
+    set_code(status_code::BAD_REQ);
     add_header("Content-Length", "0");
-    add_data("");
+    add_body("");
 }
 
 void response::make_404_error()
 {
-    set_status("404 Not Found");
+    set_code(status_code::NOT_FOUND);
     std::ifstream file("404page.html", std::ios::binary);
     std::string body;
     if (file.is_open()) {
@@ -60,7 +71,7 @@ void response::make_404_error()
         while (file.get(c)) body += c;
         file.close();
     }
-    add_data(body);
+    add_body(body);
     add_header("Content-Type", ".html");
     add_header("Content-Length", std::to_string(body.length()));
 

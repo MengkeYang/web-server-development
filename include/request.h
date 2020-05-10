@@ -4,26 +4,18 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "request_parser.h"
-
-// One header line
-struct header {
-    std::string name;
-    std::string value;
-};
 
 /**
  * A request contains all the information from the HTTP request which is
  * necessary in forming a response.
  */
 struct request {
-    request_parser::result_type parse_result = request_parser::indeterminate;
-    std::string method;
-    std::string uri;
-    int http_version_major;
-    int http_version_minor;
-    std::vector<header> headers;
-    std::string body;
-    std::string raw_data;
+    enum method { GET = 0, POST = 1, PUT = 2, INVALID = 3 } method_;
+
+    std::string uri_;
+    std::unordered_map<std::string, std::string> headers_;
+    std::string body_;
 };
 #endif  // WNZA_REQUEST_H_

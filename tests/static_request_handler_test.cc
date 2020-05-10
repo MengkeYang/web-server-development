@@ -40,13 +40,13 @@ TEST_F(static_request_handler_test, file_read)
     //request
     request r;
     static_request_handler static_handler(".", "/static");
-    r.parse_result = request_parser::good;
-    r.uri = "/static/random_test.txt";
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/random_test.txt";
     std::string rd("");
     response result;
-    static_handler.create_response(r, result);
-    std::vector<boost::asio::const_buffer> b = result.build_response();
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
+    result = static_handler.create_response(r);
+    buffer_response b = result.build_response();
+    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.bufs[1])),
     expected.length());
     //output
     std::ofstream result_out;
@@ -78,13 +78,13 @@ TEST_F(static_request_handler_test, image_read)
     //request
     request r;
     static_request_handler static_handler(".", "/static");
-    r.parse_result = request_parser::good;
-    r.uri = "/static/cat.jpg";
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handler.create_response(r, result);
-    std::vector<boost::asio::const_buffer> b = result.build_response();
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
+    result = static_handler.create_response(r);
+    buffer_response b = result.build_response();
+    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.bufs[1])),
     expected.length());
     //output
     std::ofstream result_out;
@@ -116,13 +116,13 @@ TEST_F(static_request_handler_test, diff_config_file)
     //request
     request r;
     static_request_handler static_handler(".", "/static");
-    r.parse_result = request_parser::good;
-    r.uri = "/static/cat.jpg";
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/cat.jpg";
     std::string rd("");
     response result;
-    static_handler.create_response(r, result);
-    std::vector<boost::asio::const_buffer> b = result.build_response();
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b[1])),
+    result = static_handler.create_response(r);
+    buffer_response b = result.build_response();
+    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.bufs[1])),
     expected.length());
     //output
     std::ofstream result_out;

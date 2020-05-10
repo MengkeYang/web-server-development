@@ -4,250 +4,79 @@
 #include "request_parser.h"
 #include <iostream>
 #include "request.h"
+#include <string>
 
 std::tuple<request_parser::result_type, char*> request_parser::parse(
     request& req, char* begin, char* end)
 {
+    std::vector<std::vector<std::string>> lines;
+    std::string tok;
+    std::vector<std::string> line;
+    bool valid = false;
+    bool reading_rhs = false;
     while (begin != end) {
-        request_parser::result_type result = consume(req, *begin++);
-        req.parse_result = result;
-        if (result == good || result == bad)
-            return std::make_tuple(result, begin);
+        if (reading_rhs) {
+            if (*begin == '\r' || *begin == '\n') {
+                if (tok == "") {
+                    reading_rhs = false;
+                } else {
+                    line.push_back(tok);
+                    lines.push_back(line);
+                    line.clear();
+                    tok = "";
+                }
+            } else {
+                tok += *begin;
+            }
+            begin++;
+            continue;
+        }
+
+        if (*begin == ':') {
+            reading_rhs = true;
+            line.push_back(tok);
+            tok = "";
+            begin++;
+            continue;
+        }
+        if (*begin != ' ' && *begin != '\r' && *begin != '\n') tok += *begin;
+        if (*begin == ' ' && tok.length() > 0) {
+            std::cout << tok << std::endl;
+            line.push_back(tok);
+            tok = "";
+        }
+        if (*begin == '\n') {
+            if (tok == "") {
+                begin++;
+                valid = true;
+                break;  // We have reached '\r\n\r\n'
+            }
+            line.push_back(tok);
+            tok = "";
+            lines.push_back(line);
+            line.clear();
+        }
+        begin++;
     }
-    return std::make_tuple(indeterminate, begin);
-}
 
-request_parser::request_parser() : state_(method_start) {}
+    if (valid && lines.size() > 0) {
+        if (lines[0].size() != 3 || lines[0][0] != "GET" ||
+            lines[0][2] != "HTTP/1.1") {
+            req.method_ = request::method::INVALID;
+            return std::make_tuple(bad, begin);
+        }
+        req.method_ = request::method::GET;
+        req.uri_ = lines[0][1];
 
-void request_parser::reset() { state_ = method_start; }
-
-request_parser::result_type request_parser::consume(request& req, char input)
-{
-    switch (state_) {
-        case method_start:
-            if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                //std::cout << input << "method_start" << std::endl;
-                return bad;
-            } else {
-                state_ = method;
-                req.method.push_back(input);
-                return indeterminate;
-            }
-        case method:
-            if (input == ' ') {
-                state_ = uri;
-                return indeterminate;
-            } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                //std::cout << input << "method" << std::endl;
-                return bad;
-            } else {
-                req.method.push_back(input);
-                return indeterminate;
-            }
-        case uri:
-            if (input == ' ') {
-                state_ = http_version_h;
-                return indeterminate;
-            } else if (is_ctl(input)) {
-                //std::cout << input << "uri" << std::endl;
-                return bad;
-            } else {
-                req.uri.push_back(input);
-                return indeterminate;
-            }
-        case http_version_h:
-            if (input == 'H') {
-                state_ = http_version_t_1;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_h" << std::endl;
-                return bad;
-            }
-        case http_version_t_1:
-            if (input == 'T') {
-                state_ = http_version_t_2;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_t1" << std::endl;
-                return bad;
-            }
-        case http_version_t_2:
-            if (input == 'T') {
-                state_ = http_version_p;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_t2" << std::endl;
-                return bad;
-            }
-        case http_version_p:
-            if (input == 'P') {
-                state_ = http_version_slash;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_p" << std::endl;
-                return bad;
-            }
-        case http_version_slash:
-            if (input == '/') {
-                req.http_version_major = 0;
-                req.http_version_minor = 0;
-                state_ = http_version_major_start;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_slash" << std::endl;
-                return bad;
-            }
-        case http_version_major_start:
-            if (is_digit(input)) {
-                req.http_version_major =
-                    req.http_version_major * 10 + input - '0';
-                state_ = http_version_major;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_major_start" << std::endl;
-                return bad;
-            }
-        case http_version_major:
-            if (input == '.') {
-                state_ = http_version_minor_start;
-                return indeterminate;
-            } else if (is_digit(input)) {
-                req.http_version_major =
-                    req.http_version_major * 10 + input - '0';
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_major" << std::endl;
-                return bad;
-            }
-        case http_version_minor_start:
-            if (is_digit(input)) {
-                req.http_version_minor =
-                    req.http_version_minor * 10 + input - '0';
-                state_ = http_version_minor;
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_minor_start" << std::endl;
-                return bad;
-            }
-        case http_version_minor:
-            if (input == '\r') {
-                state_ = expecting_newline_1;
-                return indeterminate;
-            } else if (is_digit(input)) {
-                req.http_version_minor =
-                    req.http_version_minor * 10 + input - '0';
-                return indeterminate;
-            } else {
-                //std::cout << input << "http_version_minor" << std::endl;
-                return bad;
-            }
-        case expecting_newline_1:
-            if (input == '\n') {
-                state_ = header_line_start;
-                return indeterminate;
-            } else {
-                //std::cout << input << "new line 1" << std::endl;
-                return bad;
-            }
-        case header_line_start:
-            if (input == '\r') {
-                state_ = expecting_newline_3;
-                return indeterminate;
-            } else if (!req.headers.empty() &&
-                       (input == ' ' || input == '\t')) {
-                state_ = header_lws;
-                return indeterminate;
-            } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                //std::cout << input << "header line start" << std::endl;
-                return bad;
-            } else {
-                req.headers.push_back(header());
-                req.headers.back().name.push_back(input);
-                state_ = header_name;
-                return indeterminate;
-            }
-        case header_lws:
-            if (input == '\r') {
-                state_ = expecting_newline_2;
-                return indeterminate;
-            } else if (input == ' ' || input == '\t') {
-                return indeterminate;
-            } else if (is_ctl(input)) {
-                return bad;
-            } else {
-                state_ = header_value;
-                req.headers.back().value.push_back(input);
-                return indeterminate;
-            }
-        case header_name:
-            if (input == ':') {
-                state_ = space_before_header_value;
-                return indeterminate;
-            } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
-                return bad;
-            } else {
-                req.headers.back().name.push_back(input);
-                return indeterminate;
-            }
-        case space_before_header_value:
-            if (input == ' ') {
-                state_ = header_value;
-                return indeterminate;
-            } else {
-                return bad;
-            }
-        case header_value:
-            if (input == '\r') {
-                state_ = expecting_newline_2;
-                return indeterminate;
-            } else if (is_ctl(input)) {
-                return bad;
-            } else {
-                req.headers.back().value.push_back(input);
-                return indeterminate;
-            }
-        case expecting_newline_2:
-            if (input == '\n') {
-                state_ = header_line_start;
-                return indeterminate;
-            } else {
-                return bad;
-            }
-        case expecting_newline_3:
-            return (input == '\n') ? good : bad;
+        for (int i = 1; i < lines.size(); i++) {
+            //lines[i][0].pop_back();  // Removing the ':'
+            if (lines[i][1].at(0) == ' ') lines[i][1].erase(0,1);
+            std::cout << lines[i][0] << ": " << lines[i][1] << std::endl;
+            req.headers_.insert(std::make_pair(lines[i][0], lines[i][1]));
+        }
+        req.body_ = std::string(begin, end);
+        return std::make_tuple(good, begin);
     }
+    req.method_ = request::method::INVALID;
+    return std::make_tuple(bad, begin);
 }
-
-bool request_parser::is_char(int c) { return c >= 0 && c <= 127; }
-
-bool request_parser::is_ctl(int c) { return (c >= 0 && c <= 31) || (c == 127); }
-
-bool request_parser::is_tspecial(int c)
-{
-    switch (c) {
-        case '(':
-        case ')':
-        case '<':
-        case '>':
-        case '@':
-        case ',':
-        case ';':
-        case ':':
-        case '\\':
-        case '"':
-        case '/':
-        case '[':
-        case ']':
-        case '?':
-        case '=':
-        case '{':
-        case '}':
-        case ' ':
-        case '\t':
-            return true;
-        default:
-            return false;
-    }
-}
-
-bool request_parser::is_digit(int c) { return c >= '0' && c <= '9'; }

@@ -55,12 +55,12 @@ void log_helper::log_warning_file(std::string warning_message)
 }
 void log_helper::log_request_info(request req, tcp::socket* socket)
 {
+    std::string methods[] = {"GET", "POST", "PUT", "INVALID"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
-    str_stream << req.method << " " << req.uri << " HTTP "
-               << req.http_version_major << "." << req.http_version_minor;
-    for (header h : req.headers) {
-        str_stream << " " << h.name << ":" << h.value;
+    str_stream << methods[req.method_] << " " << req.uri_ << " HTTP ";
+    for (auto&& h : req.headers_) {
+        str_stream << " " << h.first << ":" << h.second;
     }
     str_stream << " IP: " << socket->remote_endpoint().address().to_string();
     str_stream << " Port: " << socket->remote_endpoint().port();
