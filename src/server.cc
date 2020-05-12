@@ -38,6 +38,11 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
             location_handlers_.insert(
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     loc_res.uri, std::move(sr)));
+        }else if (loc_res.handler_name == "NotFoundHandler"){  // Location for not_found
+            std::unique_ptr<request_handler> sr(std::move(not_found_request_handler::init(config_)));
+            location_handlers_.insert(
+                std::pair<std::string, std::unique_ptr<request_handler>>(
+                    loc_res.uri, std::move(sr)));
         }
     }
     start_accept();

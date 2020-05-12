@@ -9,3 +9,6 @@ location "/echo/" EchoHandler {
 
 location "/status/" StatusHandler {
 }
+location "/" NotFoundHandler {
+}
+
