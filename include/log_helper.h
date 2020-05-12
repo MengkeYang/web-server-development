@@ -15,6 +15,7 @@
 #include <boost/log/utility/setup/console.hpp>
 
 class request;
+class response;
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -32,6 +33,7 @@ public:
     virtual void log_error_file(std::string error_message);
     virtual void log_warning_file(std::string warning_message);
     virtual void log_request_info(request req, tcp::socket* socket);
+    virtual void log_response_info(request req, response res, tcp::socket* socket);
     virtual ~log_helper() {}
 };
 #endif

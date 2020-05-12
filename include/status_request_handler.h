@@ -13,12 +13,13 @@ class status_request_handler : public request_handler
 {
 public:
     status_request_handler(std::vector<location_parse_result> loc_res);
-    static std::unique_ptr<request_handler> init(const NginxConfig& config);
+    static request_handler* init(const NginxConfig& config);
     response handle_request(const request& req);
 
 
 private:
     std::vector<location_parse_result> handlers_info_;
+    std::vector<std::string> get_request_records();
 };
 
 #endif

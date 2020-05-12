@@ -24,17 +24,17 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
     std::vector<location_parse_result> location_results = config.get_location_result();
     for (location_parse_result loc_res : location_results) {
         if (loc_res.handler_name == "EchoHandler") {  // Location for echo
-            std::unique_ptr<request_handler> er(std::move(echo_request_handler::init(config_)));
+            std::unique_ptr<request_handler> er(echo_request_handler::init(config_));
             location_handlers_.insert(
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     loc_res.uri, std::move(er)));
         } else if (loc_res.handler_name == "StaticHandler") {  // Location for serving static files
-            std::unique_ptr<request_handler> sr(std::move(static_request_handler::init(config_)));
+            std::unique_ptr<request_handler> sr(static_request_handler::init(config_));
             location_handlers_.insert(
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     loc_res.uri, std::move(sr)));
         } else if (loc_res.handler_name == "StatusHandler") {  // Location for listing status info
-            std::unique_ptr<request_handler> sr(std::move(status_request_handler::init(config_)));
+            std::unique_ptr<request_handler> sr(status_request_handler::init(config_));
             location_handlers_.insert(
                 std::pair<std::string, std::unique_ptr<request_handler>>(
                     loc_res.uri, std::move(sr)));

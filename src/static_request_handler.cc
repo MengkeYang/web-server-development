@@ -20,20 +20,16 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
         prefix_ = prefix_uri;
 }
 
-std::unique_ptr<request_handler> static_request_handler::init(const NginxConfig& config)
+request_handler* static_request_handler::init(const NginxConfig& config)
 {
     std::vector<location_parse_result> location_results = config.get_location_result();
     for (location_parse_result loc_res : location_results) {
         if (loc_res.handler_name == "StaticHandler") {  // Location for echo
-            std::unique_ptr<static_request_handler> sr =
-                std::make_unique<static_request_handler>(loc_res.root_path, loc_res.uri);
-            return sr;
+            return new static_request_handler(loc_res.root_path, loc_res.uri);
         }
     }
     // default root_path and uri
-    std::unique_ptr<static_request_handler> sr =
-                std::make_unique<static_request_handler>(".", "/static");
-    return sr;
+    return new static_request_handler(".", "/static");
 }
 
 std::string static_request_handler::get_file_name(std::string uri)

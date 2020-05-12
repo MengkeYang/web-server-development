@@ -13,7 +13,7 @@ class static_request_handler : public request_handler
 {
 public:
     static_request_handler(std::string root_uri, std::string prefix_uri);
-    static std::unique_ptr<request_handler> init(const NginxConfig& config);
+    static request_handler* init(const NginxConfig& config);
     response handle_request(const request& req);
 
 private:

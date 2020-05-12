@@ -1,5 +1,6 @@
 #include "log_helper.h"
 #include "request.h"
+#include "response.h"
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -53,6 +54,7 @@ void log_helper::log_warning_file(std::string warning_message)
 {
     BOOST_LOG_SEV(lg, warning) << "Warning: " << warning_message;
 }
+
 void log_helper::log_request_info(request req, tcp::socket* socket)
 {
     std::string methods[] = {"GET", "POST", "PUT", "INVALID"};
@@ -64,5 +66,14 @@ void log_helper::log_request_info(request req, tcp::socket* socket)
     }
     str_stream << " IP: " << socket->remote_endpoint().address().to_string();
     str_stream << " Port: " << socket->remote_endpoint().port();
+    BOOST_LOG_SEV(lg, trace) << str_stream.str();
+}
+
+void log_helper::log_response_info(request req, response res, tcp::socket* socket)
+{
+    std::string codes[] = {"400", "404", "200"};
+    std::stringstream str_stream;
+    str_stream << "Trace: ";
+    str_stream << codes[res.code_] << " for request: " << req.uri_;
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }

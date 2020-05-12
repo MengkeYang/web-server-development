@@ -4,11 +4,9 @@
 #include <time.h>
 #include <iostream>
 
-std::unique_ptr<request_handler> echo_request_handler::init(const NginxConfig& config)
+request_handler* echo_request_handler::init(const NginxConfig& config)
 {
-    std::unique_ptr<echo_request_handler> er =
-                std::make_unique<echo_request_handler>();
-    return er;
+    return new echo_request_handler();
 }
 
 response echo_request_handler::handle_request(const request& req)

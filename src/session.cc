@@ -14,45 +14,7 @@ session::session(
     : connection_(std::move(connection)),
       log_(log),
       location_handlers_(location_handlers)
-{
-    /*
-    // initialize location_handler (new version)
-    std::vector<location_parse_result> location_results =
-    config.get_location_result(); for (location_parse_result loc_res :
-    location_results) { if (loc_res.handler_name == "EchoHandler") {  //
-    Location for echo std::unique_ptr<echo_request_handler> er =
-                std::make_unique<echo_request_handler>();
-            location_handlers_.insert(
-                std::pair<std::string, std::unique_ptr<request_handler>>(
-                    loc_res.uri, std::move(er)));
-        } else if (loc_res.handler_name == "StaticHandler"){  // Location for
-    serving static files std::unique_ptr<static_request_handler> sr =
-                std::make_unique<static_request_handler>(loc_res.root_path,
-    loc_res.uri); location_handlers_.insert( std::pair<std::string,
-    std::unique_ptr<request_handler>>( loc_res.uri, std::move(sr)));
-        }
-    }
-
-     // initialize location_handler (old version)
-    std::map<std::string, std::string> uri_table_ = config.get_uri_table();
-    for (std::pair<std::string, std::string> mapping : uri_table_) {
-        if (mapping.second == "") {  // Location for echo
-            std::unique_ptr<echo_request_handler> er =
-                std::make_unique<echo_request_handler>();
-            location_handlers_.insert(
-                std::pair<std::string, std::unique_ptr<request_handler>>(
-                    mapping.first, std::move(er)));
-        } else {  // Location for serving static files
-            std::unique_ptr<static_request_handler> sr =
-                std::make_unique<static_request_handler>(mapping.second,
-                                                       mapping.first);
-            location_handlers_.insert(
-                std::pair<std::string, std::unique_ptr<request_handler>>(
-                    mapping.first, std::move(sr)));
-        }
-    }
-    */
-}
+{}
 
 tcp::socket* session::socket() { return connection_->socket(); }
 
@@ -116,7 +78,8 @@ void session::received_req(const boost::system::error_code& error,
 
         response_builder res_build;
         res_build = process_req(bytes_transferred);
-
+        response resp = res_build.get_response();
+        log_->log_response_info(request_, resp, connection_->socket());
         connection_->write(res_build, &session::wait_for_req,
                            shared_this);
     }
