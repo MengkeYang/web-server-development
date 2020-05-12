@@ -74,7 +74,7 @@ std::vector<location_parse_result> NginxConfig::get_location_result() const
                 dest = statement->child_block_.get()->get_value_from_statement(
                     "root");
                 if (dest.length() != 0)
-                    dest = dest.substr(1, dest.length() - 3);
+                    dest = dest.substr(1, dest.length() - 2);
             }
             location_parse_result lgr;
             lgr = {source,handler_name,dest};

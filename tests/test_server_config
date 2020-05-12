@@ -6,3 +6,6 @@ location "/static/" StaticHandler {
 
 location "/echo/" EchoHandler {
 }
+
+location "/status/" StatusHandler {
+}

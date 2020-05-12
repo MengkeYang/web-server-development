@@ -22,7 +22,6 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
 
 std::unique_ptr<request_handler> static_request_handler::init(const NginxConfig& config)
 {
-    // TODO: based on config, create a static_request_handler object
     std::vector<location_parse_result> location_results = config.get_location_result();
     for (location_parse_result loc_res : location_results) {
         if (loc_res.handler_name == "StaticHandler") {  // Location for echo
