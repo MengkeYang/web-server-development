@@ -16,8 +16,8 @@ struct location_parse_result {
     std::string uri;
     //StaticHandler 
     std::string handler_name;
-    //"./files"
-    std::string root_path;
+    //root directive
+    NginxConfig* block_config;
 
 };
 
@@ -60,12 +60,13 @@ private:
 // The parsed representation of the entire config.
 class NginxConfig
 {
-    std::string get_value_from_statement(std::string key) const;
+    
 
 public:
     std::string ToString(int depth = 0);
     std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
     std::vector<location_parse_result> get_location_result() const;
+    std::string get_value_from_statement(std::string key) const;
     // parse port number
     int parse_port();
 };

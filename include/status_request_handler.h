@@ -13,7 +13,7 @@ class status_request_handler : public request_handler
 {
 public:
     status_request_handler(std::vector<location_parse_result> loc_res);
-    static request_handler* init(const NginxConfig& config);
+    static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
 
 

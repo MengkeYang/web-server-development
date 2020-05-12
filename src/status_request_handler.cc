@@ -9,7 +9,7 @@ status_request_handler::status_request_handler(std::vector<location_parse_result
     handlers_info_ = loc_res;
 }
 
-request_handler* status_request_handler::init(const NginxConfig& config)
+request_handler* status_request_handler::init(const std::string& location_path, const NginxConfig& config)
 {
     return new status_request_handler(config.get_location_result());
 }

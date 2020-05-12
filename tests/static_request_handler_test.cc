@@ -39,7 +39,12 @@ TEST_F(static_request_handler_test, file_read)
 
     //request
     request r;
-    static_request_handler static_handler(".", "/static");
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
+    statement->tokens_.push_back("root");
+    statement->tokens_.push_back("\".\"");
+    block_config->statements_.push_back(statement);
+    static_request_handler static_handler(block_config, "/static");
     r.method_ = request::method::GET;
     r.uri_ = "/static/random_test.txt";
     std::string rd("");
@@ -78,7 +83,12 @@ TEST_F(static_request_handler_test, image_read)
 
     //request
     request r;
-    static_request_handler static_handler(".", "/static");
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
+    statement->tokens_.push_back("root");
+    statement->tokens_.push_back("\".\"");
+    block_config->statements_.push_back(statement);
+    static_request_handler static_handler(block_config, "/static");
     r.method_ = request::method::GET;
     r.uri_ = "/static/cat.jpg";
     std::string rd("");
@@ -117,7 +127,12 @@ TEST_F(static_request_handler_test, diff_config_file)
 
     //request
     request r;
-    static_request_handler static_handler(".", "/static");
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
+    statement->tokens_.push_back("root");
+    statement->tokens_.push_back("\".\"");
+    block_config->statements_.push_back(statement);
+    static_request_handler static_handler(block_config, "/static");
     r.method_ = request::method::GET;
     r.uri_ = "/static/cat.jpg";
     std::string rd("");

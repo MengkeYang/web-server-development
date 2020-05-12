@@ -6,7 +6,7 @@
 class not_found_request_handler : public request_handler
 {
 public:
-    static std::unique_ptr<request_handler> init(const NginxConfig& config);
+    static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
 
 };

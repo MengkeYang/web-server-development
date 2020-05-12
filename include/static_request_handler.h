@@ -12,8 +12,8 @@
 class static_request_handler : public request_handler
 {
 public:
-    static_request_handler(std::string root_uri, std::string prefix_uri);
-    static request_handler* init(const NginxConfig& config);
+    static_request_handler(const NginxConfig* config, std::string prefix_uri);
+    static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
 
 private:

@@ -4,10 +4,14 @@
 #include <time.h>
 
 // constructor
-static_request_handler::static_request_handler(std::string root_uri, std::string prefix_uri)
+static_request_handler::static_request_handler(const NginxConfig* config, std::string prefix_uri)
 {
     int rlen;
+    std::string root_uri;
     int plen;
+    root_uri = config->get_value_from_statement("root");
+    if (root_uri.length() != 0)
+        root_uri = root_uri.substr(1, root_uri.length() - 2);
     rlen = root_uri.length();
     plen = prefix_uri.length();
     if (root_uri.compare(rlen - 1, 1, "/") != 0)
@@ -20,16 +24,21 @@ static_request_handler::static_request_handler(std::string root_uri, std::string
         prefix_ = prefix_uri;
 }
 
-request_handler* static_request_handler::init(const NginxConfig& config)
+request_handler* static_request_handler::init(const std::string& location_path, const NginxConfig& config)
 {
-    std::vector<location_parse_result> location_results = config.get_location_result();
-    for (location_parse_result loc_res : location_results) {
-        if (loc_res.handler_name == "StaticHandler") {  // Location for echo
-            return new static_request_handler(loc_res.root_path, loc_res.uri);
-        }
-    }
-    // default root_path and uri
-    return new static_request_handler(".", "/static");
+    //return new static_request_handler(&config, location_path);
+    
+   if(!config.get_value_from_statement("root").empty()){
+        return new static_request_handler(&config, location_path);
+   }else{
+        // default root_path and uri
+        NginxConfig* default_config = new NginxConfig;
+        std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
+        statement->tokens_.push_back("root");
+        statement->tokens_.push_back("\".\";");
+        default_config->statements_.push_back(statement);
+        return new static_request_handler(default_config, "/static");
+   }
 }
 
 std::string static_request_handler::get_file_name(std::string uri)

@@ -4,7 +4,7 @@
 #include <time.h>
 #include <iostream>
 
-request_handler* echo_request_handler::init(const NginxConfig& config)
+request_handler* echo_request_handler::init(const std::string& location_path, const NginxConfig& config)
 {
     return new echo_request_handler();
 }

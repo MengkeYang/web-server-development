@@ -10,7 +10,7 @@ class NginxConfig;
 class request_handler
 {
 public:
-    static request_handler* init(const NginxConfig& config) {};
+    static request_handler* init(const std::string& location_path, const NginxConfig& config) {};
     virtual response handle_request(const request& req) = 0;
     virtual ~request_handler() {};
 };

@@ -41,7 +41,7 @@ protected:
                         loc_res.uri, std::move(er)));
             } else if (loc_res.handler_name == "StaticHandler"){  // Location for serving static files
                 std::unique_ptr<static_request_handler> sr =
-                    std::make_unique<static_request_handler>(loc_res.root_path, loc_res.uri);
+                    std::make_unique<static_request_handler>(loc_res.block_config, loc_res.uri);
                 location_handlers_.insert(
                     std::pair<std::string, std::unique_ptr<request_handler>>(
                         loc_res.uri, std::move(sr)));

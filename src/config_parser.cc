@@ -69,13 +69,10 @@ std::vector<location_parse_result> NginxConfig::get_location_result() const
             std::string source(statement->tokens_[1]);
             source = source.substr(1, source.length() - 2);
             std::string handler_name(statement->tokens_[2]);
-            std::string dest;
+            NginxConfig* dest = nullptr;
             if (statement->child_block_.get() != nullptr) {
-                dest = statement->child_block_.get()->get_value_from_statement(
-                    "root");
-                if (dest.length() != 0)
-                    dest = dest.substr(1, dest.length() - 2);
-            }
+                 dest = statement->child_block_.get();
+             }
             location_parse_result lgr;
             lgr = {source,handler_name,dest};
             result.push_back(lgr);
