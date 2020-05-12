@@ -2,7 +2,6 @@
 //
 
 #include "request_parser.h"
-#include <iostream>
 #include "request.h"
 #include <string>
 
@@ -14,6 +13,11 @@ std::tuple<request_parser::result_type, char*> request_parser::parse(
     std::vector<std::string> line;
     bool valid = false;
     bool reading_rhs = false;
+    static const std::unordered_map<std::string, request::method>
+        str_to_method = {{"GET", request::method::GET},
+                         {"HEAD", request::method::HEAD},
+                         {"POST", request::method::POST},
+                         {"PUT", request::method::PUT}};
     while (begin != end) {
         if (reading_rhs) {
             if (*begin == '\r' || *begin == '\n') {
@@ -41,7 +45,6 @@ std::tuple<request_parser::result_type, char*> request_parser::parse(
         }
         if (*begin != ' ' && *begin != '\r' && *begin != '\n') tok += *begin;
         if (*begin == ' ' && tok.length() > 0) {
-            std::cout << tok << std::endl;
             line.push_back(tok);
             tok = "";
         }
@@ -60,23 +63,28 @@ std::tuple<request_parser::result_type, char*> request_parser::parse(
     }
 
     if (valid && lines.size() > 0) {
-        if (lines[0].size() != 3 || lines[0][0] != "GET" ||
-            lines[0][2] != "HTTP/1.1") {
+        if (lines[0].size() != 3) {
             req.method_ = request::method::INVALID;
             return std::make_tuple(bad, begin);
         }
-        req.method_ = request::method::GET;
+        std::unordered_map<std::string, request::method>::const_iterator it =
+            str_to_method.find(lines[0][0]);
+        if (it == str_to_method.end())
+            req.method_ = request::method::INVALID;
+        else
+            req.method_ = it->second;
+
         req.uri_ = lines[0][1];
+        req.http_version_ = lines[0][2];
 
         for (int i = 1; i < lines.size(); i++) {
-            //lines[i][0].pop_back();  // Removing the ':'
-            if (lines[i][1].at(0) == ' ') lines[i][1].erase(0,1);
-            std::cout << lines[i][0] << ": " << lines[i][1] << std::endl;
+            // lines[i][0].pop_back();  // Removing the ':'
+            if (lines[i][1].at(0) == ' ') lines[i][1].erase(0, 1);
             req.headers_.insert(std::make_pair(lines[i][0], lines[i][1]));
         }
         req.body_ = std::string(begin, end);
         return std::make_tuple(good, begin);
-    }
-    req.method_ = request::method::INVALID;
+    } else
+        req.method_ = request::method::INVALID;
     return std::make_tuple(bad, begin);
 }

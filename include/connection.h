@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
+#include "response.h"
 
 using boost::asio::ip::tcp;
 
@@ -34,9 +35,10 @@ public:
             cb,
         std::shared_ptr<session> s) = 0;
     virtual void write(
-        std::vector<boost::asio::const_buffer> bufs,
+        response_builder res_build,
         boost::function<void(std::shared_ptr<session> s,
-                             const boost::system::error_code &error)>
+                             const boost::system::error_code &error,
+                             response_builder res)>
             cb,
         std::shared_ptr<session> s) = 0;
     virtual ~connection() { socket_.close(); }
@@ -58,9 +60,10 @@ public:
                                    size_t bytes_transferred)>
                   cb,
               std::shared_ptr<session> s);
-    void write(std::vector<boost::asio::const_buffer> bufs,
+    void write(response_builder res_build,
                boost::function<void(std::shared_ptr<session> s,
-                                    const boost::system::error_code &error)>
+                                    const boost::system::error_code &error,
+                                    response_builder res)>
                    cb,
                std::shared_ptr<session> s);
 };

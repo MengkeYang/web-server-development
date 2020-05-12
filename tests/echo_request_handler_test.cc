@@ -25,6 +25,7 @@ TEST_F(echo_request_handler_test, echo_read)
     //request
     request r;
     r.method_ = request::GET;
+    r.http_version_ = "HTTP/1.1";
     r.uri_ = "/";
     r.body_ = "whole HTTP request";
 
@@ -32,9 +33,10 @@ TEST_F(echo_request_handler_test, echo_read)
 
     echo_request_handler echo_handler;
     response result;
-    result = echo_handler.create_response(r);
-    buffer_response b = result.build_response();
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.bufs[1])),
+    result = echo_handler.handle_request(r);
+    response_builder b;
+    b.set_response(result);
+    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.build()[1])),
     expected.length());
     std::cout << response_body << std::endl;
     //output

@@ -24,8 +24,7 @@ public:
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
     void start();
-    void process_req(size_t bytes_transferred);
-    int num_responses();
+    response_builder process_req(size_t bytes_transferred);
 
 private:
     // receive data from tcp read buffer
@@ -34,7 +33,7 @@ private:
                       size_t bytes_transferred);
     // send data to socket write buffer and call handle_read to continue read
     // data
-    void wait_for_req(const boost::system::error_code& error);
+    void wait_for_req(const boost::system::error_code& error, response_builder res_build);
 
     enum { max_len = 8192 };
     std::array<char, max_len> data_;
@@ -43,7 +42,7 @@ private:
     std::unique_ptr<connection> connection_;
     request request_;
     request_parser request_parser_;
-    std::vector<buffer_response> responses_;
+//    std::vector<buffer_response> responses_;
     log_helper* log_;
     std::map<std::string, std::unique_ptr<request_handler>> &location_handlers_;
 

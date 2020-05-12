@@ -64,9 +64,10 @@ void session::start()
                       shared_this);
 }
 
-void session::process_req(size_t bytes_transferred)
+response_builder session::process_req(size_t bytes_transferred)
 {
-    response response_;
+    response response;
+    response_builder res_build;
     // use longest prefix.
     bool matched = false;
     int max_matched_length = 0;
@@ -88,19 +89,19 @@ void session::process_req(size_t bytes_transferred)
         }
     }
     if (matched) {
-        response_ =
-            location_handlers_.at(max_matched_key)->create_response(request_);
+        response =
+            location_handlers_.at(max_matched_key)->handle_request(request_);
+        res_build.set_response(response);
     }
 
-    if (request_.method_ == request::method::INVALID && !matched)
-        response_.make_404_error();
+    if (request_.method_ != request::method::INVALID && !matched)
+        res_build.make_404_error();
     else if (!matched)
-        response_.make_400_error();
+        res_build.make_400_error();
 
-    responses_.push_back(response_.build_response());
+//    responses_.push_back(res_builder.build());
+    return res_build;
 }
-
-int session::num_responses() { return responses_.size(); }
 
 void session::received_req(const boost::system::error_code& error,
                            size_t bytes_transferred)
@@ -113,18 +114,16 @@ void session::received_req(const boost::system::error_code& error,
 
         log_->log_request_info(request_, connection_->socket());
 
-        process_req(bytes_transferred);
+        response_builder res_build;
+        res_build = process_req(bytes_transferred);
 
-        connection_->write(responses_.back().bufs, &session::wait_for_req,
+        connection_->write(res_build, &session::wait_for_req,
                            shared_this);
     }
 }
 
-void session::wait_for_req(const boost::system::error_code& error)
+void session::wait_for_req(const boost::system::error_code& error, response_builder res_build)
 {
-    if (responses_.size() > 0) {
-        responses_.pop_back();
-    }
     if (!error) {
         std::shared_ptr<session> shared_this(shared_from_this());
         connection_->read(boost::asio::buffer(data_, max_len),

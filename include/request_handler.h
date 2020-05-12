@@ -11,7 +11,7 @@ class request_handler
 {
 public:
     static std::unique_ptr<request_handler> init(const NginxConfig& config) {};
-    virtual response create_response(const request& req) = 0;
+    virtual response handle_request(const request& req) = 0;
     virtual ~request_handler() {};
 };
 #endif  // WNZA_REQUEST_HANDLER_H_

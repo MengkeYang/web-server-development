@@ -9,7 +9,8 @@ tcp::socket* connection::socket() { return &socket_; }
 
 void tcp_connection::read(
     boost::asio::mutable_buffer buf, size_t maxlen,
-    boost::function<void(std::shared_ptr<session> s, const boost::system::error_code& error,
+    boost::function<void(std::shared_ptr<session> s,
+                         const boost::system::error_code& error,
                          size_t bytes_transferred)>
         cb,
     std::shared_ptr<session> s)
@@ -21,10 +22,14 @@ void tcp_connection::read(
 }
 
 void tcp_connection::write(
-    std::vector<boost::asio::const_buffer> bufs,
-    boost::function<void(std::shared_ptr<session> s, const boost::system::error_code& error)>
-        cb, std::shared_ptr<session> s)
+    response_builder res_build,
+    boost::function<void(std::shared_ptr<session> s,
+                         const boost::system::error_code& error,
+                         response_builder res)>
+        cb,
+    std::shared_ptr<session> s)
 {
     boost::asio::async_write(
-        *socket(), bufs, boost::bind(cb, s, boost::asio::placeholders::error));
+        *socket(), res_build.build(),
+        boost::bind(cb, s, boost::asio::placeholders::error, res_build));
 }

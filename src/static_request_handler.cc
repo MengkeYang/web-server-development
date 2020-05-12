@@ -63,7 +63,7 @@ std::string static_request_handler::extension_to_type(
     return "application/octet-stream";  // Default for non-text file
 }
 
-void static_request_handler::file_to_body(std::string file_path, response &result)
+void static_request_handler::file_to_body(std::string file_path, response_builder &result)
 {
     // check path valid
     std::ifstream file(file_path, std::ios::binary);
@@ -86,9 +86,9 @@ void static_request_handler::file_to_body(std::string file_path, response &resul
     }
 }
 
-response static_request_handler::create_response(const request &req)
+response static_request_handler::handle_request(const request &req)
 {
-    response res;
+    response_builder res;
     if (req.method_ != request::INVALID) {
         res.set_code(response::status_code::OK);
         // change path
@@ -101,5 +101,5 @@ response static_request_handler::create_response(const request &req)
         res.make_400_error();
 
     res.make_date_servername_headers();
-    return res;
+    return res.get_response();
 }

@@ -22,6 +22,7 @@ TEST_F(request_parser_test, request_structure) {
   request example_request = {
       .method_=request::method::GET,
 	  .uri_="/index.html", 
+      .http_version_="HTTP/1.1",
 	  .headers_=example_headers, 
 	  .body_="body part"
   };
@@ -45,6 +46,25 @@ TEST_F(request_parser_test, bad_method_request)
 
   test_file.open("./bad_method_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
+  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  test_file.close();
+  EXPECT_EQ(result, 1);
+}
+
+// test whether request_parser can parse valid header_line but invalid method
+TEST_F(request_parser_test, valid_header_bad_method_request)
+{
+  test_array = {'W','H','A','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n','\r','\n'};
+  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  test_file.close();
+  bool test = request_.method_ == request::method::INVALID;
+  EXPECT_EQ(test, true);
+}
+
+// test whether request_parser can parse invalid first line
+TEST_F(request_parser_test, bad_header_line)
+{
+  test_array = {'W','H','A','T',' ','/',' ','H','T','T','P','/','1','.','1',' ','A','\r','\n','\r','\n'};
   std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);

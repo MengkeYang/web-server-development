@@ -14,7 +14,7 @@ class status_request_handler : public request_handler
 public:
     status_request_handler(std::vector<location_parse_result> loc_res);
     static std::unique_ptr<request_handler> init(const NginxConfig& config);
-    response create_response(const request& req);
+    response handle_request(const request& req);
 
 
 private:

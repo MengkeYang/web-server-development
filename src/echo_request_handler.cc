@@ -11,15 +11,15 @@ std::unique_ptr<request_handler> echo_request_handler::init(const NginxConfig& c
     return er;
 }
 
-response echo_request_handler::create_response(const request& req)
+response echo_request_handler::handle_request(const request& req)
 {
-    response res;
+    response_builder res;
     if (req.method_ != request::INVALID) {
         res.set_code(response::status_code::OK);
         res.add_header("Content-Type", "text/plain");
-        std::string methods[] = {"GET", "POST", "PUT"};
+        std::string methods[] = {"GET", "POST", "PUT", "HEAD"};
         std::string body;
-        body += methods[req.method_] + " " + req.uri_ + " " + "HTTP/1.1\r\n";
+        body += methods[req.method_] + " " + req.uri_ + " " + req.http_version_ + "\r\n";
         for (auto&& entry : req.headers_)
             body += entry.first + ": " + entry.second + "\r\n";
         body += "\r\n";
@@ -30,5 +30,5 @@ response echo_request_handler::create_response(const request& req)
         res.make_400_error();
 
     res.make_date_servername_headers();
-    return res;
+    return res.get_response();
 }

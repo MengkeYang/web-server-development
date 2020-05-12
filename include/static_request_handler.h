@@ -12,9 +12,9 @@
 class static_request_handler : public request_handler
 {
 public:
-    static_request_handler(std::string root, std::string prefix);
+    static_request_handler(std::string root_uri, std::string prefix_uri);
     static std::unique_ptr<request_handler> init(const NginxConfig& config);
-    response create_response(const request& req);
+    response handle_request(const request& req);
 
 private:
     // for map path
@@ -22,7 +22,7 @@ private:
     std::string prefix_;
     std::string get_file_name(std::string uri);
     std::string extension_to_type(const std::string& extension);
-    void file_to_body(std::string uri, response &result);
+    void file_to_body(std::string uri, response_builder &result);
 };
 
 #endif

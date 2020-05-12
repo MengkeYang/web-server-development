@@ -15,9 +15,9 @@ std::unique_ptr<request_handler> status_request_handler::init(const NginxConfig&
     return sr;
 }
 
-response status_request_handler::create_response(const request& req)
+response status_request_handler::handle_request(const request& req)
 {
-    response res;
+    response_builder res;
     if (req.method_ != request::INVALID) {
         res.set_code(response::status_code::OK);
         res.add_header("Content-Type", "text/plain");
@@ -31,5 +31,5 @@ response status_request_handler::create_response(const request& req)
         res.make_400_error();
 
     res.make_date_servername_headers();
-    return res;
+    return res.get_response();
 }

@@ -5,35 +5,40 @@
 #include <memory>
 #include <boost/filesystem/fstream.hpp>
 
+void response_builder::set_response(response& res) {
+    response_ = res;
+}
+
+response response_builder::get_response() { return response_; }
+
 /**
  * Construct an HTTP response message according to HTTP 1.1 based on the values
  * that were setup from the add_header and add_data methods. The return value
  * can be directly passed to async_write.
  */
-buffer_response response::build_response()
+std::vector<boost::asio::const_buffer> response_builder::build()
 {
     std::vector<boost::asio::const_buffer> resp;
     std::shared_ptr<std::string> entire_header = std::make_shared<std::string>();
     *entire_header += "HTTP/1.1 ";
-    switch (code_) {
-        case OK: *entire_header += "200 OK"; break;
-        case BAD_REQ: *entire_header += "400 Bad Request"; break;
-        case NOT_FOUND: *entire_header += "404 Not Found"; break;
+    switch (response_.code_) {
+        case response::status_code::OK: *entire_header += "200 OK"; break;
+        case response::status_code::BAD_REQ: *entire_header += "400 Bad Request"; break;
+        case response::status_code::NOT_FOUND: *entire_header += "404 Not Found"; break;
     }
     *entire_header += "\r\n";
 
-    for (auto&& h : headers_) *entire_header += h.first + ": " + h.second + "\r\n";
+    for (auto&& h : response_.headers_) *entire_header += h.first + ": " + h.second + "\r\n";
     *entire_header += "\r\n";
 
-    buffer_response result;
-    result.head = entire_header;
-    result.body = std::make_shared<std::string>(body_);
+    head_ = entire_header;
+    body_ = std::make_shared<std::string>(response_.body_);
 
-    resp.push_back(boost::asio::buffer(*result.head));
-    resp.push_back(boost::asio::buffer(*result.body));
-    result.bufs = resp;
+    resp.push_back(boost::asio::buffer(*head_));
+    resp.push_back(boost::asio::buffer(*body_));
+    bufs_ = resp;
 
-    return result;
+    return bufs_;
 }
 
 /**
@@ -42,28 +47,28 @@ buffer_response response::build_response()
  * header must be added if data is being sent. This will be left to the sender
  * to coordinate.
  */
-void response::add_header(std::string key, std::string val)
+void response_builder::add_header(std::string key, std::string val)
 {
-    headers_[key] = val;
+    response_.headers_[key] = val;
 }
 
-void response::add_body(std::string data) { body_ = data; }
+void response_builder::add_body(std::string data) { response_.body_ = data; }
 
-void response::set_code(status_code code)
+void response_builder::set_code(response::status_code code)
 {
-    code_ = code;
+    response_.code_ = code;
 }
 
-void response::make_400_error()
+void response_builder::make_400_error()
 {
-    set_code(status_code::BAD_REQ);
+    set_code(response::status_code::BAD_REQ);
     add_header("Content-Length", "0");
     add_body("");
 }
 
-void response::make_404_error()
+void response_builder::make_404_error()
 {
-    set_code(status_code::NOT_FOUND);
+    set_code(response::status_code::NOT_FOUND);
     std::ifstream file("404page.html", std::ios::binary);
     std::string body;
     if (file.is_open()) {
@@ -77,7 +82,7 @@ void response::make_404_error()
 
 }
 
-void response::make_date_servername_headers()
+void response_builder::make_date_servername_headers()
 {
    // Setting Date and Server name headers
     char buf[1000];
