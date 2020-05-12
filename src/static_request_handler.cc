@@ -1,6 +1,7 @@
 #include <iostream>
 #include "static_request_handler.h"
 #include "config_parser.h"
+#include "not_found_request_handler.h"
 #include <time.h>
 
 // constructor
@@ -68,7 +69,7 @@ std::string static_request_handler::extension_to_type(
     return "application/octet-stream";  // Default for non-text file
 }
 
-void static_request_handler::file_to_body(std::string file_path, response_builder &result)
+bool static_request_handler::file_to_body(std::string file_path, response_builder &result)
 {
     // check path valid
     std::ifstream file(file_path, std::ios::binary);
@@ -86,8 +87,9 @@ void static_request_handler::file_to_body(std::string file_path, response_builde
         result.add_body(body);
         result.add_header("Content-Type", extension_to_type(extension));
         result.add_header("Content-Length", std::to_string(body.length()));
+        return true;
     } else {
-        result.make_404_error();
+        return false;
     }
 }
 
@@ -101,7 +103,9 @@ response static_request_handler::handle_request(const request &req)
         std::string uri = root_ + filename;
 
         // Copy the requested file into the response body
-        file_to_body(uri, res);
+        if (!file_to_body(uri, res)) {
+            return not_found_request_handler::handle_request(req);
+        }
     } else
         res.make_400_error();
 

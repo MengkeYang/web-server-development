@@ -8,8 +8,9 @@
 #include "request_handler.h"
 #include "request.h"
 #include "response.h"
+#include "not_found_request_handler.h"
 
-class static_request_handler : public request_handler
+class static_request_handler : public not_found_request_handler
 {
 public:
     static_request_handler(const NginxConfig* config, std::string prefix_uri);
@@ -22,7 +23,7 @@ private:
     std::string prefix_;
     std::string get_file_name(std::string uri);
     std::string extension_to_type(const std::string& extension);
-    void file_to_body(std::string uri, response_builder &result);
+    bool file_to_body(std::string uri, response_builder &result);
 };
 
 #endif
