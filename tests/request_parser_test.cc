@@ -1,5 +1,5 @@
 #include <fstream>
-#include <unordered_map>
+#include <map>
 #include "gtest/gtest.h"
 #include "request.h"
 #include "request_parser.h"
@@ -18,11 +18,11 @@ protected:
 
 // test request and header structure
 TEST_F(request_parser_test, request_structure) {
-  std::unordered_map<std::string, std::string> example_headers{std::make_pair("content", "val")};
+  std::map<std::string, std::string> example_headers{std::make_pair("content", "val")};
   request example_request = {
       .method_=request::method::GET,
 	  .uri_="/index.html", 
-      .http_version_="HTTP/1.1",
+      .version_="HTTP/1.1",
 	  .headers_=example_headers, 
 	  .body_="body part"
   };

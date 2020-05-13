@@ -4,6 +4,7 @@
 #include "request_parser.h"
 #include "request.h"
 #include <string>
+#include <unordered_map>
 
 std::tuple<request_parser::result_type, char*> request_parser::parse(
     request& req, char* begin, char* end)
@@ -75,7 +76,7 @@ std::tuple<request_parser::result_type, char*> request_parser::parse(
             req.method_ = it->second;
 
         req.uri_ = lines[0][1];
-        req.http_version_ = lines[0][2];
+        req.version_ = lines[0][2];
 
         for (int i = 1; i < lines.size(); i++) {
             // lines[i][0].pop_back();  // Removing the ':'

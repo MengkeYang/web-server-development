@@ -4,16 +4,16 @@
 #include <boost/asio.hpp>
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <map>
 
 class response
 {
 public:
     enum status_code { BAD_REQ, NOT_FOUND, OK };
 
-    std::unordered_map<std::string, std::string> headers_;
-    std::string body_;
     status_code code_;
+    std::map<std::string, std::string> headers_;
+    std::string body_;
 };
 
 class response_builder

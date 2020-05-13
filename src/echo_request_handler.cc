@@ -17,7 +17,7 @@ response echo_request_handler::handle_request(const request& req)
         res.add_header("Content-Type", "text/plain");
         std::string methods[] = {"GET", "POST", "PUT", "HEAD"};
         std::string body;
-        body += methods[req.method_] + " " + req.uri_ + " " + req.http_version_ + "\r\n";
+        body += methods[req.method_] + " " + req.uri_ + " " + req.version_ + "\r\n";
         for (auto&& entry : req.headers_)
             body += entry.first + ": " + entry.second + "\r\n";
         body += "\r\n";
