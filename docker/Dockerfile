@@ -19,7 +19,7 @@ FROM ubuntu:bionic as deploy
 
 # Copy server output binary to "."
 COPY --from=builder /usr/src/projects/WNZA/build/bin/server_executable .
-COPY --from=builder /usr/src/projects/WNZA/tests/example_server_static .
+COPY --from=builder /usr/src/projects/WNZA/tests/deploy_config .
 COPY --from=builder /usr/src/projects/WNZA/tests/snake.html .
 COPY --from=builder /usr/src/projects/WNZA/tests/cat.jpg .
 COPY --from=builder /usr/src/projects/WNZA/tests/404page.html .
@@ -33,4 +33,4 @@ EXPOSE 80
 ENTRYPOINT ["./server_executable"]
 
 # Use CMD to specify arguments to ENTRYPOINT
-CMD ["example_server_static"]
+CMD ["deploy_config"]

@@ -1,0 +1,11 @@
+port 80;
+
+location "/static/" StaticHandler {
+    root ".";   # supports relative path
+}
+
+location "/echo/" EchoHandler {}
+
+location "/status" StatusHandler {}
+
+location "/" NotFoundHandler {} # Returns 404 page
