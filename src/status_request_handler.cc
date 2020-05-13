@@ -29,6 +29,9 @@ response status_request_handler::handle_request(const request& req)
         body << records.str();
         res.add_header("Content-Length", std::to_string(body.str().length()));
         res.add_body(body.str());
+        body.str("");
+        records.str("");
+        all_handlers.str("");
     } else
         res.make_400_error();
 
@@ -40,6 +43,7 @@ response status_request_handler::handle_request(const request& req)
 std::stringstream status_request_handler::get_request_records()
 {
     std::stringstream records;
+    records.str("");
     std::vector<std::string> file_names;
 
     bool handlers_found = false;
@@ -71,12 +75,12 @@ std::stringstream status_request_handler::get_request_records()
                             if (line.at(i) == ' ') {
                                 if (count%2 == 0) {
                                     all_handlers << temp;
-                                    temp.clear();
                                 }
                                 else {
                                     all_handlers << temp << "\r\n";
                                     all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
                                 }
+                                temp.clear();
                                 count++;
                             } 
                             else
