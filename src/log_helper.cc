@@ -1,6 +1,7 @@
 #include "log_helper.h"
 #include "request.h"
 #include "response.h"
+#include "config_parser.h"
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -75,5 +76,15 @@ void log_helper::log_response_info(request req, response res, tcp::socket* socke
     std::stringstream str_stream;
     str_stream << "Trace: ";
     str_stream << codes[res.code_] << " for request: " << req.uri_;
+    BOOST_LOG_SEV(lg, trace) << str_stream.str();
+}
+
+void log_helper::log_all_handlers(const NginxConfig& config)
+{
+    std::stringstream str_stream;
+    std::vector<location_parse_result> handlers_info = config.get_location_result();
+    str_stream << "all handlers: ";
+    for (location_parse_result loc_res : handlers_info)
+        str_stream << loc_res.handler_name + " " + loc_res.uri + " ";
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }

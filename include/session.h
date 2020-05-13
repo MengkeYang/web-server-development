@@ -19,8 +19,8 @@ class session : public std::enable_shared_from_this<session>
 {
 public:
     session(std::unique_ptr<connection> connection, 
-    log_helper* log, const NginxConfig &config,
-    std::map<std::string, std::unique_ptr<request_handler>> &location_handlers);
+        log_helper* log, std::map<std::string, 
+        std::unique_ptr<request_handler>> &location_handlers);
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -43,7 +43,7 @@ private:
     std::unique_ptr<connection> connection_;
     request request_;
     request_parser request_parser_;
-//    std::vector<buffer_response> responses_;
+//  std::vector<buffer_response> responses_;
     log_helper* log_;
     std::map<std::string, std::unique_ptr<request_handler>> &location_handlers_;
 

@@ -86,7 +86,7 @@ TEST_F(session_test, bad_parse_generates_response)
 {
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
-    session session_(std::move(conn), lg, config,location_handlers_);
+    session session_(std::move(conn), lg, location_handlers_);
     session_.process_req(0);
 //    EXPECT_EQ(session_.num_responses(), 1);
     EXPECT_EQ(1, 1);
@@ -96,7 +96,7 @@ TEST_F(session_test, return_socket)
 {
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
-    session session_(std::move(conn), lg, config, location_handlers_);
+    session session_(std::move(conn), lg, location_handlers_);
     auto sock = session_.socket();
     EXPECT_NE(nullptr, sock);
 }
@@ -106,7 +106,7 @@ TEST_F(session_test, responses_are_cleared_once_sent)
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
     std::shared_ptr<session> session_ =
-        std::make_shared<session>(std::move(conn), lg, config, location_handlers_);
+        std::make_shared<session>(std::move(conn), lg, location_handlers_);
     session_->start();
     //EXPECT_EQ(session_->num_responses(), 0);
     EXPECT_EQ(1, 1);
@@ -117,6 +117,6 @@ TEST_F(session_test, session_delete_no_segfault)
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(error, std::move(s), res_build);
     std::shared_ptr<session> session_ =
-        std::make_shared<session>(std::move(conn), lg, config, location_handlers_);
+        std::make_shared<session>(std::move(conn), lg, location_handlers_);
     EXPECT_NO_THROW(session_->start());
 }

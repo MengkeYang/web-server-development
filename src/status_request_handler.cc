@@ -1,41 +1,34 @@
-#include <iostream>
 #include "status_request_handler.h"
-#include "config_parser.h"
 
-using namespace boost::filesystem;
-
-status_request_handler::status_request_handler(std::vector<location_parse_result> loc_res)
-{
-    handlers_info_ = loc_res;
-}
 
 request_handler* status_request_handler::init(const std::string& location_path, const NginxConfig& config)
 {
-    return new status_request_handler(config.get_location_result());
+    return new status_request_handler();
 }
 
 response status_request_handler::handle_request(const request& req)
 {
     response_builder res;
+    interval_len = 50;
     if (req.method_ != request::INVALID) {
         res.set_code(response::status_code::OK);
         res.add_header("Content-Type", "text/plain");
-        std::string body;
+        std::stringstream body;
+        std::stringstream records = get_request_records();
 
         // list request handlers and URLs
-        body += "handlers name \t URL prefixes\r\n";
-        for (location_parse_result loc_res : handlers_info_)
-            body += loc_res.handler_name + " \t " + loc_res.uri + "\r\n";
+        body << std::left << std::setfill(' ') 
+             << std::setw(interval_len) << "handlers name" << "URL prefixes\r\n";
+        body << all_handlers.str();
         
-        body += "\r\n";
+        body << "\r\n";
 
         // list requests and response codes
-        body += "requests URL \t response codes\r\n";
-        std::vector<std::string> records = get_request_records();
-        for (std::string record : records)
-            body += record + "\r\n";
-        res.add_header("Content-Length", std::to_string(body.length()));
-        res.add_body(body);
+        body << std::left << std::setfill(' ') 
+             << std::setw(interval_len) << "requests URL" << "response codes\r\n";
+        body << records.str();
+        res.add_header("Content-Length", std::to_string(body.str().length()));
+        res.add_body(body.str());
     } else
         res.make_400_error();
 
@@ -43,16 +36,18 @@ response status_request_handler::handle_request(const request& req)
     return res.get_response();
 }
 
-std::vector<std::string> status_request_handler::get_request_records()
+
+std::stringstream status_request_handler::get_request_records()
 {
-    std::vector<std::string> records;
+    std::stringstream records;
     std::vector<std::string> file_names;
 
+    bool handlers_found = false;
     // list all log files in log directory
-    path p("../log");
-    directory_iterator end_itr;
-    for (directory_iterator itr(p); itr != end_itr; ++itr) {
-        if (is_regular_file(itr->path())) {
+    boost::filesystem::path p("../log");
+    boost::filesystem::directory_iterator end_itr;
+    for (boost::filesystem::directory_iterator itr(p); itr != end_itr; ++itr) {
+        if (boost::filesystem::is_regular_file(itr->path())) {
             file_names.push_back(itr->path().string());
         }
     }
@@ -65,6 +60,32 @@ std::vector<std::string> status_request_handler::get_request_records()
             std::string line;
             // check each line of log
             while (std::getline(file, line)) {
+                // if need all handlers: match "all handlers: "
+                if (!handlers_found) {
+                    std::size_t found = line.find("all handlers:");
+                    if (found!=std::string::npos) {
+                        int count = 0;
+                        all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
+                        std::string temp;
+                        for (std::size_t i=found+14; i<line.size(); i++) {
+                            if (line.at(i) == ' ') {
+                                if (count%2 == 0) {
+                                    all_handlers << temp;
+                                    temp.clear();
+                                }
+                                else {
+                                    all_handlers << temp << "\r\n";
+                                    all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
+                                }
+                                count++;
+                            } 
+                            else
+                                temp.push_back(line.at(i));
+                        }
+                        handlers_found = true;
+                    } 
+                }
+
                 // match "for request" in log
                 std::size_t found = line.find("for request:");
                 if (found!=std::string::npos) {
@@ -74,12 +95,12 @@ std::vector<std::string> status_request_handler::get_request_records()
                         request_url.push_back(line.at(i));
                     // get response code
                     if (request_url.size() != 0)
-                        records.push_back(request_url + "\t\t" + line.substr(found-4, 3));
+                        records << std::left << std::setfill(' ') 
+                                << std::setw(interval_len) << request_url << line.substr(found-4, 3) << "\r\n";
                 } 
             }
             file.close();
         }
     }
-
     return records;
 }

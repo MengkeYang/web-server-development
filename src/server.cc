@@ -21,7 +21,7 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
     signals_.async_wait(boost::bind(&server::signal_handler, this,
                                     boost::asio::placeholders::error,
                                     boost::asio::placeholders::signal_number));
-    std::vector<location_parse_result> location_results = config.get_location_result();
+    std::vector<location_parse_result> location_results = config_.get_location_result();
     for (location_parse_result loc_res : location_results) {
         if (loc_res.handler_name == "EchoHandler") {  // Location for echo
             std::unique_ptr<request_handler> er(echo_request_handler::init(loc_res.uri, *loc_res.block_config));
@@ -45,6 +45,8 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
                     loc_res.uri, std::move(sr)));
         }
     }
+    // log handlers info for status handler
+    log_->log_all_handlers(config_);
     start_accept();
 }
 
@@ -62,7 +64,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_));
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn), log_, config_, location_handlers_);
+        std::make_shared<session>(std::move(conn), log_, location_handlers_);
 
     acceptor_.async_accept(
         *(new_session->socket()),

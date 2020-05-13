@@ -9,7 +9,6 @@ using boost::asio::ip::tcp;
 
 session::session(
     std::unique_ptr<connection> connection, log_helper* log,
-    const NginxConfig& config,
     std::map<std::string, std::unique_ptr<request_handler>>& location_handlers)
     : connection_(std::move(connection)),
       log_(log),
