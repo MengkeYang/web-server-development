@@ -29,7 +29,6 @@ response_builder session::process_req(size_t bytes_transferred)
 {
     response response;
     response_builder res_build;
-    // use longest prefix.
     bool matched = false;
     int max_matched_length = 0;
     std::string max_matched_key;

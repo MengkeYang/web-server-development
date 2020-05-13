@@ -26,6 +26,9 @@ private:
     void handle_accept(std::shared_ptr<session> new_session,
                        const boost::system::error_code& error);
     void signal_handler(const boost::system::error_code& ec, int signal_number);
+    void add_request_handler(
+        std::function<request_handler*(const std::string&, NginxConfig&)> init,
+        location_parse_result res);
 
     boost::asio::io_service& io_;
     tcp::socket socket_;

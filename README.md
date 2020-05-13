@@ -1,4 +1,7 @@
 # WNZA HTTP Server
+Weijia, Mengke, Zongze, Adam
+
+[TOC]
 
 ## Source Layout
 Our directory structure separates header files from their corresponding
@@ -8,28 +11,98 @@ tests and files necessary for the tests are located in the tests/ directory. We
 also have dockerfiles placed in the docker/ directory. Finally, output log files
 are stored in the log/ directory.
 
+
+Our source code is organized by the classes which are implemented and then the
+main code is placed into `server_main.cc`.
+`server_main.cc`:
+    * Handles all command line arguments, starting a server instance, and
+      catching any runtime exceptions.
+`server.cc`:
+    * Implementation of the server class which deals with the parsing of the
+      config file, listening on a specified port, and creating new session
+      objects for every connection established to the server.
+`session.cc`:
+    * A session holds a connection object which represents the TCP connection
+      between client and server. A session deals with processing and dispatching
+      requests to certain request handlers and sending responses by using
+      methods of the connection class.
+    * When data is being written to a socket in the session object it is
+      important that the data stored in the Boost buffer remains valid until
+      after the data is completely sent. This is why a response_builder object
+      is passed to the callback function whenever performing a write operation.
+      If this convention is not followed, then undefined behavior will probably
+      be noticed.
+`connection.cc`:
+    * The connection uses the Boost
+      [Asio](https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio.html)
+      library to send data stored in a Boost
+      [buffer](https://www.boost.org/doc/libs/1_50_0/doc/html/boost_asio/reference/buffer.html)
+      to a socket using TCP. The tcp_connection class is derived from a abstract
+      base class connection so that other possible types of connections can be
+      used instead of TCP.
+`request_parser.cc`:
+    * The request parser parses an HTTP request and populates the fields of the
+      request object with all the relevant information.
+`response.cc`:
+    * This file contains the implementations of all the methods of
+      `response_builder` which are used to create a response by a request
+      handler by using some convenient functions like the add_header() function.
+      Since the response object does not have any methods, this file only
+      relates to the builder for a response.
+`config_parser.cc`:
+    * Parse the config file into `location_parse_result`s.
+`log_helper.cc`
+    * Provides useful functions which use the Boost logging library to log
+      certain information about the server during runtime.
+`echo_request_handler.cc`:
+    * Implementation of the echo request handler.
+`static_request_handler.cc`:
+    * Implementation of the static request handler. This derives from the echo
+      request handler.
+`status_request_handler.cc`:
+    * Implementation of the status request handler.
+`not_found_request_handler.cc`:
+    * Implementation of the 404 handler.
+
 ## Usage
 ### Build
 #### Local Environment
-To build the main executable create a new directory at the top level of the
-project called "build" which will be where the build is performed. Then perform
-the following commands:
+To build the main executable we will create a new directory at the top level of
+the project called *build* which will be where the build is performed. Then use
+cmake and make to build the project:
 ```bash
+mkdir build
 cd build
 cmake ..
 make
 ```
-This will change your directory to the build folder, create all necessary build
-files using cmake, and then perform the build with make.
+This will create the build directory, change your directory to the build folder,
+create all necessary build files using cmake, and then perform the build with
+make. To build the coverage instrumented build, create a new top level directory
+for the build called *build_coverage* and then execute the following commands as
+also explained
+[here](https://www.cs130.org/guides/cmake/#test-code-coverage-reports).
+```bash
+mkdir build_coverage
+cd build_coverage
+cmake -DCMAKE_BUILD_TYPE=Coverage ..
+make coverage
+```
 
 #### Docker
+Refer to the CS130 Docker [guide](https://www.cs130.org/guides/docker/) to setup
+Docker in your local development environment and for the basics of building and
+running Docker containers. The below information just covers the same
+information but specifically in the context of running the WNZA server.
+
 To build the Docker container, the base image must first be built and then the
 main image can be built. To build the base image, in the top most directory
-perform the following:
+build the environment specified in `docker/base.Dockerfile`:
 ```bash
 docker build -f docker/base.Dockerfile -t wnza:base .
 ```
-Now we can build the main Docker image by performing the following command:
+Now we can build the main Docker image which is specified by
+`docker/Dockerfile`:
 ```bash
 docker build -f docker/Dockerfile -t wnza:latest .
 ```
@@ -42,7 +115,7 @@ docker build -f docker/coverage.Dockerfile -t wnza:coverage .
 #### Local Environment
 Our integration test depends on the environment variable `PATH_TO_BIN` being
 set, so before running any tests remember to set this environment variable. When
-building a testing with Docker this is already handled by the Dockerfile. To set
+building and testing with Docker this is already handled by the Dockerfile. To set
 `PATH_TO_BIN` run the following command in your development environment where
 the tests are being performed:
 ```bash
@@ -54,9 +127,17 @@ you do not want to deal with setting this variable.
 
 All of our tests are incorporated into the build system, so to run all the tests
 at once just run `make test` when your current directory is the build
-directory. To run tests with the coverage build and calculate the test coverage,
-follow the build instructions above for the coverage build, then run `make
-coverage` when inside the build_coverage directory.
+directory.
+
+To run tests with the coverage build and calculate the test coverage,
+first change the `PATH_TO_BIN` environment variable to the location of the the
+coverage build by executing the following in your developement environment:
+```bash
+export PATH_TO_BIN=../build_coverage/bin/server_executable
+```
+Then follow the build instructions in the [build section](#build) relating to
+the coverage build, then run `make coverage` when inside the build_coverage
+directory.
 
 #### Docker
 To test with Docker, just follow the above build instructions for the Docker
@@ -100,22 +181,31 @@ important points to note are that the class inherits from `public
 request_handler` and the init() and handle_request() functions from
 request_handler are overwritten. These three points are the only requirements
 necessary to building a new request_handler which can be used with the server.
+The arguments to the request handler's init function are the scoped
+`NginxConfig` (everything between the curly brackets of a location directive)
+and the string location_path. The `NginxConfig` can be used to pass arguments
+directly to a request handler based on statements that are placed inside the
+location directive. The location_path comes from the URI prefix which a request
+was matched to before being dispatched to this handler. This information is
+important for a handler which needs to know how to correctly interpret the
+`uri_` field of a request.
 ```c++
 class echo_request_handler : public request_handler
 {
 public:
-    static std::unique_ptr<request_handler> init(const NginxConfig& config);
+    static request_handler* init(const std::string& location_path,
+                                 const NginxConfig& config);
     response handle_request(const request& req);
 };
 ```
 
 For the implementation of the init method, we create an echo_request_handler on
-the heap and then return the pointer to it from the init method.
+the heap and then return the pointer to it. We manage this pointer with a
+`unique_ptr` after it is returned from init.
 ```c++
 request_handler* echo_request_handler::init(const NginxConfig& config)
 {
-    echo_request_handler* er = new echo_request_handler();
-    return er;
+    return new echo_request_handler();
 }
 ```
 
@@ -127,25 +217,71 @@ function.
 ```c++
 response echo_request_handler::handle_request(const request& req)
 {
-    response_builder res;   // Builds the response with its own functions
+    response_builder res;  // Provides a convenient API for building a response
     if (req.method_ != request::INVALID) {
         std::string methods[] = {"GET", "POST", "PUT", "HEAD"};
         std::string body;
 
+        // The set_code function is used to set HTTP response codes.
+        // The options are: BAD_REQ, NOT_FOUND, OK
         res.set_code(response::status_code::OK);
+
+        // The add_header(name, val) function is used to add a header to the
+        // response object.
         res.add_header("Content-Type", "text/plain");
 
-        body += methods[req.method_] + " " + req.uri_ + " " + "HTTP/1.1\r\n";
+        // The following code is what makes this handler the echo handler. The
+        // body of the response is created by reconstructing the request from the
+        // fields in the request object.
+        body += methods[req.method_] + " " + req.uri_ + " " + req.version_ + "\r\n";
         for (auto&& entry : req.headers_)
             body += entry.first + ": " + entry.second + "\r\n";
         body += "\r\n";
         body += req.body_;
-        res.add_header("Content-Length", std::to_string(body.length()));
-        res.add_body(body);
-    } else
-        res.make_400_error();
 
-    res.make_date_servername_headers(); // Add Date and Servername headers
+        // Once the body string is completely generated, add as the body of the
+        // response by using the add_body function of the builder.
+        res.add_body(body);
+        res.add_header("Content-Length", std::to_string(body.length()));
+    } else
+        res.make_400_error();   // Creates a 400 response with no body
+
+    res.make_date_servername_headers();
     return res.get_response();
 }
 ```
+
+Finally, once the request handler is implemented, it has to be added into the
+dispatch mechanism and a new keyword has to be added to the config file format
+to be able to create this handler. In this example, the keyword to create an
+echo handler is `EchoHandler`. Request handlers are added to the server by
+creating a vector of all the "location" keywords in the config file and storing
+the relavent informating from the config file in a structure called a
+`location_parse_result`. Then, we can iterate through all the possible
+declarations of request handlers and match the `handler_name` of the
+`location_parse_result` to whatever unique keyword was assigned for creating the
+specified request handlers. The following code exerpt shows how to create an
+`echo_request_handler` by matching `loc_res.handler_name` to "EchoHandler" and
+then simply calling the `add_request_handler` with the handler's init method and
+the `loc_res` object.
+```c++
+std::vector<location_parse_result> location_results =
+    config.get_location_result();
+for (location_parse_result loc_res : location_results) {
+    if (loc_res.handler_name == "EchoHandler") {
+        add_request_handler(echo_request_handler::init, loc_res);
+```
+
+Now that the request handlers are instantiated based off of the config file, the
+dispatch mechanism in the `session` class will direct all requests whose
+`uri_` field has the URI prefix from the location directive in the
+config as a prefix, to the specified request handler based on the unique token
+like "EchoHandler". As an example, we will use the following config file.
+```
+port 80;
+location "/echo/" EchoHandler {}
+```
+This config file will cause an `echo_request_handler` to be created and will
+get all requests with the prefix "/echo/". The dispatcher uses longest prefix
+match, so even if a request has the prefix of a certain handler, there may exist
+another handler defined which matched the request with a longer prefix.
