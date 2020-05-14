@@ -15,54 +15,78 @@ are stored in the log/ directory.
 Our source code is organized by the classes which are implemented and then the
 main code is placed into `server_main.cc`.
 `server_main.cc`:
-    * Handles all command line arguments, starting a server instance, and
-      catching any runtime exceptions.
+
+* Handles all command line arguments, starting a server instance, and
+catching any runtime exceptions.
+
 `server.cc`:
-    * Implementation of the server class which deals with the parsing of the
-      config file, listening on a specified port, and creating new session
-      objects for every connection established to the server.
+
+* Implementation of the server class which deals with the parsing of the
+config file, listening on a specified port, and creating new session
+objects for every connection established to the server.
+
 `session.cc`:
-    * A session holds a connection object which represents the TCP connection
-      between client and server. A session deals with processing and dispatching
-      requests to certain request handlers and sending responses by using
-      methods of the connection class.
-    * When data is being written to a socket in the session object it is
-      important that the data stored in the Boost buffer remains valid until
-      after the data is completely sent. This is why a response_builder object
-      is passed to the callback function whenever performing a write operation.
-      If this convention is not followed, then undefined behavior will probably
-      be noticed.
+
+* A session holds a connection object which represents the TCP connection
+between client and server. A session deals with processing and dispatching
+requests to certain request handlers and sending responses by using
+methods of the connection class.
+* When data is being written to a socket in the session object it is
+important that the data stored in the Boost buffer remains valid until
+after the data is completely sent. This is why a response_builder object
+is passed to the callback function whenever performing a write operation.
+If this convention is not followed, then undefined behavior will probably
+be noticed.
+
 `connection.cc`:
-    * The connection uses the Boost
-      [Asio](https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio.html)
-      library to send data stored in a Boost
-      [buffer](https://www.boost.org/doc/libs/1_50_0/doc/html/boost_asio/reference/buffer.html)
-      to a socket using TCP. The tcp_connection class is derived from a abstract
-      base class connection so that other possible types of connections can be
-      used instead of TCP.
+
+* The connection uses the Boost
+[Asio](https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio.html)
+library to send data stored in a Boost
+[buffer](https://www.boost.org/doc/libs/1_50_0/doc/html/boost_asio/reference/buffer.html)
+to a socket using TCP. The tcp_connection class is derived from a abstract
+base class connection so that other possible types of connections can be
+used instead of TCP.
+
 `request_parser.cc`:
-    * The request parser parses an HTTP request and populates the fields of the
-      request object with all the relevant information.
+
+* The request parser parses an HTTP request and populates the fields of the
+request object with all the relevant information.
+
 `response.cc`:
-    * This file contains the implementations of all the methods of
-      `response_builder` which are used to create a response by a request
-      handler by using some convenient functions like the add_header() function.
-      Since the response object does not have any methods, this file only
-      relates to the builder for a response.
+
+* This file contains the implementations of all the methods of
+`response_builder` which are used to create a response by a request
+handler by using some convenient functions like the `add_header()` function.
+Since the response object does not have any methods, this file only
+relates to the builder for a response.
+
 `config_parser.cc`:
-    * Parse the config file into `location_parse_result`s.
+
+* Parse the config file into `location_parse_result`s.
+
 `log_helper.cc`
-    * Provides useful functions which use the Boost logging library to log
-      certain information about the server during runtime.
+
+* Provides useful functions which use the Boost logging library to log
+certain information about the server during runtime.
+
 `echo_request_handler.cc`:
-    * Implementation of the echo request handler.
+
+* Implementation of the echo request handler.
+
 `static_request_handler.cc`:
-    * Implementation of the static request handler. This derives from the echo
-      request handler.
+
+* Implementation of the static request handler. This derives from the echo
+request handler.
+
 `status_request_handler.cc`:
-    * Implementation of the status request handler.
+
+* Implementation of the status request handler.
+
 `not_found_request_handler.cc`:
-    * Implementation of the 404 handler.
+
+* Implementation of the 404 handler.
+
 
 ## Usage
 ### Build
