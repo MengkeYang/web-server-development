@@ -32,20 +32,22 @@ response_builder session::process_req(size_t bytes_transferred)
     bool matched = false;
     int max_matched_length = 0;
     std::string max_matched_key;
-    for (auto&& pair : location_handlers_) {
-        // We compare the prefix without the final "/". So /echo matches
-        // with /echo/.
-        if (request_.uri_.length() > pair.first.length() &&
-            request_.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
-            continue;
-        if (request_.uri_.compare(
-                0, pair.first.length() - 1,
-                pair.first.substr(0, pair.first.length() - 1)) == 0) {
-            if (max_matched_length < pair.first.length()) {
-                max_matched_length = pair.first.length();
-                max_matched_key = pair.first;
+    if (request_.method_ != request::method::INVALID) {
+        for (auto&& pair : location_handlers_) {
+            // We compare the prefix without the final "/". So /echo matches
+            // with /echo/.
+            if (request_.uri_.length() > pair.first.length() &&
+                request_.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
+                continue;
+            if (request_.uri_.compare(
+                    0, pair.first.length() - 1,
+                    pair.first.substr(0, pair.first.length() - 1)) == 0) {
+                if (max_matched_length < pair.first.length()) {
+                    max_matched_length = pair.first.length();
+                    max_matched_key = pair.first;
+                }
+                matched = true;
             }
-            matched = true;
         }
     }
     if (matched) {
@@ -53,13 +55,9 @@ response_builder session::process_req(size_t bytes_transferred)
             location_handlers_.at(max_matched_key)->handle_request(request_);
         res_build.set_response(response);
     }
-
-    if (request_.method_ != request::method::INVALID && !matched)
-        res_build.make_404_error();
-    else if (!matched)
+    else
         res_build.make_400_error();
 
-//    responses_.push_back(res_builder.build());
     return res_build;
 }
 

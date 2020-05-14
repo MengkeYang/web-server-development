@@ -11,30 +11,29 @@ response status_request_handler::handle_request(const request& req)
 {
     response_builder res;
     interval_len = 50;
-    if (req.method_ != request::INVALID) {
-        res.set_code(response::status_code::OK);
-        res.add_header("Content-Type", "text/plain");
-        std::stringstream body;
-        std::stringstream records = get_request_records();
+    res.set_code(response::status_code::OK);
+    res.add_header("Content-Type", "text/plain");
+    std::stringstream body;
+    std::stringstream records = get_request_records();
 
-        // list request handlers and URLs
-        body << std::left << std::setfill(' ') 
-             << std::setw(interval_len) << "handlers name" << "URL prefixes\r\n";
-        body << all_handlers.str();
-        
-        body << "\r\n";
+    // list request handlers and URLs
+    body << std::left << std::setfill(' ') << std::setw(interval_len)
+         << "handlers name"
+         << "URL prefixes\r\n";
+    body << all_handlers.str();
 
-        // list requests and response codes
-        body << std::left << std::setfill(' ') 
-             << std::setw(interval_len) << "requests URL" << "response codes\r\n";
-        body << records.str();
-        res.add_header("Content-Length", std::to_string(body.str().length()));
-        res.add_body(body.str());
-        body.str("");
-        records.str("");
-        all_handlers.str("");
-    } else
-        res.make_400_error();
+    body << "\r\n";
+
+    // list requests and response codes
+    body << std::left << std::setfill(' ') << std::setw(interval_len)
+         << "requests URL"
+         << "response codes\r\n";
+    body << records.str();
+    res.add_header("Content-Length", std::to_string(body.str().length()));
+    res.add_body(body.str());
+    body.str("");
+    records.str("");
+    all_handlers.str("");
 
     res.make_date_servername_headers();
     return res.get_response();

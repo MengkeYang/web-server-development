@@ -32,7 +32,7 @@ $PATH_TO_BIN test_server_config &
 SERVER_ID=$!
 sleep 1s
 
-## Matching the output of server response to a regex expression
+## Test the echo request handler
 output=$(curl -s localhost:8080/echo)
 expected=$(cat integration_response1)
 diff -q <(sort <(echo "$output")) <(sort <(echo "$expected"))
@@ -45,15 +45,28 @@ else
     exit 1
 fi
 
-## Testing that some of the content of the message is correct
+## Testing static request handler by matching output to actual content
 tmpfile=$(mktemp)
-curl -s --output - localhost:8080/static/cat.jpg > "$tmpfile"
+curl -s -o "$tmpfile" localhost:8080/static/cat.jpg
 diff -q <(cat cat.jpg) <(cat "$tmpfile")
 if [ $? -eq 0 ]
 then
     echo "Passed Test 5"
 else
     echo "Failed Test 5"
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
+## Testing 404 handler by ensuring the "/" prefix gets the 404 page
+curl -s -o "$tmpfile" localhost:8080/
+diff -q <(cat 404page.html) <(cat "$tmpfile")
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 6"
+else
+    echo "Failed Test 6"
     kill -TERM $SERVER_ID
     rm "$tmpfile"
     exit 1

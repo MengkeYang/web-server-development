@@ -150,3 +150,43 @@ TEST_F(static_request_handler_test, diff_config_file)
     EXPECT_EQ(expected, response_body);
 
 }
+
+TEST_F(static_request_handler_test, 404_response_no_root_provided)
+{
+    request r;
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement);
+    statement->tokens_.push_back("moot");
+    statement->tokens_.push_back("\".\"");
+    block_config->statements_.push_back(statement);
+
+    request_handler* rh = static_request_handler::init("/static", *block_config);
+
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/cat.jpg";
+    response result;
+    result = rh->handle_request(r);
+    response_builder b;
+    bool check = (result.code_ == response::status_code::NOT_FOUND);
+    EXPECT_EQ(check, true);
+}
+
+TEST_F(static_request_handler_test, 400_response_bad_request)
+{
+    request r;
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement);
+    statement->tokens_.push_back("root");
+    statement->tokens_.push_back("\".\"");
+    block_config->statements_.push_back(statement);
+
+    request_handler* rh = static_request_handler::init("/static", *block_config);
+
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/1234fake.jpg";
+    response result;
+    result = rh->handle_request(r);
+    response_builder b;
+    bool check = (result.code_ == response::status_code::NOT_FOUND);
+    EXPECT_EQ(check, true);
+}

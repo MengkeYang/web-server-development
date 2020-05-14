@@ -8,51 +8,55 @@
 static_request_handler::static_request_handler(const NginxConfig* config, std::string prefix_uri)
 {
     int rlen;
-    std::string root_uri;
     int plen;
+    std::string root_uri;
     root_uri = config->get_value_from_statement("root");
+
+    // If the scoped block has a root, then use that as the root
+    // WARNING: If no root is present, we use "." as the default!
+    //          This should not happen.
     if (root_uri.length() != 0)
         root_uri = root_uri.substr(1, root_uri.length() - 2);
+    else
+        root_uri = ".";
+
     rlen = root_uri.length();
     plen = prefix_uri.length();
+
+    // Ensure that the root we store always ends in "/"
     if (root_uri.compare(rlen - 1, 1, "/") != 0)
         root_ = root_uri + "/";
     else
         root_ = root_uri;
+
+    // Ensure the handlers URI prefix always ends in "/"
     if (prefix_uri.compare(plen - 1, 1, "/") != 0)
         prefix_ = prefix_uri + "/";
     else
         prefix_ = prefix_uri;
 }
 
-request_handler* static_request_handler::init(const std::string& location_path, const NginxConfig& config)
+request_handler* static_request_handler::init(const std::string& location_path,
+                                              const NginxConfig& config)
 {
-    //return new static_request_handler(&config, location_path);
-    
-   if(!config.get_value_from_statement("root").empty()){
+    if (!config.get_value_from_statement("root").empty()) {
         return new static_request_handler(&config, location_path);
-   }else{
-        // default root_path and uri
-        NginxConfig* default_config = new NginxConfig;
-        std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
-        statement->tokens_.push_back("root");
-        statement->tokens_.push_back("\".\";");
-        default_config->statements_.push_back(statement);
-        return new static_request_handler(default_config, "/static");
-   }
+    } else {
+        return not_found_request_handler::init(location_path, config);
+    }
 }
 
+// Returns the a filename if the uri mapped to a valid file.
+// Otherwise, returns empty string.
 std::string static_request_handler::get_file_name(std::string uri)
 {
     int i = uri.rfind(prefix_);
     if (i != std::string::npos) {
         int len = prefix_.length();
-        std::cout << "This is the file name: " << uri.substr(i + len)
-                  << std::endl;
         return uri.substr(i + len);
     } else {
         // There was no match, this is bad so we should log an error.
-        return "404error.html";
+        return "";
     }
 }
 
@@ -96,18 +100,16 @@ bool static_request_handler::file_to_body(std::string file_path, response_builde
 response static_request_handler::handle_request(const request &req)
 {
     response_builder res;
-    if (req.method_ != request::INVALID) {
-        res.set_code(response::status_code::OK);
-        // change path
-        std::string filename = get_file_name(req.uri_);
-        std::string uri = root_ + filename;
+    res.set_code(response::status_code::OK);
 
-        // Copy the requested file into the response body
-        if (!file_to_body(uri, res)) {
-            return not_found_request_handler::handle_request(req);
-        }
-    } else
-        res.make_400_error();
+    // change path
+    std::string filename = get_file_name(req.uri_);
+    std::string uri = root_ + filename;
+
+    // Copy the requested file into the response body
+    if (filename.empty() || !file_to_body(uri, res)) {
+        return not_found_request_handler::handle_request(req);
+    }
 
     res.make_date_servername_headers();
     return res.get_response();
