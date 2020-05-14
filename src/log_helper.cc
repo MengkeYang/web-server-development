@@ -58,7 +58,7 @@ void log_helper::log_warning_file(std::string warning_message)
 
 void log_helper::log_request_info(request req, tcp::socket* socket)
 {
-    std::string methods[] = {"GET", "POST", "PUT", "INVALID"};
+    std::string methods[] = {"GET", "POST", "PUT", "HEAD", "INVALID"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
     str_stream << methods[req.method_] << " " << req.uri_ << " HTTP ";

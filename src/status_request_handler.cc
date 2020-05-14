@@ -24,10 +24,6 @@ response status_request_handler::handle_request(const request& req)
 
     body << "\r\n";
 
-    // list requests and response codes
-    body << std::left << std::setfill(' ') << std::setw(interval_len)
-         << "requests URL"
-         << "response codes\r\n";
     body << records.str();
     res.add_header("Content-Length", std::to_string(body.str().length()));
     res.add_body(body.str());
@@ -45,6 +41,7 @@ std::stringstream status_request_handler::get_request_records()
     std::stringstream records;
     records.str("");
     std::vector<std::string> file_names;
+    int num_requests = 0;
 
     bool handlers_found = false;
     // list all log files in log directory
@@ -55,6 +52,11 @@ std::stringstream status_request_handler::get_request_records()
             file_names.push_back(itr->path().string());
         }
     }
+
+    // list requests and response codes
+    records << std::left << std::setfill(' ') << std::setw(interval_len)
+            << "requests URL"
+            << "response codes\r\n";
 
     // check each log file
     for (std::string file_name : file_names) {
@@ -98,13 +100,18 @@ std::stringstream status_request_handler::get_request_records()
                     for (std::size_t i=found+13; i<line.size() && line.at(i)!=' '; i++)
                         request_url.push_back(line.at(i));
                     // get response code
-                    if (request_url.size() != 0)
+                    if (request_url.size() != 0) {
+                        num_requests++;
                         records << std::left << std::setfill(' ') 
                                 << std::setw(interval_len) << request_url << line.substr(found-4, 3) << "\r\n";
+                    }
                 } 
             }
             file.close();
         }
     }
-    return records;
+    std::stringstream full_record;
+    full_record << "Total Requests: " << num_requests << std::endl << std::endl;
+    full_record << records.rdbuf();
+    return full_record;
 }
