@@ -6,7 +6,6 @@
 #include <string.h>
 
 
-
 class status_request_handler_test : public ::testing::Test
 {
 protected:

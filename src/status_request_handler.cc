@@ -6,6 +6,7 @@ request_handler* status_request_handler::init(const std::string& location_path, 
     return new status_request_handler();
 }
 
+
 response status_request_handler::handle_request(const request& req)
 {
     response_builder res;
