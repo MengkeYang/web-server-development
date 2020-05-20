@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
+#include <mutex>
 #include "response.h"
 
 using boost::asio::ip::tcp;
@@ -23,7 +24,7 @@ class session;
 class connection
 {
     tcp::socket socket_;
-
+    std::mutex lock_;
 public:
     connection(tcp::socket socket) : socket_(std::move(socket)) {}
     tcp::socket *socket();
@@ -35,10 +36,10 @@ public:
             cb,
         std::shared_ptr<session> s) = 0;
     virtual void write(
-        response_builder res_build,
+        std::shared_ptr<response_builder> res_build,
         boost::function<void(std::shared_ptr<session> s,
                              const boost::system::error_code &error,
-                             response_builder res)>
+                             std::shared_ptr<response_builder> res)>
             cb,
         std::shared_ptr<session> s) = 0;
     virtual ~connection() { socket_.close(); }
@@ -52,6 +53,7 @@ public:
  */
 class tcp_connection : public connection
 {
+    std::mutex lock_;
 public:
     tcp_connection(tcp::socket s) : connection(std::move(s)) {}
     void read(boost::asio::mutable_buffer buf, size_t maxlen,
@@ -60,10 +62,10 @@ public:
                                    size_t bytes_transferred)>
                   cb,
               std::shared_ptr<session> s);
-    void write(response_builder res_build,
+    void write(std::shared_ptr<response_builder> res_build,
                boost::function<void(std::shared_ptr<session> s,
                                     const boost::system::error_code &error,
-                                    response_builder res)>
+                                    std::shared_ptr<response_builder> res)>
                    cb,
                std::shared_ptr<session> s);
 };

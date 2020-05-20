@@ -35,7 +35,7 @@ TEST_F(request_parser_test, empty_request)
 {
   test_file.open("./empty_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -46,7 +46,7 @@ TEST_F(request_parser_test, bad_method_request)
 
   test_file.open("./bad_method_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -55,7 +55,7 @@ TEST_F(request_parser_test, bad_method_request)
 TEST_F(request_parser_test, valid_header_bad_method_request)
 {
   test_array = {'W','H','A','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n','\r','\n'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   bool test = request_.method_ == request::method::INVALID;
   EXPECT_EQ(test, true);
@@ -65,7 +65,7 @@ TEST_F(request_parser_test, valid_header_bad_method_request)
 TEST_F(request_parser_test, bad_header_line)
 {
   test_array = {'W','H','A','T',' ','/',' ','H','T','T','P','/','1','.','1',' ','A','\r','\n','\r','\n'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -74,7 +74,7 @@ TEST_F(request_parser_test, bad_header_line)
 TEST_F(request_parser_test, bad_uri_request)
 {
   test_array = {'G','E','T',' ',25};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -83,7 +83,7 @@ TEST_F(request_parser_test, bad_uri_request)
 TEST_F(request_parser_test, bad_H_request)
 {
   test_array = {'G','E','T',' ','/',' ','A'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -92,7 +92,7 @@ TEST_F(request_parser_test, bad_H_request)
 TEST_F(request_parser_test, bad_T1_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','H'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -101,7 +101,7 @@ TEST_F(request_parser_test, bad_T1_request)
 TEST_F(request_parser_test, bad_T2_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','H'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -110,7 +110,7 @@ TEST_F(request_parser_test, bad_T2_request)
 TEST_F(request_parser_test, bad_P_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','T'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -119,7 +119,7 @@ TEST_F(request_parser_test, bad_P_request)
 TEST_F(request_parser_test, bad_slash_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','P'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -128,7 +128,7 @@ TEST_F(request_parser_test, bad_slash_request)
 TEST_F(request_parser_test, bad_major_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','/'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -137,7 +137,7 @@ TEST_F(request_parser_test, bad_major_request)
 TEST_F(request_parser_test, bad_major_continue_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','2','/'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -146,7 +146,7 @@ TEST_F(request_parser_test, bad_major_continue_request)
 TEST_F(request_parser_test, bad_minor_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','/'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -155,7 +155,7 @@ TEST_F(request_parser_test, bad_minor_request)
 TEST_F(request_parser_test, bad_minor_continue_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','1','/'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -165,7 +165,7 @@ TEST_F(request_parser_test, new_line1_request)
 {
   test_file.open("./new_line1_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -174,7 +174,7 @@ TEST_F(request_parser_test, new_line1_request)
 TEST_F(request_parser_test, bad_header_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n',25};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -183,7 +183,7 @@ TEST_F(request_parser_test, bad_header_request)
 TEST_F(request_parser_test, header_lws_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n',' ',' ','\r'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -192,7 +192,7 @@ TEST_F(request_parser_test, header_lws_request)
 TEST_F(request_parser_test, header_lws_ctl_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n',' '};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -201,7 +201,7 @@ TEST_F(request_parser_test, header_lws_ctl_request)
 TEST_F(request_parser_test, header_lws_other_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n',' ','b'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -210,7 +210,7 @@ TEST_F(request_parser_test, header_lws_other_request)
 TEST_F(request_parser_test, header_name_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n','d',25};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -219,7 +219,7 @@ TEST_F(request_parser_test, header_name_request)
 TEST_F(request_parser_test, space_before_request)
 {
   test_array = {'G','E','T',' ','/',' ','H','T','T','P','/','1','.','1','\r','\n','d',':',':'};
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 1);
 }
@@ -229,7 +229,7 @@ TEST_F(request_parser_test, empty_body_request)
 {
   test_file.open("./empty_body_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 0);
 }
@@ -239,7 +239,7 @@ TEST_F(request_parser_test, with_header_request)
 {
   test_file.open("./with_header_request", std::fstream::in);
   test_file.read(test_array.data(), test_array.size());
-  std::tie(result, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
+  std::tie(result, std::ignore, std::ignore) = request_parser_.parse(request_, test_array.data(), test_array.data() + test_array.size());
   test_file.close();
   EXPECT_EQ(result, 0);
 }

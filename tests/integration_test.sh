@@ -59,14 +59,42 @@ else
     exit 1
 fi
 
-## Testing 404 handler by ensuring the "/" prefix gets the 404 page
-curl -s -o "$tmpfile" localhost:8080/
-diff -q <(cat 404page.html) <(cat "$tmpfile")
+curl -s -o "$tmpfile" localhost:8080/static/snake.html
+diff -q <(cat snake.html) <(cat "$tmpfile")
 if [ $? -eq 0 ]
 then
     echo "Passed Test 6"
 else
     echo "Failed Test 6"
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
+## Testing 404 handler by ensuring the "/" prefix gets the 404 page
+curl -s -o "$tmpfile" localhost:8080/
+diff -q <(cat 404page.html) <(cat "$tmpfile")
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 7"
+else
+    echo "Failed Test 7"
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
+## Testing the multithreaded request handling
+echo "hello" | nc localhost 8080 &
+test_id=$!
+curl -s -o "$tmpfile" localhost:8080/static/mobydick.txt
+kill -TERM $test_id
+diff <(cat mobydick.txt) <(cat "$tmpfile")
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 8"
+else
+    echo "Failed Test 8"
     kill -TERM $SERVER_ID
     rm "$tmpfile"
     exit 1

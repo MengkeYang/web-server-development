@@ -10,147 +10,22 @@
 class static_request_handler_test : public ::testing::Test
 {
 protected:
-    void SetUp() override
-    {
+    response get_response(request& req, std::string root) {
+        response result;
+        NginxConfig* block_config = new NginxConfig;
+        std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement);
+
+        statement->tokens_.push_back("root");
+        statement->tokens_.push_back(root);
+        block_config->statements_.push_back(statement);
+        static_request_handler static_handler(block_config, "/static");
+
+        result = static_handler.handle_request(req);
+        return result;
     }
-    void TearDown() override { }
-    std::string expected;
-    NginxConfigParser config_parser;
-    NginxConfig config;
 };
 
-TEST_F(static_request_handler_test, file_read)
-{   
-    //set up
-    std::string file_name = "random_test.txt";
-    std::ifstream file(file_name, std::ios::binary);
-    std::string body;
-    char c;
-    while (file.get(c))
-        body += c;
-    file.close();
-    expected = body;
-    std::ofstream expected_out;
-    expected_out.open ("static_test/expected");
-    expected_out << expected;
-    expected_out.close();
-
-    config_parser.Parse("example_config_static", &config);
-
-    //request
-    request r;
-    NginxConfig* block_config = new NginxConfig;
-    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
-    statement->tokens_.push_back("root");
-    statement->tokens_.push_back("\".\"");
-    block_config->statements_.push_back(statement);
-    static_request_handler static_handler(block_config, "/static");
-    r.method_ = request::method::GET;
-    r.uri_ = "/static/random_test.txt";
-    std::string rd("");
-    response result;
-    result = static_handler.handle_request(r);
-    response_builder b;
-    b.set_response(result);
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.build()[1])),
-    expected.length());
-    //output
-    std::ofstream result_out;
-    result_out.open ("static_test/result");
-    result_out << response_body;
-    result_out.close();
-    EXPECT_EQ(expected, response_body);
-
-}
-
-TEST_F(static_request_handler_test, image_read)
-{   
-    //set up
-    std::string file_name = "cat.jpg";
-    std::ifstream file(file_name, std::ios::binary);
-    std::string body;
-    char c;
-    while (file.get(c))
-        body += c;
-    file.close();
-    expected = body;
-    std::ofstream expected_out;
-    expected_out.open ("static_test/expected");
-    expected_out << expected;
-    expected_out.close();
-
-    config_parser.Parse("example_config_static", &config);
-
-    //request
-    request r;
-    NginxConfig* block_config = new NginxConfig;
-    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
-    statement->tokens_.push_back("root");
-    statement->tokens_.push_back("\".\"");
-    block_config->statements_.push_back(statement);
-    static_request_handler static_handler(block_config, "/static");
-    r.method_ = request::method::GET;
-    r.uri_ = "/static/cat.jpg";
-    std::string rd("");
-    response result;
-    result = static_handler.handle_request(r);
-    response_builder b;
-    b.set_response(result);
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.build()[1])),
-    expected.length());
-    //output
-    std::ofstream result_out;
-    result_out.open ("static_test/result");
-    result_out << response_body;
-    result_out.close();
-    EXPECT_EQ(expected, response_body);
-
-}
-
-TEST_F(static_request_handler_test, diff_config_file)
-{   
-    //set up
-    std::string file_name = "cat.jpg";
-    std::ifstream file(file_name, std::ios::binary);
-    std::string body;
-    char c;
-    while (file.get(c))
-        body += c;
-    file.close();
-    expected = body;
-    std::ofstream expected_out;
-    expected_out.open ("static_test/expected");
-    expected_out << expected;
-    expected_out.close();
-
-    config_parser.Parse("./example_config_static2", &config);
-
-    //request
-    request r;
-    NginxConfig* block_config = new NginxConfig;
-    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
-    statement->tokens_.push_back("root");
-    statement->tokens_.push_back("\".\"");
-    block_config->statements_.push_back(statement);
-    static_request_handler static_handler(block_config, "/static");
-    r.method_ = request::method::GET;
-    r.uri_ = "/static/cat.jpg";
-    std::string rd("");
-    response result;
-    result = static_handler.handle_request(r);
-    response_builder b;
-    b.set_response(result);
-    std::string response_body(reinterpret_cast<const char*>(boost::asio::buffer_cast<const unsigned char*>(b.build()[1])),
-    expected.length());
-    //output
-    std::ofstream result_out;
-    result_out.open ("static_test/result");
-    result_out << response_body;
-    result_out.close();
-    EXPECT_EQ(expected, response_body);
-
-}
-
+// We will get the 404 handler due to faulty config
 TEST_F(static_request_handler_test, 404_response_no_root_provided)
 {
     request r;
@@ -174,19 +49,48 @@ TEST_F(static_request_handler_test, 404_response_no_root_provided)
 TEST_F(static_request_handler_test, 400_response_bad_request)
 {
     request r;
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/cat.jpg";
+
+    response result;
+    result = get_response(r, "\".\"");
+
+    EXPECT_EQ(result.code_, response::status_code::OK);
+}
+
+// We will get the 404 handler due to faulty config
+TEST_F(static_request_handler_test, no_root_gets_default)
+{
+    request r;
     NginxConfig* block_config = new NginxConfig;
     std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement);
-    statement->tokens_.push_back("root");
-    statement->tokens_.push_back("\".\"");
     block_config->statements_.push_back(statement);
 
     request_handler* rh = static_request_handler::init("/static", *block_config);
 
     r.method_ = request::method::GET;
-    r.uri_ = "/static/1234fake.jpg";
+    r.uri_ = "/static/cat.jpg";
     response result;
     result = rh->handle_request(r);
     response_builder b;
-    bool check = (result.code_ == response::status_code::NOT_FOUND);
-    EXPECT_EQ(check, true);
+    EXPECT_EQ(result.code_, response::status_code::NOT_FOUND);
+}
+
+TEST_F(static_request_handler_test, root_ends_with_slash)
+{
+    request r;
+    NginxConfig* block_config = new NginxConfig;
+    std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement);
+    statement->tokens_.push_back("root");
+    statement->tokens_.push_back("\"./\"");
+    block_config->statements_.push_back(statement);
+
+    request_handler* rh = static_request_handler::init("/static/", *block_config);
+
+    r.method_ = request::method::GET;
+    r.uri_ = "/static/catasdf.jpg";
+    response result;
+    result = rh->handle_request(r);
+    response_builder b;
+    EXPECT_EQ(result.code_, response::status_code::NOT_FOUND);
 }

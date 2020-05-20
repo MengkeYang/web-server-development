@@ -2,10 +2,14 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <memory>
+#include <mutex>
 
 using boost::asio::ip::tcp;
 
-tcp::socket* connection::socket() { return &socket_; }
+tcp::socket* connection::socket() {
+    std::lock_guard<std::mutex> lk(lock_);
+    return &socket_;
+}
 
 void tcp_connection::read(
     boost::asio::mutable_buffer buf, size_t maxlen,
@@ -22,14 +26,16 @@ void tcp_connection::read(
 }
 
 void tcp_connection::write(
-    response_builder res_build,
+    std::shared_ptr<response_builder> res_build,
     boost::function<void(std::shared_ptr<session> s,
                          const boost::system::error_code& error,
-                         response_builder res)>
+                         std::shared_ptr<response_builder> res)>
         cb,
     std::shared_ptr<session> s)
 {
+    std::lock_guard<std::mutex> lk(lock_);
+
     boost::asio::async_write(
-        *socket(), res_build.build(),
+        *socket(), res_build->build(),
         boost::bind(cb, s, boost::asio::placeholders::error, res_build));
 }

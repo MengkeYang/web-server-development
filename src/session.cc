@@ -3,8 +3,8 @@
 #include "connection.h"
 #include "request_parser.h"
 #include "log_helper.h"
+#include <boost/thread/thread.hpp>
 
-#include <iostream>
 using boost::asio::ip::tcp;
 
 session::session(
@@ -13,7 +13,8 @@ session::session(
     : connection_(std::move(connection)),
       log_(log_helper::instance()),
       location_handlers_(location_handlers)
-{}
+{
+}
 
 tcp::socket* session::socket() { return connection_->socket(); }
 
@@ -25,7 +26,7 @@ void session::start()
                       shared_this);
 }
 
-response_builder session::process_req(size_t bytes_transferred)
+response_builder session::process_req(request request_)
 {
     response response;
     response_builder res_build;
@@ -54,39 +55,68 @@ response_builder session::process_req(size_t bytes_transferred)
         response =
             location_handlers_.at(max_matched_key)->handle_request(request_);
         res_build.set_response(response);
-    }
-    else
+    } else
         res_build.make_400_error();
 
     return res_build;
+}
+
+void session::thread_work(request r)
+{
+    std::shared_ptr<response_builder> res_build =
+        std::make_shared<response_builder>();
+    std::shared_ptr<session> shared_this(shared_from_this());
+
+    *res_build = process_req(r);
+
+    log_.log_response_info(r, res_build->get_response());
+    connection_->write(res_build, &session::completed_request, shared_this);
 }
 
 void session::received_req(const boost::system::error_code& error,
                            size_t bytes_transferred)
 {
     if (!error) {
+        std::vector<request> requests;
         std::shared_ptr<session> shared_this(shared_from_this());
-        request_ = {};  // Reset the request
-        request_parser_.parse(request_, data_.data(),
-                              data_.data() + bytes_transferred);
+        request_parser::result_type rt;
+        char* body_start;
+        int body_len;
 
-        log_.log_request_info(request_, connection_->socket());
+        // Read until the end of the available data, could be multiple
+        // requests. An incomplete request is stored in request_ until the next
+        // read.
+        do {
+            std::tie(rt, body_start, body_len) = request_parser_.parse(
+                request_, data_.data(), data_.data() + bytes_transferred);
+            if (rt != request_parser::result_type::indeterminate) {
+                requests.push_back(request_);
+                request_ = {};
+                request_parser_.reset();
+                std::tie(rt, body_start, body_len) =
+                    request_parser_.parse(request_, body_start + body_len,
+                                          data_.data() + bytes_transferred);
+            }
+        } while (body_start + body_len < data_.data() + bytes_transferred);
 
-        response_builder res_build;
-        res_build = process_req(bytes_transferred);
-        response resp = res_build.get_response();
-        log_.log_response_info(request_, resp, connection_->socket());
-        connection_->write(res_build, &session::wait_for_req,
-                           shared_this);
+        for (int i = 0; i < requests.size(); i++) {
+            log_.log_request_info(requests[i], connection_.get());
+            thread_work(requests[i]);
+        }
+        wait_for_req();
     }
 }
 
-void session::wait_for_req(const boost::system::error_code& error, response_builder res_build)
+void session::completed_request(const boost::system::error_code& error,
+                                std::shared_ptr<response_builder> res_build)
 {
-    if (!error) {
-        std::shared_ptr<session> shared_this(shared_from_this());
-        connection_->read(boost::asio::buffer(data_, max_len),
-                          static_cast<int>(max_len), &session::received_req,
-                          shared_this);
-    }
+    log_.log_response_sent();
+}
+
+void session::wait_for_req()
+{
+    std::shared_ptr<session> shared_this(shared_from_this());
+    connection_->read(boost::asio::buffer(data_, max_len),
+                      static_cast<int>(max_len), &session::received_req,
+                      shared_this);
 }

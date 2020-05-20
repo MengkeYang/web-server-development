@@ -53,7 +53,6 @@ void server::signal_handler(const boost::system::error_code& ec,
     log_.log_warning_file("server is shutting down");
     acceptor_.close();
     io_.stop();
-    throw std::runtime_error("Server Killed");  // Exit to main
 }
 
 void server::start_accept()

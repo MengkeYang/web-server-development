@@ -18,7 +18,7 @@ class session_test : public ::testing::Test
 protected:
     session_test()
     {
-        config_parser.Parse("example_config", &config);
+        config_parser.Parse("test_server_config", &config);
 
         std::vector<location_parse_result> location_results = config.get_location_result();
         for (location_parse_result loc_res : location_results) {
@@ -36,35 +36,15 @@ protected:
                         loc_res.uri, std::move(sr)));
             }
         }
-        /*
-        std::map<std::string, std::string> uri_table_ = config.get_uri_table();
-        for (std::pair<std::string, std::string> mapping : uri_table_) {
-            if (mapping.second == "") {  // Location for echo
-                std::unique_ptr<echo_request_handler> er =
-                    std::make_unique<echo_request_handler>();
-                location_handlers_.insert(
-                    std::pair<std::string, std::unique_ptr<request_handler>>(
-                        mapping.first, std::move(er)));
-            } else {  // Location for serving static files
-                std::unique_ptr<static_request_handler> sr =
-                    std::make_unique<static_request_handler>(mapping.second,
-                                                        mapping.first);
-                location_handlers_.insert(
-                    std::pair<std::string, std::unique_ptr<request_handler>>(
-                        mapping.first, std::move(sr)));
-            }
-        }
-        */
     }
     boost::system::error_code no_error =
         boost::system::errc::make_error_code(boost::system::errc::success);
-    boost::system::error_code error = boost::system::errc::make_error_code(
-        boost::system::errc::not_supported);
-    boost::asio::io_service io;
-    tcp::socket s = tcp::socket(io);
     NginxConfigParser config_parser;
     NginxConfig config;
-    response_builder res_build;
+    boost::asio::io_service io;
+    tcp::socket s = tcp::socket(io);
+
+    std::shared_ptr<response_builder> res_build = std::make_shared<response_builder>();
 
     // initialize location_handler
     std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
@@ -75,25 +55,23 @@ TEST_F(session_test, bad_parse_generates_response)
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
     session session_(std::move(conn), location_handlers_);
-    session_.process_req(0);
-//    EXPECT_EQ(session_.num_responses(), 1);
-    EXPECT_EQ(1, 1);
+    request req;
+    response_builder rb = session_.process_req(req);
+    response r = rb.get_response();
+    EXPECT_EQ(r.code_, response::status_code::BAD_REQ);
 }
 
-TEST_F(session_test, return_socket)
+TEST_F(session_test, good_parse_generates_ok_code)
 {
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
     session session_(std::move(conn), location_handlers_);
-    auto sock = session_.socket();
-    EXPECT_NE(nullptr, sock);
-}
+    request req;
+    req.uri_ = "/echo/";
+    req.version_ = "HTTP/1.1";
+    req.method_ = request::method::GET;
 
-TEST_F(session_test, session_delete_no_segfault)
-{
-    std::unique_ptr<fake_connection> conn =
-        std::make_unique<fake_connection>(error, std::move(s), res_build);
-    std::shared_ptr<session> session_ =
-        std::make_shared<session>(std::move(conn), location_handlers_);
-    EXPECT_NO_THROW(session_->start());
+    response_builder rb = session_.process_req(req);
+    response r = rb.get_response();
+    EXPECT_EQ(r.code_, response::status_code::OK);
 }

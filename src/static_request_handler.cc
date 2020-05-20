@@ -15,6 +15,7 @@ static_request_handler::static_request_handler(const NginxConfig* config, std::s
     // If the scoped block has a root, then use that as the root
     // WARNING: If no root is present, we use "." as the default!
     //          This should not happen.
+    std::cout << "Config URI: " << root_uri << std::endl;
     if (root_uri.length() != 0)
         root_uri = root_uri.substr(1, root_uri.length() - 2);
     else

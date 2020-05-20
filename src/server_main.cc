@@ -13,6 +13,7 @@
 #include "log_helper.h"
 #include "server.h"
 #include "config_parser.h"
+#include <boost/thread/thread.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -48,12 +49,17 @@ int main(int argc, char* argv[])
         // use boost::asio to control TCP flow
         boost::asio::io_service io_service;
 
-        using namespace std;  // For atoi.
         server s(io_service, (short)port, config);
         log.log_trace_file("server startup successed");
 
-        // run server
-        io_service.run();
+        std::vector<std::shared_ptr<boost::thread>> threads;
+        for (std::size_t i = 0; i < 4; i++) {
+            std::shared_ptr<boost::thread> t(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_service)));
+            threads.push_back(t);
+        }
+
+        for (std::size_t i = 0; i < threads.size(); i++)
+            threads[i]->join();
     } catch (std::exception& e) {
         if (std::strcmp(e.what(), "bind: Permission denied") == 0) {
             // std::cerr << "port forbidden please choose another port.\n";

@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/functional/hash.hpp>
 
 void response_builder::set_response(response& res) {
     response_ = res;

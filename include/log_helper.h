@@ -12,10 +12,13 @@
 #include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/utility/setup/console.hpp>
+#include <mutex>
 
 class request;
 class response;
 class NginxConfig;
+class response_builder;
+class connection;
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -24,6 +27,7 @@ using boost::asio::ip::tcp;
 
 class log_helper
 {
+    std::mutex lock;
 public:
     src::severity_logger<severity_level> lg;
     log_helper();
@@ -38,9 +42,10 @@ public:
     void log_trace_file(std::string trace_message);
     void log_error_file(std::string error_message);
     void log_warning_file(std::string warning_message);
-    void log_request_info(request req, tcp::socket* socket);
-    void log_response_info(request req, response res, tcp::socket* socket);
+    void log_request_info(request req, connection* conn);
+    void log_response_info(request req, response res);
     void log_all_handlers(const NginxConfig& config);
+    void log_response_sent();
     ~log_helper() {}
 };
 #endif

@@ -49,7 +49,8 @@ int NginxConfig::parse_port()
 std::string NginxConfig::get_value_from_statement(std::string key) const
 {
     for (const auto& statement : statements_) {
-        if (statement->tokens_[0] == key) return statement->tokens_[1];
+        if (statement->tokens_.size() > 0 && statement->tokens_[0] == key)
+            return statement->tokens_[1];
     }
     return "";
 }

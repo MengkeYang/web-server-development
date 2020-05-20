@@ -2,6 +2,9 @@
 #include "request.h"
 #include "response.h"
 #include "config_parser.h"
+#include "connection.h"
+#include <mutex>
+#include <boost/functional/hash.hpp>
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -60,8 +63,10 @@ void log_helper::log_warning_file(std::string warning_message)
     BOOST_LOG_SEV(lg, warning) << "Warning: " << warning_message;
 }
 
-void log_helper::log_request_info(request req, tcp::socket* socket)
+void log_helper::log_request_info(request req, connection* conn)
 {
+    std::lock_guard<std::mutex> lk(lock);
+
     std::string methods[] = {"GET", "POST", "PUT", "HEAD", "INVALID"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
@@ -69,18 +74,28 @@ void log_helper::log_request_info(request req, tcp::socket* socket)
     for (auto&& h : req.headers_) {
         str_stream << " " << h.first << ":" << h.second;
     }
-    str_stream << " IP: " << socket->remote_endpoint().address().to_string();
-    str_stream << " Port: " << socket->remote_endpoint().port();
+    str_stream << " IP: " << conn->socket()->remote_endpoint().address().to_string();
+    str_stream << " Port: " << conn->socket()->remote_endpoint().port();
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
 
-void log_helper::log_response_info(request req, response res,
-                                   tcp::socket* socket)
+void log_helper::log_response_info(request req, response res)
 {
+    std::lock_guard<std::mutex> lk(lock);
+
     std::string codes[] = {"400", "404", "200"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
     str_stream << codes[res.code_] << " for request: " << req.uri_;
+    BOOST_LOG_SEV(lg, trace) << str_stream.str();
+}
+
+void log_helper::log_response_sent()
+{
+    std::lock_guard<std::mutex> lk(lock);
+
+    std::stringstream str_stream;
+    str_stream << "Response Sent";
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
 

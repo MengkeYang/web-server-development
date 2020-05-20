@@ -26,7 +26,7 @@ public:
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
     void start();
-    response_builder process_req(size_t bytes_transferred);
+    response_builder process_req(request request_);
 
 private:
     // receive data from tcp read buffer
@@ -35,14 +35,16 @@ private:
                       size_t bytes_transferred);
     // send data to socket write buffer and call handle_read to continue read
     // data
-    void wait_for_req(const boost::system::error_code& error,
-                      response_builder res_build);
+    void wait_for_req();
+    void completed_request(const boost::system::error_code& error, std::shared_ptr<response_builder> res_build);
 
     enum { max_len = 8192 };
     std::array<char, max_len> data_;
-    // char data_[max_length];
 
+    void thread_work(request r);
     std::unique_ptr<connection> connection_;
+    int req_num = 0;  // Ranges from 0 - 9, so we support at most 10 requests
+                      // being processsed at once
     request request_;
     request_parser request_parser_;
     log_helper& log_;
