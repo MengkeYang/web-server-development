@@ -36,6 +36,10 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
         } else if (loc_res.handler_name ==
                    "NotFoundHandler") {  // Location for not_found
             add_request_handler(not_found_request_handler::init, loc_res);
+        } else if (loc_res.handler_name ==
+                   "ProxyHandler") {
+            add_request_handler(reverse_proxy_request_handler::init, loc_res);
+            std::cout << "found the handler" << std::endl;
         }
     }
     // log handlers info for status handler

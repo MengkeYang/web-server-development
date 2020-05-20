@@ -9,6 +9,7 @@
 #include "static_request_handler.h"
 #include "status_request_handler.h"
 #include "not_found_request_handler.h"
+#include "reverse_proxy_request_handler.h"
 #include "connection.h"
 class log_helper;
 class response;

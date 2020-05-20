@@ -9,6 +9,11 @@ location "/echo/" EchoHandler {
 
 location "/status/" StatusHandler {
 }
+
 location "/" NotFoundHandler {
+}
+
+location "/proxy/" ProxyHandler {
+    dest "http://35.185.213.80/status";
 }
 
