@@ -1,0 +1,5 @@
+port 8080;
+
+location "/proxy2/" ProxyHandler {
+    dest "https://blank.org/";	
+}

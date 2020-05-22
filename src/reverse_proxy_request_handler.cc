@@ -76,7 +76,11 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     // get a list of endpoints corresponding to the server name.
     tcp::resolver resolver(io_service);
     tcp::resolver::query query(host_, port_);
-    tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    tcp::resolver::iterator endpoint_iterator = resolver.resolve(query, ec);
+    if (ec) { 
+        // TODO: Log an error here
+        return throw_400_error();
+    }
 
     // try each endpoint until we successfully establish a connection.
     tcp::socket socket(io_service);
