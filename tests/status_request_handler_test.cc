@@ -41,4 +41,5 @@ TEST_F(status_request_handler_test, list_handlers)
     EXPECT_TRUE(body.find("EchoHandler") != std::string::npos);
     EXPECT_TRUE(body.find("StatusHandler") != std::string::npos);
     EXPECT_TRUE(body.find("NotFoundHandler") != std::string::npos);
+    EXPECT_TRUE(body.find("ProxyHandler") != std::string::npos);
 }

@@ -43,7 +43,7 @@ std::stringstream status_request_handler::get_request_records()
     std::vector<std::string> file_names;
     int num_requests = 0;
 
-    bool handlers_found = false;
+    // bool handlers_found = false;
     // list all log files in log directory
     boost::filesystem::path p("../log");
     boost::filesystem::directory_iterator end_itr;
@@ -67,33 +67,34 @@ std::stringstream status_request_handler::get_request_records()
             // check each line of log
             while (std::getline(file, line)) {
                 // if need all handlers: match "all handlers: "
-                if (!handlers_found) {
-                    std::size_t found = line.find("all handlers:");
-                    if (found!=std::string::npos) {
-                        int count = 0;
-                        all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
-                        std::string temp;
-                        for (std::size_t i=found+14; i<line.size(); i++) {
-                            if (line.at(i) == ' ') {
-                                if (count%2 == 0) {
-                                    all_handlers << temp;
-                                }
-                                else {
-                                    all_handlers << temp << "\r\n";
-                                    all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
-                                }
-                                temp.clear();
-                                count++;
-                            } 
-                            else
-                                temp.push_back(line.at(i));
-                        }
-                        handlers_found = true;
-                    } 
-                }
+                // if (!handlers_found) {
+                std::size_t found = line.find("all handlers:");
+                if (found!=std::string::npos) {
+                    all_handlers.str("");
+                    int count = 0;
+                    all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
+                    std::string temp;
+                    for (std::size_t i=found+14; i<line.size(); i++) {
+                        if (line.at(i) == ' ') {
+                            if (count%2 == 0) {
+                                all_handlers << temp;
+                            }
+                            else {
+                                all_handlers << temp << "\r\n";
+                                all_handlers << std::left << std::setfill(' ') << std::setw(interval_len);
+                            }
+                            temp.clear();
+                            count++;
+                        } 
+                        else
+                            temp.push_back(line.at(i));
+                    }
+                    // handlers_found = true;
+                } 
+                // }
 
                 // match "for request" in log
-                std::size_t found = line.find("for request:");
+                found = line.find("for request:");
                 if (found!=std::string::npos) {
                     std::string request_url;
                     // get request URL

@@ -652,3 +652,88 @@
 2020-05-14 02:35:44.598886 [0x00007f933f2e8740] [trace] [0x0000339a] [6] Trace: 200 for request: /status
 2020-05-14 02:36:01.683966 [0x00007f933f2e8740] [warning] [0x0000339a] [7] Warning: server is shutting down
 2020-05-14 02:36:01.685960 [0x00007f933f2e8740] [error] [0x0000339a] [8] Error: Server Killed
+2020-05-22 22:00:46.369291 [0x00007f7de4c11740] [trace] [0x00000fee] [1] Trace: 400 for request: 
+2020-05-22 22:00:46.370425 [0x00007f7de4c11740] [trace] [0x00000fee] [2] Trace: 400 for request: 
+2020-05-22 22:00:46.370834 [0x00007f7de4c11740] [trace] [0x00000fee] [3] Trace: 400 for request: 
+2020-05-22 22:00:46.371178 [0x00007f7de4c11740] [trace] [0x00000fee] [4] Trace: 400 for request: 
+2020-05-22 22:00:46.371522 [0x00007f7de4c11740] [trace] [0x00000fee] [5] Trace: 400 for request: 
+2020-05-22 22:00:46.371886 [0x00007f7de4c11740] [trace] [0x00000fee] [6] Trace: 400 for request: 
+2020-05-22 22:00:46.671344 [0x00007f4a5c50d740] [error] [0x00000ffb] [1] Error: Argument count mismatch. Usage: async_tcp_echo_server config_file
+2020-05-22 22:00:46.709616 [0x00007f2b640eb740] [trace] [0x00000ffd] [1] Trace: server config parsing begins
+2020-05-22 22:00:46.711367 [0x00007f2b640eb740] [error] [0x00000ffd] [2] Error: invalid port number in cofig file,the port numbers range from 0 to 65535
+2020-05-22 22:00:46.746136 [0x00007f0f0ed84740] [trace] [0x00000fff] [1] Trace: server config parsing begins
+2020-05-22 22:00:46.747447 [0x00007f0f0ed84740] [error] [0x00000fff] [2] Error:  config parsing failed
+2020-05-22 22:00:46.782266 [0x00007f7c942bb740] [trace] [0x00001000] [1] Trace: server config parsing begins
+2020-05-22 22:00:46.783874 [0x00007f7c942bb740] [trace] [0x00001000] [2] Trace: server config parsing successed
+2020-05-22 22:00:46.784387 [0x00007f7c942bb740] [trace] [0x00001000] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /proxy/ 
+2020-05-22 22:00:46.784793 [0x00007f7c942bb740] [trace] [0x00001000] [4] Trace: server startup successed
+2020-05-22 22:00:47.806880 [0x00007f7c942bb740] [trace] [0x00001000] [5] Trace: GET /echo HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53370
+2020-05-22 22:00:47.807598 [0x00007f7c942bb740] [trace] [0x00001000] [6] Trace: 200 for request: /echo
+2020-05-22 22:00:47.833307 [0x00007f7c942bb740] [trace] [0x00001000] [7] Trace: GET /static/cat.jpg HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53372
+2020-05-22 22:00:47.835618 [0x00007f7c942bb740] [trace] [0x00001000] [8] Trace: 200 for request: /static/cat.jpg
+2020-05-22 22:00:47.853675 [0x00007f7c942bb740] [trace] [0x00001000] [9] Trace: GET / HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53374
+2020-05-22 22:00:47.854965 [0x00007f7c942bb740] [trace] [0x00001000] [10] Trace: 404 for request: /
+2020-05-22 22:00:47.862349 [0x00007f7c942bb740] [warning] [0x00001000] [11] Warning: server is shutting down
+2020-05-22 22:00:47.863074 [0x00007f7c942bb740] [error] [0x00001000] [12] Error: Server Killed
+2020-05-22 22:02:21.702534 [0x00007f9e18f79740] [trace] [0x00001030] [1] Trace: server config parsing begins
+2020-05-22 22:02:21.706136 [0x00007f9e18f79740] [trace] [0x00001030] [2] Trace: server config parsing successed
+2020-05-22 22:02:21.706879 [0x00007f9e18f79740] [trace] [0x00001030] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /proxy/ 
+2020-05-22 22:02:21.707587 [0x00007f9e18f79740] [trace] [0x00001030] [4] Trace: server startup successed
+2020-05-22 22:02:40.232534 [0x00007f9e18f79740] [trace] [0x00001030] [5] Trace: GET /status HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53376
+2020-05-22 22:02:40.237359 [0x00007f9e18f79740] [trace] [0x00001030] [6] Trace: 200 for request: /status
+2020-05-22 22:05:25.414562 [0x00007f9e18f79740] [warning] [0x00001030] [7] Warning: server is shutting down
+2020-05-22 22:05:25.415448 [0x00007f9e18f79740] [error] [0x00001030] [8] Error: Server Killed
+2020-05-22 22:05:48.637705 [0x00007fa87a1cf740] [trace] [0x0000112d] [1] Trace: 400 for request: 
+2020-05-22 22:05:48.639304 [0x00007fa87a1cf740] [trace] [0x0000112d] [2] Trace: 400 for request: 
+2020-05-22 22:05:48.639565 [0x00007fa87a1cf740] [trace] [0x0000112d] [3] Trace: 400 for request: 
+2020-05-22 22:05:48.639833 [0x00007fa87a1cf740] [trace] [0x0000112d] [4] Trace: 400 for request: 
+2020-05-22 22:05:48.640172 [0x00007fa87a1cf740] [trace] [0x0000112d] [5] Trace: 400 for request: 
+2020-05-22 22:05:48.640424 [0x00007fa87a1cf740] [trace] [0x0000112d] [6] Trace: 400 for request: 
+2020-05-22 22:05:48.896141 [0x00007f3fae9fe740] [error] [0x0000113a] [1] Error: Argument count mismatch. Usage: async_tcp_echo_server config_file
+2020-05-22 22:05:48.927468 [0x00007fa56499c740] [trace] [0x0000113c] [1] Trace: server config parsing begins
+2020-05-22 22:05:48.928938 [0x00007fa56499c740] [error] [0x0000113c] [2] Error: invalid port number in cofig file,the port numbers range from 0 to 65535
+2020-05-22 22:05:48.957502 [0x00007f613c30e740] [trace] [0x0000113e] [1] Trace: server config parsing begins
+2020-05-22 22:05:48.958700 [0x00007f613c30e740] [error] [0x0000113e] [2] Error:  config parsing failed
+2020-05-22 22:05:48.987934 [0x00007f7922302740] [trace] [0x0000113f] [1] Trace: server config parsing begins
+2020-05-22 22:05:48.989468 [0x00007f7922302740] [trace] [0x0000113f] [2] Trace: server config parsing successed
+2020-05-22 22:05:48.990561 [0x00007f7922302740] [trace] [0x0000113f] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /proxy/ 
+2020-05-22 22:05:48.991193 [0x00007f7922302740] [trace] [0x0000113f] [4] Trace: server startup successed
+2020-05-22 22:05:50.008688 [0x00007f7922302740] [trace] [0x0000113f] [5] Trace: GET /echo HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53378
+2020-05-22 22:05:50.009551 [0x00007f7922302740] [trace] [0x0000113f] [6] Trace: 200 for request: /echo
+2020-05-22 22:05:50.032033 [0x00007f7922302740] [trace] [0x0000113f] [7] Trace: GET /static/cat.jpg HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53380
+2020-05-22 22:05:50.034323 [0x00007f7922302740] [trace] [0x0000113f] [8] Trace: 200 for request: /static/cat.jpg
+2020-05-22 22:05:50.050507 [0x00007f7922302740] [trace] [0x0000113f] [9] Trace: GET / HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53382
+2020-05-22 22:05:50.051671 [0x00007f7922302740] [trace] [0x0000113f] [10] Trace: 404 for request: /
+2020-05-22 22:05:50.057662 [0x00007f7922302740] [warning] [0x0000113f] [11] Warning: server is shutting down
+2020-05-22 22:05:50.058156 [0x00007f7922302740] [error] [0x0000113f] [12] Error: Server Killed
+2020-05-22 22:06:05.611437 [0x00007f1f0c648740] [trace] [0x0000116f] [1] Trace: server config parsing begins
+2020-05-22 22:06:05.614564 [0x00007f1f0c648740] [trace] [0x0000116f] [2] Trace: server config parsing successed
+2020-05-22 22:06:05.615589 [0x00007f1f0c648740] [trace] [0x0000116f] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /proxy/ 
+2020-05-22 22:06:05.616226 [0x00007f1f0c648740] [trace] [0x0000116f] [4] Trace: server startup successed
+2020-05-22 22:06:13.611232 [0x00007f1f0c648740] [trace] [0x0000116f] [5] Trace: GET /status HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53384
+2020-05-22 22:06:13.616316 [0x00007f1f0c648740] [trace] [0x0000116f] [6] Trace: 200 for request: /status
+2020-05-22 22:06:30.994616 [0x00007f1f0c648740] [warning] [0x0000116f] [7] Warning: server is shutting down
+2020-05-22 22:06:30.999636 [0x00007f1f0c648740] [error] [0x0000116f] [8] Error: Server Killed
+2020-05-22 22:08:18.898620 [0x00007f9bfb9d2740] [trace] [0x00001257] [1] Trace: 400 for request: 
+2020-05-22 22:08:18.900180 [0x00007f9bfb9d2740] [trace] [0x00001257] [2] Trace: 400 for request: 
+2020-05-22 22:08:18.900596 [0x00007f9bfb9d2740] [trace] [0x00001257] [3] Trace: 400 for request: 
+2020-05-22 22:08:18.900991 [0x00007f9bfb9d2740] [trace] [0x00001257] [4] Trace: 400 for request: 
+2020-05-22 22:08:18.901390 [0x00007f9bfb9d2740] [trace] [0x00001257] [5] Trace: 400 for request: 
+2020-05-22 22:08:18.901818 [0x00007f9bfb9d2740] [trace] [0x00001257] [6] Trace: 400 for request: 
+2020-05-22 22:08:19.211869 [0x00007f2a09638740] [error] [0x00001264] [1] Error: Argument count mismatch. Usage: async_tcp_echo_server config_file
+2020-05-22 22:08:19.247893 [0x00007f5aa784a740] [trace] [0x00001266] [1] Trace: server config parsing begins
+2020-05-22 22:08:19.249800 [0x00007f5aa784a740] [error] [0x00001266] [2] Error: invalid port number in cofig file,the port numbers range from 0 to 65535
+2020-05-22 22:08:19.284947 [0x00007f2a12008740] [trace] [0x00001268] [1] Trace: server config parsing begins
+2020-05-22 22:08:19.286566 [0x00007f2a12008740] [error] [0x00001268] [2] Error:  config parsing failed
+2020-05-22 22:08:19.319688 [0x00007ff151c27740] [trace] [0x00001269] [1] Trace: server config parsing begins
+2020-05-22 22:08:19.321586 [0x00007ff151c27740] [trace] [0x00001269] [2] Trace: server config parsing successed
+2020-05-22 22:08:19.322227 [0x00007ff151c27740] [trace] [0x00001269] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /proxy/ 
+2020-05-22 22:08:19.322771 [0x00007ff151c27740] [trace] [0x00001269] [4] Trace: server startup successed
+2020-05-22 22:08:20.344798 [0x00007ff151c27740] [trace] [0x00001269] [5] Trace: GET /echo HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53386
+2020-05-22 22:08:20.346142 [0x00007ff151c27740] [trace] [0x00001269] [6] Trace: 200 for request: /echo
+2020-05-22 22:08:20.372234 [0x00007ff151c27740] [trace] [0x00001269] [7] Trace: GET /static/cat.jpg HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53388
+2020-05-22 22:08:20.374823 [0x00007ff151c27740] [trace] [0x00001269] [8] Trace: 200 for request: /static/cat.jpg
+2020-05-22 22:08:20.391710 [0x00007ff151c27740] [trace] [0x00001269] [9] Trace: GET / HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 53390
+2020-05-22 22:08:20.393234 [0x00007ff151c27740] [trace] [0x00001269] [10] Trace: 404 for request: /
+2020-05-22 22:08:20.399170 [0x00007ff151c27740] [warning] [0x00001269] [11] Warning: server is shutting down
+2020-05-22 22:08:20.399700 [0x00007ff151c27740] [error] [0x00001269] [12] Error: Server Killed
