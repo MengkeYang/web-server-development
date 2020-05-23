@@ -16,7 +16,7 @@ using boost::asio::ip::tcp;
 class server
 {
 public:
-    server(boost::asio::io_service& io_service, short port, log_helper *log, const NginxConfig &config);
+    server(boost::asio::io_service& io_service, short port, const NginxConfig &config);
 
 private:
     // create a session object and socket, call handle_accept to process
@@ -34,7 +34,7 @@ private:
     tcp::socket socket_;
     tcp::acceptor acceptor_;
     boost::asio::signal_set signals_;
-    log_helper* log_;
+    log_helper& log_;
     NginxConfig config_;
     std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
 

@@ -16,12 +16,12 @@
 
 int main(int argc, char* argv[])
 {
-    log_helper* log = new log_helper();
+    log_helper& log = log_helper::instance();
     try {
         // run bin/server_executable port_number
         if (argc != 2) {
             // std::cerr << "Usage: async_tcp_echo_server <port>\n";
-            log->log_error_file(
+            log.log_error_file(
                 "Argument count mismatch. Usage: async_tcp_echo_server "
                 "config_file");
             return 1;
@@ -30,37 +30,36 @@ int main(int argc, char* argv[])
         // parse config
         NginxConfigParser config_parser;
         NginxConfig config;
-        log->log_trace_file("server config parsing begins");
+        log.log_trace_file("server config parsing begins");
         if (!config_parser.Parse(argv[1], &config)) {
             // std::cerr << "Parsing config failed!\n";
-            log->log_error_file(" config parsing failed");
+            log.log_error_file(" config parsing failed");
             return 1;
         }
         // parse port number from config
         int port;
         if ((port = config.parse_port()) == -1) {
             // std::cerr << "The port numbers range from 0 to 65535.\n";
-            log->log_error_file("invalid port number in cofig file,the port numbers range from 0 to 65535");
+            log.log_error_file("invalid port number in cofig file,the port numbers range from 0 to 65535");
             return 1;
         }
 
-        log->log_trace_file("server config parsing successed");
+        log.log_trace_file("server config parsing successed");
         // use boost::asio to control TCP flow
         boost::asio::io_service io_service;
 
         using namespace std;  // For atoi.
-        server s(io_service, (short)port, log, config);
-        log->log_trace_file("server startup successed");
+        server s(io_service, (short)port, config);
+        log.log_trace_file("server startup successed");
 
         // run server
         io_service.run();
     } catch (std::exception& e) {
         if (std::strcmp(e.what(), "bind: Permission denied") == 0) {
             // std::cerr << "port forbidden please choose another port.\n";
-            log->log_error_file("port forbidden please choose another port");
+            log.log_error_file("port forbidden please choose another port");
         } else {
-            log->log_error_file(e.what());
-            delete log;
+            log.log_error_file(e.what());
             return 1;
         }
     }

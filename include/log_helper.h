@@ -1,4 +1,3 @@
-
 #ifndef WNZA_LOG_HELPER_H_
 #define WNZA_LOG_HELPER_H_
 
@@ -28,14 +27,20 @@ class log_helper
 public:
     src::severity_logger<severity_level> lg;
     log_helper();
-    virtual void init();
 
-    virtual void log_trace_file(std::string trace_message);
-    virtual void log_error_file(std::string error_message);
-    virtual void log_all_handlers(const NginxConfig& config);
-    virtual void log_warning_file(std::string warning_message);
-    virtual void log_request_info(request req, tcp::socket* socket);
-    virtual void log_response_info(request req, response res, tcp::socket* socket);
-    virtual ~log_helper() {}
+    // Using the standard C++11 singleton implementation
+    static log_helper& instance();
+    log_helper(const log_helper&) = delete;
+    log_helper(log_helper&&) = delete;
+    log_helper& operator=(const log_helper&) = delete;
+    log_helper& operator=(log_helper&&) = delete;
+
+    void log_trace_file(std::string trace_message);
+    void log_error_file(std::string error_message);
+    void log_warning_file(std::string warning_message);
+    void log_request_info(request req, tcp::socket* socket);
+    void log_response_info(request req, response res, tcp::socket* socket);
+    void log_all_handlers(const NginxConfig& config);
+    ~log_helper() {}
 };
 #endif

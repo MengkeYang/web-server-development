@@ -309,3 +309,14 @@ This config file will cause an `echo_request_handler` to be created and will
 get all requests with the prefix "/echo/". The dispatcher uses longest prefix
 match, so even if a request has the prefix of a certain handler, there may exist
 another handler defined which matched the request with a longer prefix.
+### Adding Logging
+Our logger is a singleton so that it can be access within any class. To get an
+instance of the logger reference, just place the following code somewhere in
+your requests handler
+
+```c++
+log_helper& logger = log_helper::instance();
+```
+
+With this reference to the singleton logger you can use any of the functions
+implemented by the `log_helper` class.

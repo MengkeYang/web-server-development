@@ -8,13 +8,13 @@
 
 using boost::asio::ip::tcp;
 
-server::server(boost::asio::io_service& io_service, short port, log_helper* log,
+server::server(boost::asio::io_service& io_service, short port,
                const NginxConfig& config)
     : acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
       signals_(io_service),
       socket_(tcp::socket(io_service)),
       io_(io_service),
-      log_(log),
+      log_(log_helper::instance()),
       config_(config)
 {
     signals_.add(SIGINT);
@@ -43,14 +43,14 @@ server::server(boost::asio::io_service& io_service, short port, log_helper* log,
         }
     }
     // log handlers info for status handler
-    log_->log_all_handlers(config_);
+    log_.log_all_handlers(config_);
     start_accept();
 }
 
 void server::signal_handler(const boost::system::error_code& ec,
                             int signal_number)
 {
-    log_->log_warning_file("server is shutting down");
+    log_.log_warning_file("server is shutting down");
     acceptor_.close();
     io_.stop();
     throw std::runtime_error("Server Killed");  // Exit to main
@@ -61,7 +61,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_));
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn), log_, location_handlers_);
+        std::make_shared<session>(std::move(conn), location_handlers_);
 
     acceptor_.async_accept(
         *(new_session->socket()),

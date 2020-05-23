@@ -9,9 +9,7 @@ namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
 using namespace logging::trivial;
 
-log_helper::log_helper() { init(); }
-
-void log_helper::init()
+log_helper::log_helper()
 {
     // Log output lines include a timestamp, the current thread ID, a severity
     // level, the process ID, the log line num and a message.
@@ -43,6 +41,12 @@ void log_helper::init()
                                      logging::trivial::trace);
 }
 
+log_helper& log_helper::instance()
+{
+    static log_helper inst;
+    return inst;
+}
+
 void log_helper::log_trace_file(std::string trace_message)
 {
     BOOST_LOG_SEV(lg, trace) << "Trace: " << trace_message;
@@ -70,7 +74,8 @@ void log_helper::log_request_info(request req, tcp::socket* socket)
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
 
-void log_helper::log_response_info(request req, response res, tcp::socket* socket)
+void log_helper::log_response_info(request req, response res,
+                                   tcp::socket* socket)
 {
     std::string codes[] = {"400", "404", "200"};
     std::stringstream str_stream;
@@ -82,7 +87,8 @@ void log_helper::log_response_info(request req, response res, tcp::socket* socke
 void log_helper::log_all_handlers(const NginxConfig& config)
 {
     std::stringstream str_stream;
-    std::vector<location_parse_result> handlers_info = config.get_location_result();
+    std::vector<location_parse_result> handlers_info =
+        config.get_location_result();
     str_stream << "all handlers: ";
     for (location_parse_result loc_res : handlers_info)
         str_stream << loc_res.handler_name + " " + loc_res.uri + " ";

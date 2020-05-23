@@ -8,10 +8,10 @@
 using boost::asio::ip::tcp;
 
 session::session(
-    std::unique_ptr<connection> connection, log_helper* log,
+    std::unique_ptr<connection> connection,
     std::map<std::string, std::unique_ptr<request_handler>>& location_handlers)
     : connection_(std::move(connection)),
-      log_(log),
+      log_(log_helper::instance()),
       location_handlers_(location_handlers)
 {}
 
@@ -70,12 +70,12 @@ void session::received_req(const boost::system::error_code& error,
         request_parser_.parse(request_, data_.data(),
                               data_.data() + bytes_transferred);
 
-        log_->log_request_info(request_, connection_->socket());
+        log_.log_request_info(request_, connection_->socket());
 
         response_builder res_build;
         res_build = process_req(bytes_transferred);
         response resp = res_build.get_response();
-        log_->log_response_info(request_, resp, connection_->socket());
+        log_.log_response_info(request_, resp, connection_->socket());
         connection_->write(res_build, &session::wait_for_req,
                            shared_this);
     }

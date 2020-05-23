@@ -19,9 +19,9 @@ using boost::asio::ip::tcp;
 class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(std::unique_ptr<connection> connection, 
-        log_helper* log, std::map<std::string, 
-        std::unique_ptr<request_handler>> &location_handlers);
+    session(std::unique_ptr<connection> connection,
+            std::map<std::string, std::unique_ptr<request_handler>>&
+                location_handlers);
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -35,7 +35,8 @@ private:
                       size_t bytes_transferred);
     // send data to socket write buffer and call handle_read to continue read
     // data
-    void wait_for_req(const boost::system::error_code& error, response_builder res_build);
+    void wait_for_req(const boost::system::error_code& error,
+                      response_builder res_build);
 
     enum { max_len = 8192 };
     std::array<char, max_len> data_;
@@ -44,9 +45,7 @@ private:
     std::unique_ptr<connection> connection_;
     request request_;
     request_parser request_parser_;
-//  std::vector<buffer_response> responses_;
-    log_helper* log_;
-    std::map<std::string, std::unique_ptr<request_handler>> &location_handlers_;
-
+    log_helper& log_;
+    std::map<std::string, std::unique_ptr<request_handler>>& location_handlers_;
 };
 #endif  // WNZA_SESSION_H_
