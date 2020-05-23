@@ -100,6 +100,9 @@ else
     exit 1
 fi
 
+# More multithreading tests with Python sockets
+./multithreading_test.py
+
 kill -TERM $SERVER_ID
 rm "$tmpfile"
 exit 0
