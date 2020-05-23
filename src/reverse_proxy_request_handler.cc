@@ -115,7 +115,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
         log.log_error_file("No HTTP response detected from server");
         return throw_400_error();
     }
-    
+        
     std::string header;
     // handle redirection
     if (status_code == 302 || status_code == 301) {
@@ -152,10 +152,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     
     // write whatever content we already have to the body.
     std::string body;
-    std::string content;
-    if (response_buffer.size() > 0){
-        std::getline(response_stream, content);
-    }
+    std::string content(std::istreambuf_iterator<char>(response_stream), {});
     body += content;
 
     // read until EOF, writing data to a content string so we can finish off our body.

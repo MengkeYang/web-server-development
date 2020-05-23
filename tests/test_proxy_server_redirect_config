@@ -1,0 +1,19 @@
+port 8082;
+
+location "/static/" StaticHandler {
+    root "./no_where";
+}
+
+location "/echo/" EchoHandler {
+}
+
+location "/status/" StatusHandler {
+}
+
+location "/" NotFoundHandler {
+}
+
+location "/proxy2/" ProxyHandler {
+    dest "https://www.google.com/images";
+}
+

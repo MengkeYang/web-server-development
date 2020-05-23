@@ -20,4 +20,3 @@ location "/ucla/" ProxyHandler {
 location "/wfh/" ProxyHandler {
     dest "http://35.185.213.80/status";
 }
-

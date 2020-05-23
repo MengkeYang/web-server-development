@@ -39,7 +39,7 @@ TEST_F(reverse_proxy_request_handler_test, test_bad_request)
     NginxConfig* block_config = new NginxConfig;
     std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
     statement->tokens_.push_back("dest");
-    statement->tokens_.push_back("\"https://www.this_website_does_not_exist_wkwkwk.wkw/\"");
+    statement->tokens_.push_back("http://www.this_website_does_not_exist_wkwkwk.wkw/");
     block_config->statements_.push_back(statement);
 	
     //request

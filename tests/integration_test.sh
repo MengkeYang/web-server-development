@@ -103,6 +103,49 @@ fi
 # More multithreading tests with Python sockets
 ./multithreading_test.py
 
+## Setting up additional servers to test proxy
+$PATH_TO_BIN test_proxy_server_config &
+PROXY_SERVER_ID=$!
+
+$PATH_TO_BIN test_proxy_server_redirect_config &
+PROXY_SERVER_REDIRECT_ID=$!
+
+sleep 1s
+
+## Testing basic proxy server by matching with main
+tmpfile=$(mktemp)
+curl -s -o "$tmpfile" localhost:8081/proxy/
+diff  <(cat blank.html) <(cat "$tmpfile")
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 9"
+else
+    echo "Failed Test 9"
+    kill -TERM $PROXY_SERVER_REDIRECT_ID
+    kill -TERM $PROXY_SERVER_ID
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
+## Testing redirect on proxy server request handling
+tmpfile=$(mktemp)
+curl -s -i -o "$tmpfile" --http1.0 localhost:8082/proxy2/
+diff  <(cat good_method_request) <(sed 's/\r//' <(head -n 1 "$tmpfile"))
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 10"
+else
+    echo "Failed Test 10"
+    kill -TERM $PROXY_SERVER_REDIRECT_ID
+    kill -TERM $PROXY_SERVER_ID
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
+kill -TERM $PROXY_SERVER_REDIRECT_ID
+kill -TERM $PROXY_SERVER_ID
 kill -TERM $SERVER_ID
 rm "$tmpfile"
 exit 0

@@ -1,0 +1,19 @@
+port 8081;
+
+location "/static/" StaticHandler {
+    root "./no_where";
+}
+
+location "/echo/" EchoHandler {
+}
+
+location "/status/" StatusHandler {
+}
+
+location "/" NotFoundHandler {
+}
+
+location "/proxy/" ProxyHandler {
+    dest "https://blank.org/";
+}
+
