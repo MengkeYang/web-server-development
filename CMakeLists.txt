@@ -54,7 +54,7 @@ target_link_libraries(not_found_request_handler_lib response_lib)
 target_link_libraries(status_request_handler_lib response_lib)
 target_link_libraries(session_lib request_parser_lib response_lib connection_lib echo_request_handler_lib static_request_handler_lib status_request_handler_lib not_found_request_handler_lib reverse_proxy_request_handler_lib log_helper_lib)
 target_link_libraries(server_lib session_lib)
-target_link_libraries(reverse_proxy_request_handler_lib response_lib not_found_request_handler_lib)
+target_link_libraries(reverse_proxy_request_handler_lib response_lib not_found_request_handler_lib log_helper_lib Boost::log connection_lib)
 # update main executable and link it with boost, session_lib and server_lib
 add_executable(server_executable src/server_main.cc)
 target_link_libraries(server_executable server_lib config_parser_lib pthread log_helper_lib Boost::system Boost::regex Boost::log_setup Boost::log)
@@ -79,7 +79,7 @@ target_link_libraries(static_request_handler_lib_test Boost::system static_reque
 target_link_libraries(echo_request_handler_lib_test Boost::system echo_request_handler_lib gtest_main response_lib config_parser_lib)
 target_link_libraries(not_found_request_handler_lib_test Boost::system not_found_request_handler_lib gtest_main response_lib config_parser_lib)
 target_link_libraries(status_request_handler_lib_test Boost::system Boost::log status_request_handler_lib gtest_main response_lib config_parser_lib)
-target_link_libraries(reverse_proxy_request_handler_lib_test Boost::system Boost::log reverse_proxy_request_handler_lib gtest_main response_lib config_parser_lib)
+target_link_libraries(reverse_proxy_request_handler_lib_test Boost::system Boost::log reverse_proxy_request_handler_lib gtest_main response_lib config_parser_lib log_helper_lib Boost::system Boost::regex Boost::log_setup Boost::log)
 
 add_test(NAME integration_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 

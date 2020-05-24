@@ -19,7 +19,7 @@ TEST_F(reverse_proxy_request_handler_test, test_request_handling)
     NginxConfig* block_config = new NginxConfig;
     std::shared_ptr<NginxConfigStatement> statement(new NginxConfigStatement); 
     statement->tokens_.push_back("dest");
-    statement->tokens_.push_back("\"https://www.google.com/\"");
+    statement->tokens_.push_back("\"http://www.ucla.edu/\"");
     block_config->statements_.push_back(statement);
 
     //request
@@ -27,7 +27,7 @@ TEST_F(reverse_proxy_request_handler_test, test_request_handling)
     r.method_ = request::GET;
     r.uri_ = "/proxy";
 	
-    reverse_proxy_request_handler reverse_proxy_handler(block_config);
+    reverse_proxy_request_handler reverse_proxy_handler(block_config, "/proxy/");
     response result;
     result = reverse_proxy_handler.handle_request(r);
     EXPECT_EQ(result.code_,response::status_code::OK);
@@ -47,7 +47,7 @@ TEST_F(reverse_proxy_request_handler_test, test_bad_request)
     r.method_ = request::GET;
     r.uri_ = "/proxy";
 	
-    reverse_proxy_request_handler reverse_proxy_handler(block_config);
+    reverse_proxy_request_handler reverse_proxy_handler(block_config, "/proxy/");
     response result;
     result = reverse_proxy_handler.handle_request(r);
     std::cout << result.code_ << std::endl;
@@ -68,6 +68,6 @@ TEST_F(reverse_proxy_request_handler_test, reverse_proxy_init)
     r.method_ = request::GET;
     r.uri_ = "/proxy";
 	
-    reverse_proxy_request_handler reverse_proxy_handler(block_config);
+    reverse_proxy_request_handler reverse_proxy_handler(block_config, "/proxy/");
     EXPECT_TRUE(reverse_proxy_handler.init("", *block_config) != 0);
 }

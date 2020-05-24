@@ -2,6 +2,7 @@
 #include "string.h"
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include "config_parser.h"
 #include "request_handler.h"
 #include "request.h"
@@ -12,17 +13,18 @@
 #include <algorithm>
 #include <cctype>
 #include <functional>
+#include "log_helper.h"
 
 
 using boost::asio::buffers_begin;
 using boost::asio::ip::tcp;
 
 
-reverse_proxy_request_handler::reverse_proxy_request_handler(const NginxConfig* config)
+reverse_proxy_request_handler::reverse_proxy_request_handler(const NginxConfig* config, const std::string& location_path)
 {
     dest_ = config->get_value_from_statement("dest");
     dest_ = dest_.substr(1, dest_.length() - 2);
-
+    location_path_ = location_path;
     // get the port number from the config block, or assign a default port value
     if (!config->get_value_from_statement("port").empty()) {
         port_ = config->get_value_from_statement("port");
@@ -37,7 +39,7 @@ request_handler* reverse_proxy_request_handler::init(const std::string& location
                                               const NginxConfig& config)
 {
     if (!config.get_value_from_statement("dest").empty()) {
-        return new reverse_proxy_request_handler(&config);
+        return new reverse_proxy_request_handler(&config, location_path);
     } else {
         return not_found_request_handler::init(location_path, config);
     }
@@ -45,9 +47,10 @@ request_handler* reverse_proxy_request_handler::init(const std::string& location
 
 response reverse_proxy_request_handler::handle_request(const request& req)
 {
+    log_helper& log = log_helper::instance();
     // verify that the host and path we're about to contact exist
     if (host_ == "" || path_ == "") {
-        // TODO: Log that the dest is malformed
+        log.log_error_file("Destination: " + dest_ + " is malformed");
         return throw_400_error();
     }
     // find the second '/' character to retrieve the path
@@ -57,7 +60,7 @@ response reverse_proxy_request_handler::handle_request(const request& req)
         request new_req = get_proxy_request(req, "");
         return send_request(new_req);
     } else {
-        std::string new_uri = req.uri_.substr(index, req.uri_.length());
+        std::string new_uri = req.uri_.substr(index+1, req.uri_.length());
         request new_req = get_proxy_request(req, new_uri);
         return send_request(new_req);
     }   
@@ -66,6 +69,7 @@ response reverse_proxy_request_handler::handle_request(const request& req)
 // for reference:
 // https://www.boost.org/doc/libs/1_50_0/doc/html/boost_asio/example/http/client/sync_client.cpp
 response reverse_proxy_request_handler::send_request(const request& req) {
+    log_helper& log = log_helper::instance();
     response_builder res;
     // obtain the request as a string
     std::string curr_request = request_to_string(req);
@@ -78,7 +82,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     tcp::resolver::query query(host_, port_);
     tcp::resolver::iterator endpoint_iterator = resolver.resolve(query, ec);
     if (ec) { 
-        // TODO: Log an error here
+        log.log_error_file("Could not resolve endpoint for host: " + host_);
         return throw_400_error();
     }
 
@@ -86,7 +90,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     tcp::socket socket(io_service);
     boost::asio::connect(socket, endpoint_iterator, ec);
     if (ec) { 
-        // TODO: Log an error here
+        log.log_error_file("Could not connect to host: " + host_);
         return throw_400_error();
     }
     
@@ -108,7 +112,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     std::string status_message;
     std::getline(response_stream, status_message); // contains a space in front of it!
     if (!response_stream || http_version.substr(0, 5) != "HTTP/"){
-        // TODO: Log an error here
+        log.log_error_file("No HTTP response detected from server");
         return throw_400_error();
     }
     
@@ -122,7 +126,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
                 return handle_redirect(req, location);
             }
         }
-        // TODO: Log an error here, no redirect location was provided
+        log.log_error_file("No redirect location was provided");
         return throw_400_error();
     } else if (status_code == 200) {
         res.set_code(response::status_code::OK);
@@ -131,6 +135,7 @@ response reverse_proxy_request_handler::send_request(const request& req) {
         res.make_date_servername_headers();
         return res.get_response();
     } else {
+        log.log_error_file("Unsupported return code: " + std::to_string(status_code));
         return throw_400_error();
     }
     
@@ -140,7 +145,9 @@ response reverse_proxy_request_handler::send_request(const request& req) {
     // process the response headers.
     while (std::getline(response_stream, header) && header != "\r"){
         std::string token = header.substr(0, header.find(":"));
-        res.add_header(token, header.substr(header.find(":")+2));
+        if (token != "Transfer-Encoding") {
+            res.add_header(token, header.substr(header.find(":")+2));
+        }
     }
     
     // write whatever content we already have to the body.
@@ -165,6 +172,8 @@ response reverse_proxy_request_handler::send_request(const request& req) {
       throw boost::system::system_error(error);
       
     // add on final content-length header, body, and final fields to prepare the response.
+    boost::replace_all(body, "href=\"/", "href=\"" + location_path_);  
+    boost::replace_all(body, "src=\"/", "src=\"" + location_path_);  
     res.add_header("Content-Length", std::to_string(body.length()));
     res.add_body(body);
     res.make_date_servername_headers();
@@ -173,11 +182,15 @@ response reverse_proxy_request_handler::send_request(const request& req) {
 
 // create the new redirect request object
 response reverse_proxy_request_handler::handle_redirect(const request& req, std::string location) {
+    log_helper& log = log_helper::instance();
+    std::string curr_path = path_;
+    std::string curr_host = host_;
     // clear the params from the previous location
     protocol_ = "";
     query_ = "";
     host_ = "";
     path_ = "";
+
     // format the location so it's ready for the parser, obtain the new params of the location
     if(location.find("http://") != std::string::npos || location.find("https://") != std::string::npos) {
         parse_url(location);  
@@ -186,6 +199,10 @@ response reverse_proxy_request_handler::handle_redirect(const request& req, std:
         parse_url(location);
     }
 
+    if (host_ == curr_host && path_ == curr_path) {
+        log.log_error_file("Infinite redirection to: " + curr_host + "/" + curr_path);
+        return throw_400_error();
+    }
     // obtain the new request and send it
     request new_req = get_proxy_request(req, "");
     return send_request(new_req);
@@ -222,7 +239,7 @@ std::string reverse_proxy_request_handler::request_to_string(const request& req)
     std::string methods[] = {"GET", "POST", "PUT", "HEAD"};
     proxy_request.append(methods[req.method_] + " ");
     proxy_request.append(req.uri_ + " ");
-    proxy_request.append(req.version_ + "\r\n");
+    proxy_request.append("HTTP/1.0\r\n");
 
     for (auto it = req.headers_.begin(); it != req.headers_.end(); it++) {
         proxy_request.append(it->first + ": " + it->second + "\r\n");
@@ -245,6 +262,7 @@ request reverse_proxy_request_handler::get_proxy_request(const request& req, std
     }
     new_req.headers_ = req.headers_;
     new_req.headers_["Connection"] = "close";
+    new_req.headers_["Accept-Encoding"] = "*/*";
     new_req.headers_["Host"] = host_;
     new_req.body_ = req.body_;
     return new_req;

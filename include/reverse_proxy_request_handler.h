@@ -12,11 +12,12 @@
 #include "request.h"
 #include "response.h"
 #include "not_found_request_handler.h"
+#include "log_helper.h"
 
 class reverse_proxy_request_handler : public request_handler 
 {
 public:
-    reverse_proxy_request_handler(const NginxConfig* config);
+    reverse_proxy_request_handler(const NginxConfig* config, const std::string& location_path);
     static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
 private:
@@ -26,7 +27,7 @@ private:
     std::string request_to_string(const request& req);
     request get_proxy_request(const request& req, std::string uri);
     response throw_400_error();
-    std::string dest_, port_, base_uri_, protocol_, host_, path_, query_;
+    std::string dest_, port_, base_uri_, protocol_, host_, path_, query_, location_path_;
 };
 
 #endif

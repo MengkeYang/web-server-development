@@ -13,7 +13,11 @@ location "/status/" StatusHandler {
 location "/" NotFoundHandler {
 }
 
-location "/proxy/" ProxyHandler {
+location "/ucla/" ProxyHandler {
+    dest "http://www.ucla.edu/";
+}
+
+location "/wfh/" ProxyHandler {
     dest "http://35.185.213.80/status";
 }
 
