@@ -78,7 +78,7 @@ void response_builder::make_404_error()
         file.close();
     }
     add_body(body);
-    add_header("Content-Type", ".html");
+    add_header("Content-Type", "text/html");
     add_header("Content-Length", std::to_string(body.length()));
 
 }
