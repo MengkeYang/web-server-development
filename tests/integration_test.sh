@@ -144,6 +144,20 @@ else
     exit 1
 fi
 
+## Test the health request handler returns a 200
+curl -I -s -o "$tmpfile" localhost:8080/health
+if [[ $(cat "$tmpfile") =~ HTTP/1.1\ 200\ OK.* ]]
+then
+    echo "Passed Test 11"
+else
+    echo "Failed Test 11"
+    kill -TERM $PROXY_SERVER_REDIRECT_ID
+    kill -TERM $PROXY_SERVER_ID
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    exit 1
+fi
+
 kill -TERM $PROXY_SERVER_REDIRECT_ID
 kill -TERM $PROXY_SERVER_ID
 kill -TERM $SERVER_ID

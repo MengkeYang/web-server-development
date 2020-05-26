@@ -3,6 +3,7 @@
 #include "log_helper.h"
 #include "connection.h"
 #include "response.h"
+#include "health_request_handler.h"
 #include <stdexcept>
 #include <boost/bind.hpp>
 
@@ -39,7 +40,9 @@ server::server(boost::asio::io_service& io_service, short port,
         } else if (loc_res.handler_name ==
                    "ProxyHandler") {
             add_request_handler(reverse_proxy_request_handler::init, loc_res);
-            std::cout << "found the handler" << std::endl;
+        } else if (loc_res.handler_name ==
+                   "HealthHandler") {
+            add_request_handler(health_request_handler::init, loc_res);
         }
     }
     // log handlers info for status handler
