@@ -115,7 +115,7 @@ sleep 1s
 ## Testing basic proxy server by matching with main
 tmpfile=$(mktemp)
 curl -s -o "$tmpfile" localhost:8081/proxy/
-diff  <(cat blank.html) <(cat "$tmpfile")
+diff -q <(cat blank.html) <(cat "$tmpfile")
 if [ $? -eq 0 ]
 then
     echo "Passed Test 9"
@@ -131,7 +131,7 @@ fi
 ## Testing redirect on proxy server request handling
 tmpfile=$(mktemp)
 curl -s -i -o "$tmpfile" --http1.0 localhost:8082/proxy2/
-diff  <(cat good_method_request) <(sed 's/\r//' <(head -n 1 "$tmpfile"))
+diff  -q <(cat good_method_request) <(sed 's/\r//' <(head -n 1 "$tmpfile"))
 if [ $? -eq 0 ]
 then
     echo "Passed Test 10"
@@ -155,6 +155,25 @@ else
     kill -TERM $PROXY_SERVER_ID
     kill -TERM $SERVER_ID
     rm "$tmpfile"
+    exit 1
+fi
+
+## Test that more than two slashes are allowed in prefix uri
+tmpfile2=$(mktemp)
+curl -s -o "$tmpfile" localhost:8080/gnu/test/graphics/heckert_gnu.transp.small.png
+curl -s -o "$tmpfile2" localhost:8080/gnu/graphics/heckert_gnu.transp.small.png
+diff <(cat "$tmpfile") <(cat "$tmpfile2")
+if [ $? -eq 0 ]
+then
+    echo "Passed Test 12"
+    rm "$tmpfile2"
+else
+    echo "Failed Test 12"
+    kill -TERM $PROXY_SERVER_REDIRECT_ID
+    kill -TERM $PROXY_SERVER_ID
+    kill -TERM $SERVER_ID
+    rm "$tmpfile"
+    rm "$tmpfile2"
     exit 1
 fi
 

@@ -69,5 +69,5 @@ TEST_F(reverse_proxy_request_handler_test, reverse_proxy_init)
     r.uri_ = "/proxy";
 	
     reverse_proxy_request_handler reverse_proxy_handler(block_config, "/proxy/");
-    EXPECT_TRUE(reverse_proxy_handler.init("", *block_config) != 0);
+    EXPECT_TRUE(reverse_proxy_handler.init("/", *block_config) != 0);
 }

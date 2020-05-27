@@ -14,21 +14,29 @@
 #include "not_found_request_handler.h"
 #include "log_helper.h"
 
+struct url;
+
 class reverse_proxy_request_handler : public request_handler 
 {
 public:
-    reverse_proxy_request_handler(const NginxConfig* config, const std::string& location_path);
-    static request_handler* init(const std::string& location_path, const NginxConfig& config);
+    reverse_proxy_request_handler(const NginxConfig* config, const std::string& prefix_uri);
+    static request_handler* init(const std::string& prefix_uri, const NginxConfig& config);
     response handle_request(const request& req);
     std::string get_handler_name();
 private:
-    void parse_url(const std::string& url_s);
-    response send_request(const request& req);
-    response handle_redirect(const request& req, std::string location);
+    url parse_url(const std::string& url_s);
+    response send_request(const request& req, std::string host);
+    response handle_redirect(const request& req, std::string location, url prev_loc);
     std::string request_to_string(const request& req);
-    request get_proxy_request(const request& req, std::string uri);
+    request get_proxy_request(const request& req, url uri);
     response throw_400_error();
-    std::string dest_, port_, base_uri_, protocol_, host_, path_, query_, location_path_;
+    std::string dest_, port_, base_uri_, protocol_, host_, path_, query_, prefix_;
+};
+
+struct url {
+    std::string host_;
+    std::string path_;
+    std::string query_;
 };
 
 #endif

@@ -21,5 +21,9 @@ location "/gnu/" ProxyHandler {
     dest "http://gnu.org/";
 }
 
+location "/gnu/test/" ProxyHandler {
+    dest "http://gnu.org/";
+}
+
 location "/health/" HealthHandler {
 }
