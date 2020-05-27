@@ -10,13 +10,13 @@
 #include "response.h"
 #include "not_found_request_handler.h"
 
-class static_request_handler : public not_found_request_handler
+class static_request_handler : public request_handler
 {
 public:
     static_request_handler(const NginxConfig* config, std::string prefix_uri);
     static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
-
+    std::string get_handler_name();
 private:
     // for map path
     std::string root_;

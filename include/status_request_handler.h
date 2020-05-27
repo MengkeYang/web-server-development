@@ -17,7 +17,7 @@ public:
     static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
     std::stringstream get_request_records();
-
+    std::string get_handler_name();
 private:
     std::stringstream all_handlers;
     int interval_len;

@@ -70,7 +70,6 @@ TEST_F(session_test, good_parse_generates_ok_code)
     req.uri_ = "/echo/";
     req.version_ = "HTTP/1.1";
     req.method_ = request::method::GET;
-
     response_builder rb = session_.process_req(req);
     response r = rb.get_response();
     EXPECT_EQ(r.code_, response::status_code::OK);

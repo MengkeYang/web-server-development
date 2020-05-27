@@ -271,3 +271,7 @@ response reverse_proxy_request_handler::throw_400_error() {
     res.make_date_servername_headers();
     return res.get_response();
 }
+
+std::string reverse_proxy_request_handler::get_handler_name(){
+    return "ProxyHandler";
+}

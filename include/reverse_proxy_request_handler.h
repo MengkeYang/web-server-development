@@ -20,6 +20,7 @@ public:
     reverse_proxy_request_handler(const NginxConfig* config, const std::string& location_path);
     static request_handler* init(const std::string& location_path, const NginxConfig& config);
     response handle_request(const request& req);
+    std::string get_handler_name();
 private:
     void parse_url(const std::string& url_s);
     response send_request(const request& req);

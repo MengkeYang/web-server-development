@@ -45,6 +45,7 @@ public:
     void log_request_info(request req, connection* conn);
     void log_response_info(request req, response res);
     void log_all_handlers(const NginxConfig& config);
+    void log_metrics(request req, response res, connection* conn, std::string handler_name);
     void log_response_sent();
     ~log_helper() {}
 };

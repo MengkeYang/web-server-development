@@ -55,6 +55,7 @@ response_builder session::process_req(request request_)
         response =
             location_handlers_.at(max_matched_key)->handle_request(request_);
         res_build.set_response(response);
+        log_.log_metrics(request_,response,connection_.get(), location_handlers_.at(max_matched_key)->get_handler_name());
     } else
         res_build.make_400_error();
 

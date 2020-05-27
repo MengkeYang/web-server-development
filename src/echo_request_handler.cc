@@ -30,3 +30,7 @@ response echo_request_handler::handle_request(const request& req)
     res.make_date_servername_headers();
     return res.get_response();
 }
+
+std::string echo_request_handler::get_handler_name(){
+    return "EchoHandler";
+}

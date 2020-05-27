@@ -43,7 +43,7 @@ request_handler* static_request_handler::init(const std::string& location_path,
     if (!config.get_value_from_statement("root").empty()) {
         return new static_request_handler(&config, location_path);
     } else {
-        return not_found_request_handler::init(location_path, config);
+        return new not_found_request_handler();
     }
 }
 
@@ -109,9 +109,16 @@ response static_request_handler::handle_request(const request &req)
 
     // Copy the requested file into the response body
     if (filename.empty() || !file_to_body(uri, res)) {
-        return not_found_request_handler::handle_request(req);
+        response_builder res_not_found;
+        res_not_found.make_404_error();
+        return res_not_found.get_response();
     }
 
     res.make_date_servername_headers();
     return res.get_response();
+}
+
+std::string static_request_handler::get_handler_name()
+{
+    return "StaticHandler";
 }

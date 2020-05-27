@@ -21,3 +21,8 @@ response health_request_handler::handle_request(const request& req)
     res.make_date_servername_headers();
     return res.get_response();
 }
+
+
+std::string health_request_handler::get_handler_name(){
+    return "HealthHandler";
+}

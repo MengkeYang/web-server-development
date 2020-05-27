@@ -116,3 +116,7 @@ std::stringstream status_request_handler::get_request_records()
     full_record << records.rdbuf();
     return full_record;
 }
+
+std::string status_request_handler::get_handler_name(){
+    return "StatusHandler";
+}

@@ -109,3 +109,30 @@ void log_helper::log_all_handlers(const NginxConfig& config)
         str_stream << loc_res.handler_name + " " + loc_res.uri + " ";
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
+
+ void log_helper::log_metrics(request req, response res, connection* conn, std::string handler_name)
+ {
+    std::lock_guard<std::mutex> lk(lock);
+
+    std::string codes[] = {"400", "404", "200"};
+    std::stringstream str_stream;
+    str_stream << "ResponseMetrics: ";
+    //Response code (required), Request path
+    str_stream<< " Response code : " << codes[res.code_] << " Request path: " << req.uri_;
+
+    //Request IP
+    boost::system::error_code ec;       
+    boost::asio::ip::tcp::endpoint endpoint = conn->socket()->remote_endpoint(ec);
+    if(ec) 
+    {
+         str_stream << " IP: " << "Failed to get the remote endpoint of the socket";
+    } else {
+         str_stream << " IP: " << conn->socket()->remote_endpoint().address().to_string();
+    }
+    
+    //Matched request handler name
+     str_stream << " Matched request handler name: " << handler_name;
+
+    BOOST_LOG_SEV(lg, trace) << str_stream.str();
+
+ }

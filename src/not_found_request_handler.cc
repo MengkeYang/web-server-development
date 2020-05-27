@@ -15,3 +15,7 @@ response not_found_request_handler::handle_request(const request& req)
     res.make_404_error();
     return res.get_response();
 }
+
+std::string not_found_request_handler::get_handler_name(){
+    return "NotFoundHandler";
+}
