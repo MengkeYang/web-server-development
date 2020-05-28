@@ -26,21 +26,21 @@ void session::start()
                       shared_this);
 }
 
-response_builder session::process_req(request request_)
+response_builder session::process_req(const request& request)
 {
     response response;
     response_builder res_build;
     bool matched = false;
     int max_matched_length = 0;
     std::string max_matched_key;
-    if (request_.method_ != request::method::INVALID) {
+    if (request.method_ != request::method::INVALID) {
         for (auto&& pair : location_handlers_) {
             // We compare the prefix without the final "/". So /echo matches
             // with /echo/.
-            if (request_.uri_.length() > pair.first.length() &&
-                request_.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
+            if (request.uri_.length() > pair.first.length() &&
+                request.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
                 continue;
-            if (request_.uri_.compare(
+            if (request.uri_.compare(
                     0, pair.first.length() - 1,
                     pair.first.substr(0, pair.first.length() - 1)) == 0) {
                 if (max_matched_length < pair.first.length()) {
@@ -53,16 +53,18 @@ response_builder session::process_req(request request_)
     }
     if (matched) {
         response =
-            location_handlers_.at(max_matched_key)->handle_request(request_);
+            location_handlers_.at(max_matched_key)->handle_request(request);
         res_build.set_response(response);
-        log_.log_metrics(request_,response,connection_.get(), location_handlers_.at(max_matched_key)->get_handler_name());
+        log_.log_metrics(
+            request, response, connection_.get(),
+            location_handlers_.at(max_matched_key)->get_handler_name());
     } else
         res_build.make_400_error();
 
     return res_build;
 }
 
-void session::thread_work(request r)
+void session::thread_work(const request& r)
 {
     std::shared_ptr<response_builder> res_build =
         std::make_shared<response_builder>();
@@ -70,7 +72,6 @@ void session::thread_work(request r)
 
     *res_build = process_req(r);
 
-    log_.log_response_info(r, res_build->get_response());
     connection_->write(res_build, &session::completed_request, shared_this);
 }
 

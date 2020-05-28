@@ -135,8 +135,6 @@ response reverse_proxy_request_handler::send_request(const request& req,
     std::ostream request_stream(&request_buffer);
     request_stream << curr_request;
 
-    log.log_error_file(curr_request);
-
     boost::asio::write(socket, request_buffer, ec);
     boost::asio::streambuf response_buffer;
     boost::asio::read_until(socket, response_buffer, "\r\n", ec);
@@ -313,7 +311,7 @@ request reverse_proxy_request_handler::get_proxy_request(const request& req,
     new_req.uri_ = dest.path_ + dest.query_;
 
     new_req.headers_ = req.headers_;
-    new_req.headers_["Connection"] = "close";
+    new_req.headers_.erase("Connection");
     new_req.headers_["Accept-Encoding"] = "*/*";
     new_req.headers_["Host"] = dest.host_;
     new_req.body_ = req.body_;

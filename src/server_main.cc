@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         log.log_trace_file("server startup successed");
 
         std::vector<std::shared_ptr<boost::thread>> threads;
-        for (std::size_t i = 0; i < 4; i++) {
+        for (std::size_t i = 0; i < 16; i++) {
             std::shared_ptr<boost::thread> t(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_service)));
             threads.push_back(t);
         }

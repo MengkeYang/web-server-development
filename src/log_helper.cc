@@ -50,23 +50,21 @@ log_helper& log_helper::instance()
     return inst;
 }
 
-void log_helper::log_trace_file(std::string trace_message)
+void log_helper::log_trace_file(const std::string& trace_message)
 {
     BOOST_LOG_SEV(lg, trace) << "Trace: " << trace_message;
 }
-void log_helper::log_error_file(std::string error_message)
+void log_helper::log_error_file(const std::string& error_message)
 {
     BOOST_LOG_SEV(lg, error) << "Error: " << error_message;
 }
-void log_helper::log_warning_file(std::string warning_message)
+void log_helper::log_warning_file(const std::string& warning_message)
 {
     BOOST_LOG_SEV(lg, warning) << "Warning: " << warning_message;
 }
 
-void log_helper::log_request_info(request req, connection* conn)
+void log_helper::log_request_info(const request& req, connection* conn)
 {
-    std::lock_guard<std::mutex> lk(lock);
-
     std::string methods[] = {"GET", "POST", "PUT", "HEAD", "INVALID"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
@@ -79,10 +77,8 @@ void log_helper::log_request_info(request req, connection* conn)
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
 
-void log_helper::log_response_info(request req, response res)
+void log_helper::log_response_info(const request& req, const response& res)
 {
-    std::lock_guard<std::mutex> lk(lock);
-
     std::string codes[] = {"400", "404", "200"};
     std::stringstream str_stream;
     str_stream << "Trace: ";
@@ -92,8 +88,6 @@ void log_helper::log_response_info(request req, response res)
 
 void log_helper::log_response_sent()
 {
-    std::lock_guard<std::mutex> lk(lock);
-
     std::stringstream str_stream;
     str_stream << "Response Sent";
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
@@ -110,10 +104,10 @@ void log_helper::log_all_handlers(const NginxConfig& config)
     BOOST_LOG_SEV(lg, trace) << str_stream.str();
 }
 
- void log_helper::log_metrics(request req, response res, connection* conn, std::string handler_name)
- {
-    std::lock_guard<std::mutex> lk(lock);
-
+void log_helper::log_metrics(const request& req, const response& res,
+                             connection* conn,
+                             const std::string& handler_name)
+{
     std::string codes[] = {"400", "404", "200"};
     std::stringstream str_stream;
     str_stream << "ResponseMetrics: ";

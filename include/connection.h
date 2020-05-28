@@ -5,6 +5,7 @@
 #include <boost/function.hpp>
 #include <mutex>
 #include "response.h"
+#include "log_helper.h"
 
 using boost::asio::ip::tcp;
 
@@ -25,6 +26,7 @@ class connection
 {
     tcp::socket socket_;
     std::mutex lock_;
+
 public:
     connection(tcp::socket socket) : socket_(std::move(socket)) {}
     tcp::socket *socket();
@@ -53,9 +55,17 @@ public:
  */
 class tcp_connection : public connection
 {
-    std::mutex lock_;
+    boost::asio::strand strand_;
+    boost::asio::deadline_timer timer_;
+
 public:
-    tcp_connection(tcp::socket s) : connection(std::move(s)) {}
+    tcp_connection(tcp::socket s)
+        : timer_(s.get_io_service()),
+          strand_(s.get_io_service()),
+          connection(std::move(s))
+    {
+    }
+    void timeout(const boost::system::error_code &e);
     void read(boost::asio::mutable_buffer buf, size_t maxlen,
               boost::function<void(std::shared_ptr<session> s,
                                    const boost::system::error_code &error,

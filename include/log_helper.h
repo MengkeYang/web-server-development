@@ -27,9 +27,8 @@ using boost::asio::ip::tcp;
 
 class log_helper
 {
-    std::mutex lock;
 public:
-    src::severity_logger<severity_level> lg;
+    src::severity_logger_mt<severity_level> lg;
     log_helper();
 
     // Using the standard C++11 singleton implementation
@@ -39,13 +38,13 @@ public:
     log_helper& operator=(const log_helper&) = delete;
     log_helper& operator=(log_helper&&) = delete;
 
-    void log_trace_file(std::string trace_message);
-    void log_error_file(std::string error_message);
-    void log_warning_file(std::string warning_message);
-    void log_request_info(request req, connection* conn);
-    void log_response_info(request req, response res);
+    void log_trace_file(const std::string& trace_message);
+    void log_error_file(const std::string& error_message);
+    void log_warning_file(const std::string& warning_message);
+    void log_request_info(const request& req, connection* conn);
+    void log_response_info(const request& req, const response& res);
     void log_all_handlers(const NginxConfig& config);
-    void log_metrics(request req, response res, connection* conn, std::string handler_name);
+    void log_metrics(const request& req, const response& res, connection* conn, const std::string& handler_name);
     void log_response_sent();
     ~log_helper() {}
 };

@@ -3,12 +3,19 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <mutex>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 using boost::asio::ip::tcp;
 
-tcp::socket* connection::socket() {
+tcp::socket* connection::socket()
+{
     std::lock_guard<std::mutex> lk(lock_);
     return &socket_;
+}
+
+void tcp_connection::timeout(const boost::system::error_code& e) {
+    if (e) return;
+    socket()->close();
 }
 
 void tcp_connection::read(
@@ -19,10 +26,15 @@ void tcp_connection::read(
         cb,
     std::shared_ptr<session> s)
 {
+    timer_.expires_from_now(boost::posix_time::seconds(15));
+    timer_.async_wait(strand_.wrap(boost::bind(
+        &tcp_connection::timeout, this, boost::asio::placeholders::error)));
+
     socket()->async_read_some(
         boost::asio::buffer(buf, maxlen),
-        boost::bind(cb, s, boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+        strand_.wrap(
+            boost::bind(cb, s, boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred)));
 }
 
 void tcp_connection::write(
@@ -33,9 +45,8 @@ void tcp_connection::write(
         cb,
     std::shared_ptr<session> s)
 {
-    std::lock_guard<std::mutex> lk(lock_);
-
     boost::asio::async_write(
         *socket(), res_build->build(),
-        boost::bind(cb, s, boost::asio::placeholders::error, res_build));
+        strand_.wrap(
+            boost::bind(cb, s, boost::asio::placeholders::error, res_build)));
 }
