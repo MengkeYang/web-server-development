@@ -14,7 +14,9 @@ response health_request_handler::handle_request(const request& req)
     response_builder res;
     if (req.method_ != request::INVALID) {
         res.set_code(response::status_code::OK);
-        res.add_header("Content-Length", "0");
+        std::string body = "OK";
+        res.add_body(body);
+        res.add_header("Content-Length", std::to_string(body.size()));
     } else
         res.make_400_error();
 

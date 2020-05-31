@@ -26,7 +26,7 @@ void tcp_connection::read(
         cb,
     std::shared_ptr<session> s)
 {
-    timer_.expires_from_now(boost::posix_time::seconds(15));
+    timer_.expires_from_now(boost::posix_time::seconds(3));
     timer_.async_wait(strand_.wrap(boost::bind(
         &tcp_connection::timeout, this, boost::asio::placeholders::error)));
 

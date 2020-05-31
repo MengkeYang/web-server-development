@@ -94,17 +94,22 @@ std::stringstream status_request_handler::get_request_records()
                 // }
 
                 // match "for request" in log
-                found = line.find("for request:");
+                found = line.find("ResponseMetrics");
                 if (found!=std::string::npos) {
-                    std::string request_url;
+                    std::string code_marker = "Response code : ";
+                    std::string request_marker = "Request path: ";
                     // get request URL
-                    for (std::size_t i=found+13; i<line.size() && line.at(i)!=' '; i++)
+                    found = line.find(request_marker);
+                    std::string request_url;
+                    for (std::size_t i=found+request_marker.size(); i<line.size() && line.at(i)!=' '; i++)
                         request_url.push_back(line.at(i));
-                    // get response code
-                    if (request_url.size() != 0) {
+
+                    found = line.find(code_marker);
+                    if (found != std::string::npos) {
+                        // get response code
                         num_requests++;
                         records << std::left << std::setfill(' ') 
-                                << std::setw(interval_len) << request_url << line.substr(found-4, 3) << "\r\n";
+                            << std::setw(interval_len) << request_url << line.substr(found+code_marker.size(), 3) << "\r\n";
                     }
                 } 
             }
@@ -112,7 +117,8 @@ std::stringstream status_request_handler::get_request_records()
         }
     }
     std::stringstream full_record;
-    full_record << "Total Requests: " << num_requests << std::endl << std::endl;
+    full_record << "Total Requests: " << num_requests << std::endl;
+    full_record << "Current Host Name: " << boost::asio::ip::host_name() << std::endl << std::endl;
     full_record << records.rdbuf();
     return full_record;
 }
