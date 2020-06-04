@@ -765,4 +765,55 @@
 2020-05-23 03:36:45.193653 [0x00007f6e39f92700] [trace] [0x00012be0] [21] Trace: 200 for request: /static/mobydick.txt
 2020-05-23 03:36:45.194991 [0x00007f6e3b0fb740] [trace] [0x00012be0] [22] Response Sent
 2020-05-23 03:36:45.212658 [0x00007f6e3b0fb740] [warning] [0x00012be0] [23] Warning: server is shutting down
-2020-05-23 03:36:45.213784 [0x00007f6e3b0fb740] [error] [0x00012be0] [24] Error: Server Killed
+2020-06-04 06:22:44.614103 [0x00007f64b76fd740] [trace] [0x000002ac] [1] Trace: server config parsing begins
+2020-06-04 06:22:44.616786 [0x00007f64b76fd740] [trace] [0x000002ac] [2] Trace: server config parsing successed
+2020-06-04 06:22:44.617538 [0x00007f64b76fd740] [trace] [0x000002ac] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-04 06:22:44.618493 [0x00007f64b76fd740] [trace] [0x000002ac] [4] Trace: server startup successed
+2020-06-04 06:23:14.529964 [0x00007f64b5591700] [trace] [0x000002ac] [5] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43762
+2020-06-04 06:23:14.531053 [0x00007f64b5591700] [trace] [0x000002ac] [6] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.532074 [0x00007f64b5591700] [trace] [0x000002ac] [7] Response Sent
+2020-06-04 06:23:14.532250 [0x00007f64afd86700] [trace] [0x000002ac] [8] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43764
+2020-06-04 06:23:14.533848 [0x00007f64afd86700] [trace] [0x000002ac] [9] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.534464 [0x00007f64afd86700] [trace] [0x000002ac] [10] Response Sent
+2020-06-04 06:23:14.534781 [0x00007f64b358d700] [trace] [0x000002ac] [11] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43766
+2020-06-04 06:23:14.535516 [0x00007f64b358d700] [trace] [0x000002ac] [12] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.536215 [0x00007f64b358d700] [trace] [0x000002ac] [13] Response Sent
+2020-06-04 06:23:14.536480 [0x00007f64af585700] [trace] [0x000002ac] [14] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43768
+2020-06-04 06:23:14.537360 [0x00007f64af585700] [trace] [0x000002ac] [15] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.538024 [0x00007f64af585700] [trace] [0x000002ac] [16] Response Sent
+2020-06-04 06:23:14.538927 [0x00007f64af585700] [trace] [0x000002ac] [17] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43770
+2020-06-04 06:23:14.539587 [0x00007f64af585700] [trace] [0x000002ac] [18] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.540511 [0x00007f64af585700] [trace] [0x000002ac] [19] Response Sent
+2020-06-04 06:23:14.540921 [0x00007f64b258b700] [trace] [0x000002ac] [20] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43772
+2020-06-04 06:23:14.542561 [0x00007f64b258b700] [trace] [0x000002ac] [21] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.543676 [0x00007f64b3d8e700] [trace] [0x000002ac] [22] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43774
+2020-06-04 06:23:14.543780 [0x00007f64b6593700] [trace] [0x000002ac] [23] Response Sent
+2020-06-04 06:23:14.544323 [0x00007f64b3d8e700] [trace] [0x000002ac] [24] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.545349 [0x00007f64b3d8e700] [trace] [0x000002ac] [25] Response Sent
+2020-06-04 06:23:14.545704 [0x00007f64afd86700] [trace] [0x000002ac] [26] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43776
+2020-06-04 06:23:14.546510 [0x00007f64afd86700] [trace] [0x000002ac] [27] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.547349 [0x00007f64b5d92700] [trace] [0x000002ac] [28] Response Sent
+2020-06-04 06:23:14.547838 [0x00007f64b1d8a700] [trace] [0x000002ac] [29] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43778
+2020-06-04 06:23:14.548903 [0x00007f64b1d8a700] [trace] [0x000002ac] [30] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.549529 [0x00007f64b1d8a700] [trace] [0x000002ac] [31] Response Sent
+2020-06-04 06:23:14.550221 [0x00007f64b458f700] [trace] [0x000002ac] [32] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43780
+2020-06-04 06:23:14.551258 [0x00007f64b458f700] [trace] [0x000002ac] [33] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.554133 [0x00007f64b458f700] [trace] [0x000002ac] [34] Response Sent
+2020-06-04 06:23:14.554222 [0x00007f64af585700] [trace] [0x000002ac] [35] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43782
+2020-06-04 06:23:14.555099 [0x00007f64af585700] [trace] [0x000002ac] [36] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.555632 [0x00007f64b6593700] [trace] [0x000002ac] [37] Response Sent
+2020-06-04 06:23:14.555762 [0x00007f64aed84700] [trace] [0x000002ac] [38] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43784
+2020-06-04 06:23:14.556880 [0x00007f64aed84700] [trace] [0x000002ac] [39] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.557594 [0x00007f64aed84700] [trace] [0x000002ac] [40] Response Sent
+2020-06-04 06:23:14.557856 [0x00007f64b0d88700] [trace] [0x000002ac] [41] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43786
+2020-06-04 06:23:14.558731 [0x00007f64b0d88700] [trace] [0x000002ac] [42] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.559363 [0x00007f64b0d88700] [trace] [0x000002ac] [43] Response Sent
+2020-06-04 06:23:14.559547 [0x00007f64afd86700] [trace] [0x000002ac] [44] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43788
+2020-06-04 06:23:14.560100 [0x00007f64afd86700] [trace] [0x000002ac] [45] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.560735 [0x00007f64b4d90700] [trace] [0x000002ac] [46] Response Sent
+2020-06-04 06:23:14.561295 [0x00007f64b2d8c700] [trace] [0x000002ac] [47] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43790
+2020-06-04 06:23:14.562026 [0x00007f64b2d8c700] [trace] [0x000002ac] [48] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.563196 [0x00007f64b2d8c700] [trace] [0x000002ac] [49] Response Sent
+2020-06-04 06:23:14.563457 [0x00007f64b5591700] [trace] [0x000002ac] [50] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43792
+2020-06-04 06:23:14.564450 [0x00007f64b5591700] [trace] [0x000002ac] [51] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
+2020-06-04 06:23:14.565183 [0x00007f64b5591700] [trace] [0x000002ac] [52] Response Sent

@@ -51,15 +51,16 @@ int main(int argc, char* argv[])
 
         server s(io_service, (short)port, config);
         log.log_trace_file("server startup successed");
-
-        std::vector<std::shared_ptr<boost::thread>> threads;
-        for (std::size_t i = 0; i < 16; i++) {
-            std::shared_ptr<boost::thread> t(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_service)));
-            threads.push_back(t);
+        
+        boost::asio::io_service::work work(io_service);
+        boost::thread_group threads;
+        for (std::size_t i=0; i<16; i++) {
+            threads.create_thread(boost::bind(&boost::asio::io_service::run, &io_service));
         }
+        // in the session class, post and bind callback function to io_service
+        // so they can be performed by worker threads.
+        threads.join_all();
 
-        for (std::size_t i = 0; i < threads.size(); i++)
-            threads[i]->join();
     } catch (std::exception& e) {
         if (std::strcmp(e.what(), "bind: Permission denied") == 0) {
             // std::cerr << "port forbidden please choose another port.\n";
