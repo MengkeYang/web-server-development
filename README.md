@@ -328,9 +328,13 @@ You should install Locust python3 module first and go to tests/, and
 run the script load_tester.py
 ```python
 pip3 install locust
-locust -f ./load_tester.py --host=http://localhost:8080
+locust -f ./load_tester.py --host=http://localhost:8080 --headless -r 100 -u 500 --csv=req
 ```
 
+You can also use the browser UI to run Locust by using
+```
+locust -f ./load_tester.py --host=http://localhost:8080
+```
 Open your browser, and type in http://localhost:8089, 
 you can see the UI to control your locust tester.
 Here --host is the destination you want to test. 
