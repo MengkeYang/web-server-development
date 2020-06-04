@@ -320,3 +320,52 @@ log_helper& logger = log_helper::instance();
 
 With this reference to the singleton logger you can use any of the functions
 implemented by the `log_helper` class.
+
+
+## Load testing
+### Run Locust testing script
+You should install Locust python3 module first and go to tests/, and
+run the script load_tester.py
+```python
+pip3 install locust
+locust -f ./load_tester.py --host=http://localhost:8080
+```
+
+Open your browser, and type in http://localhost:8089, 
+you can see the UI to control your locust tester.
+Here --host is the destination you want to test. 
+If you want to test the server on the cloud, change it to:
+```python
+locust -f ./load_tester.py --host=http://www.wnza.cs130.org
+```
+
+### A graph of RPS over time
+This graph can be drived directly in the locust UI. Just click Charts, 
+you will see the Totals Requests per Second chart as we need.
+
+### A graph of response time for the echo endpoint, a large static file, 
+### and the status page over time
+In order to draw this graph, just click Downloaded Data in locust UI, and
+download requests statistics CSV, and change name to requests_data.csv.
+Finally run draw_graph.py in tests/ to get a graph of response time for three 
+types of endpoints.
+```python
+python3 draw_graph.py
+```
+
+If you want to get response time of all endpoints, you can also go to locust UI,
+click graph, and check Response Time (ms) for details.
+If you still want to get response time over time graph on each endpoint,
+you can run load_tester_echo, load_tester_status, load_tester_static respectively.
+```python
+locust -f ./load_tester_echo.py --host=http://localhost:8080
+locust -f ./load_tester_status.py --host=http://localhost:8080
+locust -f ./load_tester_static.py --host=http://localhost:8080
+```
+
+### A graph of the CPU usage of the virtual machine on Google Compute Engine
+If you choose to test the server on the cloud, go to 
+https://console.cloud.google.com/monitoring/dashboards, click WNZA at the bottom,
+you will see the graph of CPU utilization of VM on GCP over time.
+
+
