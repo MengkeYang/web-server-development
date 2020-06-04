@@ -16,7 +16,9 @@ server::server(boost::asio::io_service& io_service, short port,
       socket_(tcp::socket(io_service)),
       io_(io_service),
       log_(log_helper::instance()),
-      config_(config)
+      config_(config),
+      cnt_(std::make_shared<std::atomic<int>>()),
+      t_(io_)
 {
     signals_.add(SIGINT);
     signals_.add(SIGTERM);
@@ -45,6 +47,7 @@ server::server(boost::asio::io_service& io_service, short port,
             add_request_handler(health_request_handler::init, loc_res);
         }
     }
+    (*cnt_) = 0;
     // log handlers info for status handler
     log_.log_all_handlers(config_);
     start_accept();
@@ -60,23 +63,30 @@ void server::signal_handler(const boost::system::error_code& ec,
 
 void server::start_accept()
 {
+    log_.log_trace_file("Number of Connections: " + std::to_string((*cnt_)));
+    if (*(cnt_) > 100) { // Don't accept new connections if too many already open
+        t_.expires_from_now(boost::posix_time::seconds(3));
+        t_.async_wait(boost::bind(&server::start_accept, this));
+        return;
+    }
+    (*cnt_)++;
+
     std::unique_ptr<tcp_connection> conn =
-        std::make_unique<tcp_connection>(std::move(socket_));
+        std::make_unique<tcp_connection>(std::move(socket_), cnt_);
     std::shared_ptr<session> new_session =
         std::make_shared<session>(std::move(conn), location_handlers_);
 
     acceptor_.async_accept(
-        *(new_session->socket()),
-        boost::bind(&server::handle_accept, this, new_session,
-                    boost::asio::placeholders::error));
+            *(new_session->socket()),
+            boost::bind(&server::handle_accept, this, new_session,
+                boost::asio::placeholders::error));
 }
 
 void server::handle_accept(std::shared_ptr<session> new_session,
                            const boost::system::error_code& error)
 {
-    if (!error) {
+    if (!error)
         new_session->start();
-    }
     start_accept();
 }
 

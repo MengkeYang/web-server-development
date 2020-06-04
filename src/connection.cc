@@ -3,13 +3,13 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <mutex>
+#include <atomic>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 using boost::asio::ip::tcp;
 
 tcp::socket* connection::socket()
 {
-    std::lock_guard<std::mutex> lk(lock_);
     return &socket_;
 }
 

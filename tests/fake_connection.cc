@@ -13,7 +13,7 @@ public:
     int writes = 0;
     fake_connection(boost::system::error_code &err,
                     tcp::socket sock, std::shared_ptr<response_builder> res)
-        : connection(std::move(sock))
+        : connection(std::move(sock), std::make_shared<std::atomic<int>>(0))
     {
         err_ = err;
         res_ = res;

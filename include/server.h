@@ -5,6 +5,7 @@
 #include <boost/bind.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <atomic>
 #include "config_parser.h"
 #include "log_helper.h"
 #include "request_handler.h"
@@ -37,7 +38,7 @@ private:
     log_helper& log_;
     NginxConfig config_;
     std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
-
-
+    std::shared_ptr<std::atomic<int>> cnt_;
+    boost::asio::deadline_timer t_;
 };
 #endif  // WNZA_SERVER_H_

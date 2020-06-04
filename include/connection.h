@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
 #include <mutex>
+#include <atomic>
 #include "response.h"
 #include "log_helper.h"
 
@@ -25,10 +26,13 @@ class session;
 class connection
 {
     tcp::socket socket_;
-    std::mutex lock_;
+    std::shared_ptr<std::atomic<int>> cnt_;
 
 public:
-    connection(tcp::socket socket) : socket_(std::move(socket)) {}
+    connection(tcp::socket socket, std::shared_ptr<std::atomic<int>> cnt)
+        : socket_(std::move(socket)), cnt_(cnt)
+    {
+    }
     tcp::socket *socket();
     virtual void read(
         boost::asio::mutable_buffer buf, size_t maxlen,
@@ -44,7 +48,11 @@ public:
                              std::shared_ptr<response_builder> res)>
             cb,
         std::shared_ptr<session> s) = 0;
-    virtual ~connection() { socket_.close(); }
+    virtual ~connection()
+    {
+        (*cnt_)--;
+        socket_.close();
+    }
 };
 
 /**
@@ -59,10 +67,10 @@ class tcp_connection : public connection
     boost::asio::deadline_timer timer_;
 
 public:
-    tcp_connection(tcp::socket s)
+    tcp_connection(tcp::socket s, std::shared_ptr<std::atomic<int>> cnt)
         : timer_(s.get_io_service()),
           strand_(s.get_io_service()),
-          connection(std::move(s))
+          connection(std::move(s), cnt)
     {
     }
     void timeout(const boost::system::error_code &e);
