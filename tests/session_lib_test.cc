@@ -9,6 +9,7 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
 #include "request_handler.h"
+#include <unordered_map>
 
 
 using boost::asio::ip::tcp;
@@ -48,13 +49,14 @@ protected:
 
     // initialize location_handler
     std::map<std::string, std::unique_ptr<request_handler>> location_handlers_;
+    std::unordered_map<std::string, response> cache_query;
 };
 
 TEST_F(session_test, bad_parse_generates_response)
 {
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
-    session session_(std::move(conn), location_handlers_);
+    session session_(std::move(conn), location_handlers_, &cache_query);
     request req;
     response_builder rb = session_.process_req(req);
     response r = rb.get_response();
@@ -65,7 +67,7 @@ TEST_F(session_test, good_parse_generates_ok_code)
 {
     std::unique_ptr<fake_connection> conn =
         std::make_unique<fake_connection>(no_error, std::move(s), res_build);
-    session session_(std::move(conn), location_handlers_);
+    session session_(std::move(conn), location_handlers_, &cache_query);
     request req;
     req.uri_ = "/echo/";
     req.version_ = "HTTP/1.1";

@@ -74,7 +74,7 @@ void server::start_accept()
     std::unique_ptr<tcp_connection> conn =
         std::make_unique<tcp_connection>(std::move(socket_), cnt_);
     std::shared_ptr<session> new_session =
-        std::make_shared<session>(std::move(conn), location_handlers_);
+        std::make_shared<session>(std::move(conn), location_handlers_, &cache_query);
 
     acceptor_.async_accept(
             *(new_session->socket()),
@@ -95,6 +95,7 @@ void server::add_request_handler(
     location_parse_result res)
 {
     std::unique_ptr<request_handler> sr(init(res.uri, *res.block_config));
+    // std::cout << "res.url: " << res.uri << std::endl;
     location_handlers_.insert(
         std::pair<std::string, std::unique_ptr<request_handler>>(
             res.uri, std::move(sr)));

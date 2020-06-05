@@ -817,3 +817,201 @@
 2020-06-04 06:23:14.563457 [0x00007f64b5591700] [trace] [0x000002ac] [50] Trace: GET /echo HTTP  Content-Length:10 IP: 127.0.0.1 Port: 43792
 2020-06-04 06:23:14.564450 [0x00007f64b5591700] [trace] [0x000002ac] [51] ResponseMetrics:  Response code : 200 Request path: /echo IP: 127.0.0.1 Matched request handler name: EchoHandler
 2020-06-04 06:23:14.565183 [0x00007f64b5591700] [trace] [0x000002ac] [52] Response Sent
+2020-06-05 20:58:04.262455 [0x00007fa823611740] [error] [0x00000426] [1] Error: Argument count mismatch. Usage: async_tcp_echo_server config_file
+2020-06-05 21:04:57.469756 [0x00007fbef8b57740] [error] [0x0000052d] [1] Error: Argument count mismatch. Usage: async_tcp_echo_server config_file
+2020-06-05 21:05:07.462365 [0x00007f40ab418740] [trace] [0x0000052e] [1] Trace: server config parsing begins
+2020-06-05 21:05:07.466801 [0x00007f40ab418740] [error] [0x0000052e] [2] Error: invalid port number in cofig file,the port numbers range from 0 to 65535
+2020-06-05 21:06:10.164961 [0x00007f74120fd740] [trace] [0x0000052f] [1] Trace: server config parsing begins
+2020-06-05 21:06:10.169261 [0x00007f74120fd740] [trace] [0x0000052f] [2] Trace: server config parsing successed
+2020-06-05 21:06:10.170589 [0x00007f74120fd740] [trace] [0x0000052f] [3] Trace: res.url: /static/
+2020-06-05 21:06:10.172541 [0x00007f74120fd740] [trace] [0x0000052f] [4] Trace: res.url: /echo/
+2020-06-05 21:06:10.173785 [0x00007f74120fd740] [trace] [0x0000052f] [5] Trace: res.url: /status/
+2020-06-05 21:06:10.174886 [0x00007f74120fd740] [trace] [0x0000052f] [6] Trace: res.url: /
+2020-06-05 21:06:10.175708 [0x00007f74120fd740] [trace] [0x0000052f] [7] Trace: res.url: /ucla/
+2020-06-05 21:06:10.176716 [0x00007f74120fd740] [trace] [0x0000052f] [8] Trace: res.url: /gnu/
+2020-06-05 21:06:10.177413 [0x00007f74120fd740] [trace] [0x0000052f] [9] Trace: res.url: /gnu/test/
+2020-06-05 21:06:10.178395 [0x00007f74120fd740] [trace] [0x0000052f] [10] Trace: res.url: /health/
+2020-06-05 21:06:10.179257 [0x00007f74120fd740] [trace] [0x0000052f] [11] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 21:06:10.181046 [0x00007f74120fd740] [trace] [0x0000052f] [12] Trace: Number of Connections: 0
+2020-06-05 21:06:10.182311 [0x00007f74120fd740] [trace] [0x0000052f] [13] Trace: server startup successed
+2020-06-05 21:06:53.315614 [0x00007f7410f93700] [warning] [0x0000052f] [14] Warning: server is shutting down
+2020-06-05 21:08:25.801403 [0x00007f3b9ada8740] [trace] [0x00000670] [1] Trace: server config parsing begins
+2020-06-05 21:08:25.806070 [0x00007f3b9ada8740] [trace] [0x00000670] [2] Trace: server config parsing successed
+2020-06-05 21:08:25.807107 [0x00007f3b9ada8740] [trace] [0x00000670] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 21:08:25.807600 [0x00007f3b9ada8740] [trace] [0x00000670] [4] Trace: Number of Connections: 0
+2020-06-05 21:08:25.808350 [0x00007f3b9ada8740] [trace] [0x00000670] [5] Trace: server startup successed
+2020-06-05 21:32:44.118661 [0x00007f3b99c3e700] [warning] [0x00000670] [6] Warning: server is shutting down
+2020-06-05 21:33:58.734944 [0x00007fca7f2b0740] [trace] [0x0000074d] [1] Trace: server config parsing begins
+2020-06-05 21:33:58.738832 [0x00007fca7f2b0740] [trace] [0x0000074d] [2] Trace: server config parsing successed
+2020-06-05 21:33:58.739832 [0x00007fca7f2b0740] [trace] [0x0000074d] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 21:33:58.742427 [0x00007fca7f2b0740] [trace] [0x0000074d] [4] Trace: Number of Connections: 0
+2020-06-05 21:33:58.743536 [0x00007fca7f2b0740] [trace] [0x0000074d] [5] Trace: server startup successed
+2020-06-05 21:35:32.153856 [0x00007fca7e146700] [trace] [0x0000074d] [6] Trace: Number of Connections: 1
+2020-06-05 21:35:32.153997 [0x00007fca7d945700] [trace] [0x0000074d] [7] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58694
+2020-06-05 21:35:32.160522 [0x00007fca7d945700] [trace] [0x0000074d] [8] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 21:35:32.161281 [0x00007fca7d945700] [trace] [0x0000074d] [9] Response Sent
+2020-06-05 21:35:53.924622 [0x00007fca7d144700] [trace] [0x0000074d] [10] Trace: Number of Connections: 1
+2020-06-05 21:35:53.924787 [0x00007fca7813a700] [trace] [0x0000074d] [11] Trace: GET /ucla/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58696
+2020-06-05 21:35:54.169744 [0x00007fca7813a700] [trace] [0x0000074d] [12] ResponseMetrics:  Response code : 200 Request path: /ucla/ IP: 127.0.0.1 Matched request handler name: ProxyHandler
+2020-06-05 21:35:54.171213 [0x00007fca7813a700] [trace] [0x0000074d] [13] Response Sent
+2020-06-05 21:36:55.213183 [0x00007fca76937700] [trace] [0x0000074d] [14] Trace: Number of Connections: 1
+2020-06-05 21:36:55.213328 [0x00007fca7e146700] [trace] [0x0000074d] [15] Trace: GET /static/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58700
+2020-06-05 21:36:55.215305 [0x00007fca7e146700] [trace] [0x0000074d] [16] ResponseMetrics:  Response code : 404 Request path: /static/ IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 21:36:55.216365 [0x00007fca7e146700] [trace] [0x0000074d] [17] Response Sent
+2020-06-05 21:37:26.227165 [0x00007fca7d144700] [trace] [0x0000074d] [19] Trace: GET /static/cmake_install.cmake HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58702
+2020-06-05 21:37:26.227092 [0x00007fca7c142700] [trace] [0x0000074d] [18] Trace: Number of Connections: 1
+2020-06-05 21:37:26.230275 [0x00007fca7d144700] [trace] [0x0000074d] [20] ResponseMetrics:  Response code : 200 Request path: /static/cmake_install.cmake IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 21:37:26.230967 [0x00007fca7d144700] [trace] [0x0000074d] [21] Response Sent
+2020-06-05 22:24:26.893537 [0x00007f39b16f2740] [trace] [0x00000ab1] [1] Trace: server config parsing begins
+2020-06-05 22:24:26.898096 [0x00007f39b16f2740] [error] [0x00000ab1] [2] Error:  config parsing failed
+2020-06-05 22:24:46.388916 [0x00007f5ec8c23740] [trace] [0x00000ab2] [1] Trace: server config parsing begins
+2020-06-05 22:24:46.393028 [0x00007f5ec8c23740] [trace] [0x00000ab2] [2] Trace: server config parsing successed
+2020-06-05 22:24:46.396689 [0x00007f5ec8c23740] [error] [0x00000ab2] [3] Error: bind: Address already in use
+2020-06-05 22:25:01.161707 [0x00007fca77138700] [warning] [0x0000074d] [22] Warning: server is shutting down
+2020-06-05 22:25:03.970122 [0x00007f6dd14fc740] [trace] [0x00000ab4] [1] Trace: server config parsing begins
+2020-06-05 22:25:03.974135 [0x00007f6dd14fc740] [trace] [0x00000ab4] [2] Trace: server config parsing successed
+2020-06-05 22:25:03.975492 [0x00007f6dd14fc740] [trace] [0x00000ab4] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:25:03.976271 [0x00007f6dd14fc740] [trace] [0x00000ab4] [4] Trace: Number of Connections: 0
+2020-06-05 22:25:03.977099 [0x00007f6dd14fc740] [trace] [0x00000ab4] [5] Trace: server startup successed
+2020-06-05 22:26:51.356933 [0x00007f6dcfb91700] [trace] [0x00000ab4] [6] Trace: Number of Connections: 1
+2020-06-05 22:26:51.357071 [0x00007f6dceb8f700] [trace] [0x00000ab4] [7] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58704
+2020-06-05 22:26:51.362229 [0x00007f6dceb8f700] [trace] [0x00000ab4] [8] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:26:51.362999 [0x00007f6dceb8f700] [trace] [0x00000ab4] [9] Response Sent
+2020-06-05 22:26:54.763767 [0x00007f6dcf390700] [trace] [0x00000ab4] [10] Trace: Number of Connections: 1
+2020-06-05 22:26:54.764196 [0x00007f6dca386700] [trace] [0x00000ab4] [11] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58706
+2020-06-05 22:26:54.769489 [0x00007f6dca386700] [trace] [0x00000ab4] [12] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:26:54.770733 [0x00007f6dca386700] [trace] [0x00000ab4] [13] Response Sent
+2020-06-05 22:26:55.950280 [0x00007f6dc9b85700] [trace] [0x00000ab4] [14] Trace: Number of Connections: 1
+2020-06-05 22:26:55.950702 [0x00007f6dcfb91700] [trace] [0x00000ab4] [15] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58708
+2020-06-05 22:26:55.957057 [0x00007f6dcfb91700] [trace] [0x00000ab4] [16] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:26:55.958606 [0x00007f6dcfb91700] [trace] [0x00000ab4] [17] Response Sent
+2020-06-05 22:27:01.142830 [0x00007f6dcbb89700] [trace] [0x00000ab4] [18] Trace: Number of Connections: 1
+2020-06-05 22:27:01.143280 [0x00007f6dc8b83700] [trace] [0x00000ab4] [19] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58710
+2020-06-05 22:27:01.150194 [0x00007f6dc8b83700] [trace] [0x00000ab4] [20] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:27:01.151308 [0x00007f6dc8b83700] [trace] [0x00000ab4] [21] Response Sent
+2020-06-05 22:27:03.077613 [0x00007f6dcc38a700] [trace] [0x00000ab4] [23] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58712
+2020-06-05 22:27:03.077568 [0x00007f6dcf390700] [trace] [0x00000ab4] [22] Trace: Number of Connections: 1
+2020-06-05 22:27:03.084287 [0x00007f6dcc38a700] [trace] [0x00000ab4] [24] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:27:03.085434 [0x00007f6dcc38a700] [trace] [0x00000ab4] [25] Response Sent
+2020-06-05 22:27:03.974537 [0x00007f6dcfb91700] [trace] [0x00000ab4] [26] Trace: Number of Connections: 1
+2020-06-05 22:27:03.974658 [0x00007f6dcdb8d700] [trace] [0x00000ab4] [27] Trace: GET /status/ HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58714
+2020-06-05 22:27:03.980127 [0x00007f6dcdb8d700] [trace] [0x00000ab4] [28] ResponseMetrics:  Response code : 200 Request path: /status/ IP: 127.0.0.1 Matched request handler name: StatusHandler
+2020-06-05 22:27:03.981091 [0x00007f6dcdb8d700] [trace] [0x00000ab4] [29] Response Sent
+2020-06-05 22:27:31.001955 [0x00007f6dcd38c700] [trace] [0x00000ab4] [30] Trace: Number of Connections: 1
+2020-06-05 22:27:31.002218 [0x00007f6dcb388700] [trace] [0x00000ab4] [31] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58716
+2020-06-05 22:27:31.005704 [0x00007f6dcb388700] [trace] [0x00000ab4] [32] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:31.006660 [0x00007f6dcb388700] [trace] [0x00000ab4] [33] Response Sent
+2020-06-05 22:27:32.683375 [0x00007f6dcab87700] [trace] [0x00000ab4] [34] Trace: Number of Connections: 1
+2020-06-05 22:27:32.683608 [0x00007f6dceb8f700] [trace] [0x00000ab4] [35] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58718
+2020-06-05 22:27:32.688094 [0x00007f6dceb8f700] [trace] [0x00000ab4] [36] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:32.690151 [0x00007f6dcbb89700] [trace] [0x00000ab4] [37] Response Sent
+2020-06-05 22:27:33.721752 [0x00007f6dcf390700] [trace] [0x00000ab4] [38] Trace: Number of Connections: 1
+2020-06-05 22:27:33.721821 [0x00007f6dc9b85700] [trace] [0x00000ab4] [39] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58720
+2020-06-05 22:27:33.724945 [0x00007f6dc9b85700] [trace] [0x00000ab4] [40] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:33.725752 [0x00007f6dc9b85700] [trace] [0x00000ab4] [41] Response Sent
+2020-06-05 22:27:34.454837 [0x00007f6dd0392700] [trace] [0x00000ab4] [42] Trace: Number of Connections: 1
+2020-06-05 22:27:34.455151 [0x00007f6dcc38a700] [trace] [0x00000ab4] [43] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58722
+2020-06-05 22:27:34.459440 [0x00007f6dcc38a700] [trace] [0x00000ab4] [44] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:34.460650 [0x00007f6dcbb89700] [trace] [0x00000ab4] [45] Response Sent
+2020-06-05 22:27:36.205280 [0x00007f6dcb388700] [trace] [0x00000ab4] [46] Trace: Number of Connections: 1
+2020-06-05 22:27:36.205929 [0x00007f6dcfb91700] [trace] [0x00000ab4] [47] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58724
+2020-06-05 22:27:36.176990 [0x00007f6dcfb91700] [trace] [0x00000ab4] [48] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:36.178096 [0x00007f6dcfb91700] [trace] [0x00000ab4] [49] Response Sent
+2020-06-05 22:27:37.656060 [0x00007f6dd0392700] [trace] [0x00000ab4] [51] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58726
+2020-06-05 22:27:37.656034 [0x00007f6dcf390700] [trace] [0x00000ab4] [50] Trace: Number of Connections: 1
+2020-06-05 22:27:37.660537 [0x00007f6dd0392700] [trace] [0x00000ab4] [52] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:37.661503 [0x00007f6dd0392700] [trace] [0x00000ab4] [53] Response Sent
+2020-06-05 22:27:38.556778 [0x00007f6dcb388700] [trace] [0x00000ab4] [55] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58728
+2020-06-05 22:27:38.556740 [0x00007f6dc9384700] [trace] [0x00000ab4] [54] Trace: Number of Connections: 1
+2020-06-05 22:27:38.559586 [0x00007f6dcb388700] [trace] [0x00000ab4] [56] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:27:38.560666 [0x00007f6dcab87700] [trace] [0x00000ab4] [57] Response Sent
+2020-06-05 22:29:59.552222 [0x00007f6dce38e700] [warning] [0x00000ab4] [58] Warning: server is shutting down
+2020-06-05 22:29:59.553442 [0x00007f6dcc38a700] [trace] [0x00000ab4] [59] Trace: Number of Connections: 1
+2020-06-05 22:31:17.202087 [0x00007f8d28304740] [trace] [0x00000bb0] [1] Trace: server config parsing begins
+2020-06-05 22:31:17.205786 [0x00007f8d28304740] [trace] [0x00000bb0] [2] Trace: server config parsing successed
+2020-06-05 22:31:17.206962 [0x00007f8d28304740] [trace] [0x00000bb0] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:31:17.209476 [0x00007f8d28304740] [trace] [0x00000bb0] [4] Trace: Number of Connections: 0
+2020-06-05 22:31:17.210280 [0x00007f8d28304740] [trace] [0x00000bb0] [5] Trace: server startup successed
+2020-06-05 22:31:20.388432 [0x00007f8d26999700] [trace] [0x00000bb0] [6] Trace: Number of Connections: 1
+2020-06-05 22:31:20.388514 [0x00007f8d26198700] [trace] [0x00000bb0] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58730
+2020-06-05 22:31:20.391346 [0x00007f8d26198700] [trace] [0x00000bb0] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:31:20.392329 [0x00007f8d25196700] [trace] [0x00000bb0] [9] Response Sent
+2020-06-05 22:31:26.721084 [0x00007f8d23192700] [trace] [0x00000bb0] [10] Trace: Number of Connections: 1
+2020-06-05 22:31:26.721566 [0x00007f8d1f98b700] [trace] [0x00000bb0] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58732
+2020-06-05 22:31:26.725606 [0x00007f8d1f98b700] [trace] [0x00000bb0] [12] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:31:26.726523 [0x00007f8d1f98b700] [trace] [0x00000bb0] [13] Response Sent
+2020-06-05 22:31:55.783844 [0x00007f8d26198700] [warning] [0x00000bb0] [14] Warning: server is shutting down
+2020-06-05 22:32:33.269288 [0x00007eff4a3f3740] [trace] [0x00000c86] [1] Trace: server config parsing begins
+2020-06-05 22:32:33.273438 [0x00007eff4a3f3740] [trace] [0x00000c86] [2] Trace: server config parsing successed
+2020-06-05 22:32:33.274806 [0x00007eff4a3f3740] [trace] [0x00000c86] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:32:33.275676 [0x00007eff4a3f3740] [trace] [0x00000c86] [4] Trace: Number of Connections: 0
+2020-06-05 22:32:33.277827 [0x00007eff4a3f3740] [trace] [0x00000c86] [5] Trace: server startup successed
+2020-06-05 22:32:38.964051 [0x00007eff49289700] [trace] [0x00000c86] [6] Trace: Number of Connections: 1
+2020-06-05 22:32:38.964237 [0x00007eff48287700] [trace] [0x00000c86] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58734
+2020-06-05 22:32:38.967760 [0x00007eff48287700] [trace] [0x00000c86] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:32:38.968729 [0x00007eff48287700] [trace] [0x00000c86] [9] Response Sent
+2020-06-05 22:32:42.264459 [0x00007eff48a88700] [trace] [0x00000c86] [10] Trace: Number of Connections: 1
+2020-06-05 22:32:42.264908 [0x00007eff4327d700] [trace] [0x00000c86] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58736
+2020-06-05 22:43:26.770444 [0x00007ff2451e8740] [trace] [0x00000d6c] [1] Trace: server config parsing begins
+2020-06-05 22:43:26.777186 [0x00007ff2451e8740] [trace] [0x00000d6c] [2] Trace: server config parsing successed
+2020-06-05 22:43:26.778799 [0x00007ff2451e8740] [trace] [0x00000d6c] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:43:26.779672 [0x00007ff2451e8740] [trace] [0x00000d6c] [4] Trace: Number of Connections: 0
+2020-06-05 22:43:26.780367 [0x00007ff2451e8740] [trace] [0x00000d6c] [5] Trace: server startup successed
+2020-06-05 22:43:30.181063 [0x00007ff24407e700] [trace] [0x00000d6c] [6] Trace: Number of Connections: 1
+2020-06-05 22:43:30.181801 [0x00007ff24387d700] [trace] [0x00000d6c] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58738
+2020-06-05 22:43:30.187072 [0x00007ff24387d700] [trace] [0x00000d6c] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:43:30.188904 [0x00007ff24387d700] [trace] [0x00000d6c] [9] Response Sent
+2020-06-05 22:43:32.529605 [0x00007ff24307c700] [trace] [0x00000d6c] [10] Trace: Number of Connections: 1
+2020-06-05 22:43:32.529700 [0x00007ff23f074700] [trace] [0x00000d6c] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58740
+2020-06-05 22:45:03.172871 [0x00007f1234d73740] [trace] [0x00000e42] [1] Trace: server config parsing begins
+2020-06-05 22:45:03.179047 [0x00007f1234d73740] [trace] [0x00000e42] [2] Trace: server config parsing successed
+2020-06-05 22:45:03.180050 [0x00007f1234d73740] [trace] [0x00000e42] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:45:03.181155 [0x00007f1234d73740] [trace] [0x00000e42] [4] Trace: Number of Connections: 0
+2020-06-05 22:45:03.181940 [0x00007f1234d73740] [trace] [0x00000e42] [5] Trace: server startup successed
+2020-06-05 22:45:05.141819 [0x00007f1233c09700] [trace] [0x00000e42] [6] Trace: Number of Connections: 1
+2020-06-05 22:45:05.141971 [0x00007f1232c07700] [trace] [0x00000e42] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58742
+2020-06-05 22:45:05.145813 [0x00007f1232c07700] [trace] [0x00000e42] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:45:05.147146 [0x00007f1232c07700] [trace] [0x00000e42] [9] Response Sent
+2020-06-05 22:45:06.400879 [0x00007f122cbfb700] [trace] [0x00000e42] [10] Trace: Number of Connections: 1
+2020-06-05 22:45:06.401074 [0x00007f122dbfd700] [trace] [0x00000e42] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58744
+2020-06-05 22:52:15.357643 [0x00007f55130a3740] [trace] [0x00001083] [1] Trace: server config parsing begins
+2020-06-05 22:52:15.362921 [0x00007f55130a3740] [trace] [0x00001083] [2] Trace: server config parsing successed
+2020-06-05 22:52:15.363944 [0x00007f55130a3740] [trace] [0x00001083] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:52:15.364965 [0x00007f55130a3740] [trace] [0x00001083] [4] Trace: Number of Connections: 0
+2020-06-05 22:52:15.365936 [0x00007f55130a3740] [trace] [0x00001083] [5] Trace: server startup successed
+2020-06-05 22:52:19.041586 [0x00007f5511738700] [trace] [0x00001083] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58746
+2020-06-05 22:52:19.041557 [0x00007f5511f39700] [trace] [0x00001083] [6] Trace: Number of Connections: 1
+2020-06-05 22:52:19.044460 [0x00007f5511738700] [trace] [0x00001083] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:52:19.045645 [0x00007f5511738700] [trace] [0x00001083] [9] Response Sent
+2020-06-05 22:52:20.792417 [0x00007f550df31700] [trace] [0x00001083] [10] Trace: Number of Connections: 1
+2020-06-05 22:52:20.792643 [0x00007f550b72c700] [trace] [0x00001083] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58748
+2020-06-05 22:58:12.633141 [0x00007fb6c1573740] [trace] [0x00001159] [1] Trace: server config parsing begins
+2020-06-05 22:58:12.637485 [0x00007fb6c1573740] [trace] [0x00001159] [2] Trace: server config parsing successed
+2020-06-05 22:58:12.638828 [0x00007fb6c1573740] [trace] [0x00001159] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:58:12.639937 [0x00007fb6c1573740] [trace] [0x00001159] [4] Trace: Number of Connections: 0
+2020-06-05 22:58:12.641255 [0x00007fb6c1573740] [trace] [0x00001159] [5] Trace: server startup successed
+2020-06-05 22:58:19.110305 [0x00007fb6c0409700] [trace] [0x00001159] [6] Trace: Number of Connections: 1
+2020-06-05 22:58:19.110357 [0x00007fb6bfc08700] [trace] [0x00001159] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58750
+2020-06-05 22:58:19.113860 [0x00007fb6bfc08700] [trace] [0x00001159] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:58:19.114835 [0x00007fb6bfc08700] [trace] [0x00001159] [9] Response Sent
+2020-06-05 22:58:21.402607 [0x00007fb6bc401700] [trace] [0x00001159] [10] Trace: Number of Connections: 1
+2020-06-05 22:58:21.402742 [0x00007fb6bb3ff700] [trace] [0x00001159] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58752
+2020-06-05 22:59:55.097003 [0x00007f60d20cc740] [trace] [0x0000122f] [1] Trace: server config parsing begins
+2020-06-05 22:59:55.102463 [0x00007f60d20cc740] [trace] [0x0000122f] [2] Trace: server config parsing successed
+2020-06-05 22:59:55.104244 [0x00007f60d20cc740] [trace] [0x0000122f] [3] all handlers: StaticHandler /static/ EchoHandler /echo/ StatusHandler /status/ NotFoundHandler / ProxyHandler /ucla/ ProxyHandler /gnu/ ProxyHandler /gnu/test/ HealthHandler /health/ 
+2020-06-05 22:59:55.105465 [0x00007f60d20cc740] [trace] [0x0000122f] [4] Trace: Number of Connections: 0
+2020-06-05 22:59:55.106472 [0x00007f60d20cc740] [trace] [0x0000122f] [5] Trace: server startup successed
+2020-06-05 22:59:59.650230 [0x00007f60cff60700] [trace] [0x0000122f] [7] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58754
+2020-06-05 22:59:59.650093 [0x00007f60d0f62700] [trace] [0x0000122f] [6] Trace: Number of Connections: 1
+2020-06-05 22:59:59.653723 [0x00007f60cff60700] [trace] [0x0000122f] [8] ResponseMetrics:  Response code : 200 Request path: /static/CMakeCache.txt IP: 127.0.0.1 Matched request handler name: StaticHandler
+2020-06-05 22:59:59.654901 [0x00007f60cff60700] [trace] [0x0000122f] [9] Response Sent
+2020-06-05 23:00:00.808127 [0x00007f60cdf5c700] [trace] [0x0000122f] [10] Trace: Number of Connections: 1
+2020-06-05 23:00:00.808202 [0x00007f60ccf5a700] [trace] [0x0000122f] [11] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58756
+2020-06-05 23:00:00.809994 [0x00007f60ccf5a700] [trace] [0x0000122f] [12] Response Sent
+2020-06-05 23:00:28.945362 [0x00007f60d0f62700] [trace] [0x0000122f] [14] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58758
+2020-06-05 23:00:28.945314 [0x00007f60c9f54700] [trace] [0x0000122f] [13] Trace: Number of Connections: 1
+2020-06-05 23:00:28.946645 [0x00007f60ce75d700] [trace] [0x0000122f] [15] Response Sent
+2020-06-05 23:00:30.436314 [0x00007f60cdf5c700] [trace] [0x0000122f] [17] Trace: GET /static/CMakeCache.txt HTTP  Accept:*/* Host:localhost:8080 User-Agent:curl/7.58.0 IP: 127.0.0.1 Port: 58760
+2020-06-05 23:00:30.436249 [0x00007f60cd75b700] [trace] [0x0000122f] [16] Trace: Number of Connections: 1
+2020-06-05 23:00:30.437593 [0x00007f60cdf5c700] [trace] [0x0000122f] [18] Response Sent
+2020-06-05 23:00:34.623965 [0x00007f60c9753700] [warning] [0x0000122f] [19] Warning: server is shutting down

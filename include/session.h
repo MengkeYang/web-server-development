@@ -11,6 +11,9 @@
 #include "not_found_request_handler.h"
 #include "reverse_proxy_request_handler.h"
 #include "connection.h"
+#include "unordered_map"
+#include "response.h"
+
 class log_helper;
 class response;
 
@@ -20,8 +23,9 @@ class session : public std::enable_shared_from_this<session>
 {
 public:
     session(std::unique_ptr<connection> connection,
-            std::map<std::string, std::unique_ptr<request_handler>>&
-                location_handlers);
+            std::map<std::string, std::unique_ptr<request_handler>>&location_handlers,
+            std::unordered_map<std::string, response>* cache_query
+            );
     // get tcp socket
     tcp::socket* socket();
     // listen tcp read socket and call handle_read to process
@@ -50,5 +54,6 @@ private:
     request_parser request_parser_;
     log_helper& log_;
     std::map<std::string, std::unique_ptr<request_handler>>& location_handlers_;
+    std::unordered_map<std::string, response>* cache_query_;
 };
 #endif  // WNZA_SESSION_H_

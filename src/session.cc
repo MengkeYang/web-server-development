@@ -4,15 +4,20 @@
 #include "request_parser.h"
 #include "log_helper.h"
 #include <boost/thread/thread.hpp>
+#include <unordered_map>
+#include <string>
+
 
 using boost::asio::ip::tcp;
 
 session::session(
     std::unique_ptr<connection> connection,
-    std::map<std::string, std::unique_ptr<request_handler>>& location_handlers)
+    std::map<std::string, std::unique_ptr<request_handler> > &location_handlers,
+    std::unordered_map<std::string, response> *cache_query)
     : connection_(std::move(connection)),
       log_(log_helper::instance()),
-      location_handlers_(location_handlers)
+      location_handlers_(location_handlers),
+      cache_query_(cache_query)
 {
 }
 
@@ -33,34 +38,46 @@ response_builder session::process_req(const request& request)
     bool matched = false;
     int max_matched_length = 0;
     std::string max_matched_key;
-    if (request.method_ != request::method::INVALID) {
-        for (auto&& pair : location_handlers_) {
-            // We compare the prefix without the final "/". So /echo matches
-            // with /echo/.
-            if (request.uri_.length() > pair.first.length() &&
-                request.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
-                continue;
-            if (request.uri_.compare(
-                    0, pair.first.length() - 1,
-                    pair.first.substr(0, pair.first.length() - 1)) == 0) {
-                if (max_matched_length < pair.first.length()) {
-                    max_matched_length = pair.first.length();
-                    max_matched_key = pair.first;
+    //print for debug
+    std::cout << "request.uri: " << request.uri_ << std::endl;
+    // for (auto pair : request.headers_){
+    //     std::cout << "key: " << pair.first << "value: " << pair.second << std::endl;
+    // }
+    if(cache_query_->find(request.uri_) != cache_query_->end())
+    {
+        response = cache_query_->at(request.uri_);
+        res_build.set_response(response);
+    }
+    else{
+        if (request.method_ != request::method::INVALID) {
+            for (auto&& pair : location_handlers_) {
+                // We compare the prefix without the final "/". So /echo matches
+                // with /echo/.
+                if (request.uri_.length() > pair.first.length() &&
+                    request.uri_.compare(pair.first.length() - 1, 1, "/") != 0)
+                    continue;
+                if (request.uri_.compare(
+                        0, pair.first.length() - 1,
+                        pair.first.substr(0, pair.first.length() - 1)) == 0) {
+                    if (max_matched_length < pair.first.length()) {
+                        max_matched_length = pair.first.length();
+                        max_matched_key = pair.first;
+                    }
+                    matched = true;
                 }
-                matched = true;
             }
         }
+        if (matched) {
+            response =
+                location_handlers_.at(max_matched_key)->handle_request(request);
+            (*cache_query_)[request.uri_] = response;
+            res_build.set_response(response);
+            log_.log_metrics(
+                request, response, connection_.get(),
+                location_handlers_.at(max_matched_key)->get_handler_name());
+        } else
+            res_build.make_400_error();
     }
-    if (matched) {
-        response =
-            location_handlers_.at(max_matched_key)->handle_request(request);
-        res_build.set_response(response);
-        log_.log_metrics(
-            request, response, connection_.get(),
-            location_handlers_.at(max_matched_key)->get_handler_name());
-    } else
-        res_build.make_400_error();
-
     return res_build;
 }
 

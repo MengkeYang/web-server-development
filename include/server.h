@@ -6,9 +6,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <atomic>
+#include <unordered_map>
 #include "config_parser.h"
 #include "log_helper.h"
+#include "response.h"
 #include "request_handler.h"
+#include "unordered_map"
 
 class session;
 
@@ -18,6 +21,7 @@ class server
 {
 public:
     server(boost::asio::io_service& io_service, short port, const NginxConfig &config);
+    std::unordered_map<std::string, response> cache_query;
 
 private:
     // create a session object and socket, call handle_accept to process
