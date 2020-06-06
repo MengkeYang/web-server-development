@@ -19,6 +19,7 @@ session::session(
       location_handlers_(location_handlers),
       cache_query_(cache_query)
 {
+
 }
 
 tcp::socket* session::socket() { return connection_->socket(); }
@@ -43,7 +44,7 @@ response_builder session::process_req(const request& request)
     // for (auto pair : request.headers_){
     //     std::cout << "key: " << pair.first << "value: " << pair.second << std::endl;
     // }
-    if(cache_query_->find(request.uri_) != cache_query_->end())
+    if(request.uri_ != "/status" && cache_query_->find(request.uri_) != cache_query_->end())
     {
         response = cache_query_->at(request.uri_);
         res_build.set_response(response);
